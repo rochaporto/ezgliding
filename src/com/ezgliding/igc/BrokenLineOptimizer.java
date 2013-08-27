@@ -1,6 +1,8 @@
 package com.ezgliding.igc;
 
 import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,56 +11,73 @@ public class BrokenLineOptimizer extends Optimizer {
 
 	private int numPoints;
 
-	private TreeMap<Double,Candidate> maxTree;
+	private TreeMap<Candidate,Double> maxTree;
 
 	public BrokenLineOptimizer(Flight flight, int numPoints) {
 		super(flight);
 
+		if (numPoints <= 0) 
+			throw new IllegalArgumentException("numPoints should be 1 or greater");
+		
 		this.numPoints = numPoints;
-		maxTree = new TreeMap<Double,Candidate>();
+		maxTree = new TreeMap<Candidate,Double>();
 	}
 
 	public Result optimize() {
 		if (flight == null || flight.fixes() == null) return null;
 
-		RectangleSet singleSet = new RectangleSet(flight.fixes());
-		RectangleSet[] initialSet = new RectangleSet[numPoints];
-		for (int i=0; i<initialSet.length; i++)
-			initialSet[i] = singleSet;
-
+		// We start with a candidate containing only one rectangle (with all points)
+		ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
+		initialSet.add(new RectangleSet(flight.fixes()));
 		Candidate first = new Candidate(initialSet);
-		maxTree.put(first.max(), first);
+		maxTree.put(first, first.max());
 
-		Map.Entry<Double,Candidate> maxEntry = null;
+		// From here we trigger the logic of fetching the max from tree
+		Map.Entry<Candidate,Double> maxEntry = null;
 		while (maxTree.size() != 0) {
 			maxEntry = maxTree.lastEntry();
-			evaluate(maxEntry.getValue());
+			bound(maxEntry.getKey());
 			maxTree.remove(maxEntry.getKey()); //TODO: remove this
 		}
-		
-		RectangleSet[] finalSet = maxEntry.getValue().getRectangles();
-		Fix[] points = new Fix[finalSet.length];
-		for (int i=0; i<finalSet.length; i++)
-			points[i] = finalSet[i].fixes.get(0);
-		return new Result(points);
+	
+		return null;	
 	}
 
-	private void evaluate(Candidate candate) {
-		
+	private void bound(Candidate candate) {
+
 	}
 
-	public static void main(String[] args) {
-		Flight flight = null;
-		Parser parser = new Parser();
-		try {
-			flight = parser.parse(FileSystems.getDefault().getPath("sample.igc"));
-		} catch(Exception e) { e.printStackTrace(); }
-		System.out.println(flight);
-		double distance = 0.0;
-		List<Fix> fixes = flight.fixes();
-		for (int i=1; i<fixes.size(); i++)
-			distance += Util.distance(fixes.get(i-1), fixes.get(i));
-		System.out.println("distance = " + distance);
-		System.out.println(new BrokenLineOptimizer(flight, 5).optimize());
+	private Iterator<Candidate> branch(Candidate candate) {
+		return null;
+	}
+
+	protected List<Candidate> permutations(List<RectangleSet> availableSets) {
+		ArrayList<Candidate> finalCandidates = new ArrayList<Candidate>();
+
+		permutations(availableSets, numPoints, 0, new Candidate(), finalCandidates);
+		return finalCandidates; 
+	}
+
+	private void permutations(List<RectangleSet> availableSets, int size, int from, 
+		Candidate current, List<Candidate> candidates) {
+		
+		if (current.getRectangles().size() == size) { // Final condition, add and return
+			candidates.add(current);
+			return;
+		}
+
+		for (int i=from; i<availableSets.size(); i++) {
+			Candidate newCurrent = current.clone();
+			newCurrent.add(availableSets.get(i));
+			permutations(availableSets, size, i, newCurrent, candidates);
+		}
+	}
+
+	public Flight getFlight() {
+		return flight;
+	}
+
+	public int getNumPoints() {
+		return numPoints;
 	}
 }
