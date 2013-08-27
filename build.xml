@@ -1,0 +1,55 @@
+<project name="ezgliding" default="dist" basedir=".">
+	<description>Main build file for ezgliding project</description>
+	<property name="build" location="build"/>
+	<property name="dist" location="dist"/>
+	<property name="src" location="src"/>
+	<property name="test" location="test"/>
+	
+	<property name="junit.dir" location="/usr/share/java"/>
+
+	<target name="init">
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/src"/>
+		<mkdir dir="${build}/test"/>
+		<mkdir dir="${dist}/lib"/>
+	</target>
+
+	<target name="compile" depends="init" description="compile sources">
+		<javac srcdir="${src}" destdir="${build}/src"/>
+	</target>
+
+	<target name="compiletest" depends="dist" description="compile test sources">
+		<javac srcdir="${test}" destdir="${build}/test">
+			<classpath>
+				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
+				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="create dist package">
+		<jar jarfile="${dist}/lib/ezgliding.jar" basedir="${build}/src"/>
+	</target>
+
+	<target name="disttest" depends="compiletest" description="create test dist package">
+		<jar jarfile="${dist}/lib/ezgliding-test.jar" basedir="${build}/test"/>
+	</target>
+
+	<target name="test" depends="disttest" description="runs all tests">
+		<junit printsummary="withOutAndErr" showoutput="on">
+			<classpath>
+				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
+				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
+			</classpath>
+			<formatter type="brief" usefile="false"/>
+			<batchtest>
+				<fileset dir="${test}"><include name="**/*Test*.java"/></fileset>
+			</batchtest> 
+		</junit>
+	</target>
+
+	<target name="clean" description="clean it up">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+</project>
