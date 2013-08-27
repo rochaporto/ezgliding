@@ -55,6 +55,17 @@
 		</junitreport>
 	</target>
 
+	<target name="stest" depends="disttest" description="runs single tests">
+		<junit printsummary="withOutAndErr" showoutput="on">
+			<classpath>
+				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
+				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
+			</classpath>
+			<formatter type="brief" usefile="false"/>
+			<test name="com.ezgliding.igc.BrokenLineOptimizerTest" methods="testPermutations"/>
+		</junit>
+	</target>
+
 	<target name="clean" description="clean it up">
 		<delete dir="${build}"/>
 		<delete dir="${dist}"/>
