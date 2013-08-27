@@ -5,6 +5,7 @@ public abstract class Optimizer {
 	protected Flight flight;
 
 	public Optimizer(Flight flight) {
+		if (flight == null) throw new IllegalArgumentException("Flight cannot be null");
 		this.flight = flight;
 	}
 
