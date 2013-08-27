@@ -105,12 +105,12 @@ public class RectangleSetTest {
 	}
 
 	@Test
-	public void maxDistance() {
+	public void testMaxDistance() {
 		assertTrue(false);
 	}
 
 	@Test
-	public void minDistance() { 
+	public void testMinDistance() { 
 		assertTrue(false);
 	}
 
