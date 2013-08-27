@@ -1,34 +1,42 @@
 package com.ezgliding.igc;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+
 public class Candidate implements Comparable<Candidate> {
 	
-	RectangleSet[] rectangles;
+	ArrayList<RectangleSet> rectangles;
 
 	boolean isFinal;
 
-	Candidate(RectangleSet[] rectangles) {
-		this.rectangles = rectangles;
+	public Candidate() {
+		this(null);
+	}
+
+	public Candidate(ArrayList<RectangleSet> inputRectangles) {
+		this.rectangles = new ArrayList<RectangleSet>();
 
 		isFinal = true;
-		for (RectangleSet set: rectangles) 
-			if (set.fixes.size() > 1) {
-				isFinal = false;
-				break;
-			}
+		if (inputRectangles != null)
+			this.rectangles.addAll(inputRectangles);
 	}
 
 	public double max() {
 		double max = 0.0;
-		for (int i=0; i<rectangles.length-1; i++)
-			max += rectangles[i].maxDistance(rectangles[i+1]);
+		for (int i=0; i<rectangles.size()-1; i++)
+			max += rectangles.get(i).maxDistance(rectangles.get(i+1));
 		return max;
 	}
 
 	public double min() {
 		double min = 0;
-		for (int i=0; i<rectangles.length-1; i++)
-			if (!rectangles[i].overlap(rectangles[i+1]))
-				min += rectangles[i].minDistance(rectangles[i+1]);
+		RectangleSet rSet;
+		for (int i=0; i<rectangles.size()-1; i++) {
+			rSet = rectangles.get(i);
+			if (!rSet.overlap(rectangles.get(i+1)))
+				min += rSet.minDistance(rectangles.get(i+1));
+		}
 		return min;
 	}
 
@@ -36,8 +44,13 @@ public class Candidate implements Comparable<Candidate> {
 		return isFinal;			
 	}
 
-	public RectangleSet[] getRectangles() {
+	public List<RectangleSet> getRectangles() {
 		return rectangles;
+	}
+
+	public void add(RectangleSet rSet) {
+		if (rSet == null) return;
+		rectangles.add(rSet);
 	}
 
 	public int compareTo(Candidate other) {
@@ -52,8 +65,12 @@ public class Candidate implements Comparable<Candidate> {
 		return false;
 	}
 
+	public Candidate clone() {
+		return new Candidate(this.rectangles);
+	}
+
 	public String toString() { 
-		return rectangles.length + "";
+		return rectangles.size() + "";
 	}
 }
 
