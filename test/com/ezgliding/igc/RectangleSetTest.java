@@ -89,8 +89,8 @@ public class RectangleSetTest {
 
 
 	@Test
-	public void testSplit() { //TODO:
-
+	public void testSplit() { 
+		assertTrue(false);
 	}
 
 	@Test
@@ -105,13 +105,13 @@ public class RectangleSetTest {
 	}
 
 	@Test
-	public void maxDistance() { //TODO:
-
+	public void maxDistance() {
+		assertTrue(false);
 	}
 
 	@Test
-	public void minDistance() { //TODO:
-
+	public void minDistance() { 
+		assertTrue(false);
 	}
 
 	@Test

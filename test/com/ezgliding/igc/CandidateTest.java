@@ -12,12 +12,12 @@ public class CandidateTest {
 	}
 
 	@Test
-	public void testMax() { //TODO:
-
+	public void testMax() {
+		assertTrue(false);
 	}
 
 	@Test
-	public void testMin() { //TODO:
-
+	public void testMin() {
+		assertTrue(false);
 	}
 }
