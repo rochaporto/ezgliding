@@ -106,12 +106,43 @@ public class RectangleSetTest {
 
 	@Test
 	public void testMaxDistance() {
-		assertTrue(false);
+		Fix v11 = new Fix(new Date(), 47.900, 106.700, 0, 0, 'V');
+		Fix v12 = new Fix(new Date(), 45.900, 108.700, 0, 0, 'V');
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(v11);
+		fixes1.add(v12);
+		RectangleSet set1 = new RectangleSet(fixes1);
+
+		Fix v21 = new Fix(new Date(), 43.900, 110.700, 0, 0, 'V');
+		Fix v22 = new Fix(new Date(), 41.900, 112.700, 0, 0, 'V');
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(v21);
+		fixes2.add(v22);
+		RectangleSet set2 = new RectangleSet(fixes2);
+
+		double expected = Util.distance(set1.nw, set2.se);
+		assertEquals(expected, set1.maxDistance(set2), 0.0);
+		assertEquals(expected, set2.maxDistance(set1), 0.0);
 	}
 
 	@Test
 	public void testMinDistance() { 
-		assertTrue(false);
+		Fix v11 = new Fix(new Date(), 47.900, 106.700, 0, 0, 'V');
+		Fix v12 = new Fix(new Date(), 45.900, 108.700, 0, 0, 'V');
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(v11);
+		fixes1.add(v12);
+		RectangleSet set1 = new RectangleSet(fixes1);
+
+		Fix v21 = new Fix(new Date(), 43.900, 110.700, 0, 0, 'V');
+		Fix v22 = new Fix(new Date(), 41.900, 112.700, 0, 0, 'V');
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(v21);
+		fixes2.add(v22);
+		RectangleSet set2 = new RectangleSet(fixes2);
+
+		double expected = Util.distance(set1.se, set2.nw);
+		assertEquals(expected, set1.minDistance(set2), 0.0);
 	}
 
 	@Test

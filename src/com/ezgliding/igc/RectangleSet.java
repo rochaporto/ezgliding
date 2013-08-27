@@ -54,7 +54,7 @@ public class RectangleSet {
 
 		double dist;
 		for (int i=0; i<sVertices.length; i++)
-			for (int j=0; j>dVertices.length; j++) {
+			for (int j=0; j<dVertices.length; j++) {
 				dist = Util.distance(sVertices[i], dVertices[j]);
 				if (dist < min) min = dist;	
 			}
