@@ -6,9 +6,11 @@
 	<property name="test" location="test"/>
 	
 	<property name="junit.dir" location="/usr/share/java"/>
+	<presetdef name="javac"><javac includeantruntime="false" /></presetdef>
 
 	<target name="init">
 		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/reports"/>
 		<mkdir dir="${build}/src"/>
 		<mkdir dir="${build}/test"/>
 		<mkdir dir="${dist}/lib"/>
@@ -19,7 +21,7 @@
 	</target>
 
 	<target name="compiletest" depends="dist" description="compile test sources">
-		<javac srcdir="${test}" destdir="${build}/test">
+		<javac srcdir="${test}" destdir="${build}/test" debug="on">
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
@@ -42,10 +44,15 @@
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
 			</classpath>
 			<formatter type="brief" usefile="false"/>
-			<batchtest>
+			<batchtest todir="${build}/reports">
+				<formatter type="xml"/>
 				<fileset dir="${test}"><include name="**/*Test*.java"/></fileset>
 			</batchtest> 
 		</junit>
+		<junitreport todir="${build}/reports">
+			<fileset dir="${build}/reports"><include name="TEST-*.xml"/></fileset>
+			<report format="frames" todir="${build}/reports/html"/>
+		</junitreport>
 	</target>
 
 	<target name="clean" description="clean it up">
