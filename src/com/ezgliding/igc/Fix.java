@@ -20,26 +20,6 @@ public class Fix {
 		this.validity = validity;
 	}
 
-	/**
-	 * Like equal(), but ignoring the date, and usage of pressureAlt is optional.
-	 */
-	public boolean equivalent(Fix other, boolean withAlt) {
-		if (latrd != other.latrd || lonrd != other.lonrd)
-			return false;
-		if (withAlt && pressureAlt != other.pressureAlt)
-			return false;
-		return true;
-	}
-
-	public boolean equals(Fix other) {
-		if (!date.equals(other.date) || latrd != other.latrd || lonrd != other.lonrd
-			|| pressureAlt != other.pressureAlt || gnssAlt != other.gnssAlt
-			|| validity != other.validity) 
-			return false;
-		
-		return true;
-	}
-
 	public void setLat(double degrees) {
 		lat = degrees;
 		latrd = Math.toRadians(lat);
@@ -58,10 +38,34 @@ public class Fix {
 
 	public double lonrd() { return lonrd; }
 
+	/**
+	 * Like equal(), but ignoring the date, and usage of pressureAlt is optional.
+	 */
+	public boolean equivalent(Fix other, boolean withAlt) {
+		if (latrd != other.latrd || lonrd != other.lonrd)
+			return false;
+		if (withAlt && pressureAlt != other.pressureAlt)
+			return false;
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object otherO) {
+		Fix other = (Fix)otherO;
+		if (!date.equals(other.date) || latrd != other.latrd || lonrd != other.lonrd
+			|| pressureAlt != other.pressureAlt || gnssAlt != other.gnssAlt
+			|| validity != other.validity) 
+			return false;
+		
+		return true;
+	}
+
+	@Override
 	public Fix clone() {
 		return new Fix((Date)date.clone(), lat, lon, pressureAlt, gnssAlt, validity);
 	}
 
+	@Override
 	public String toString() {
 		return "Lat(rd): " + lat + "(" + latrd + ") Lon(rd): " + lon + "(" + lonrd
 			+ ") Alt(gnss): " + pressureAlt + "(" + gnssAlt + ")"; 

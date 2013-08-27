@@ -23,6 +23,7 @@ public class BrokenLineOptimizer extends Optimizer {
 		maxTree = new TreeMap<Candidate,Double>();
 	}
 
+	@Override
 	public Result optimize() {
 		if (flight == null || flight.fixes() == null) return null;
 

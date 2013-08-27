@@ -38,7 +38,7 @@ public class RectangleSet {
 		int mid = fixes.size() / 2;
 		return new RectangleSet[] {
 			new RectangleSet(fixes.subList(0, mid)),
-			new RectangleSet(fixes.subList(mid+1, fixes.size()-1)) };
+			new RectangleSet(fixes.subList(mid, fixes.size())) };
 	}
 
 	public double diagonal() {
@@ -48,6 +48,8 @@ public class RectangleSet {
 	}
 
 	public double minDistance(RectangleSet other) { 
+		if (overlap(other)) return 0.0;
+
 		double min = Double.MAX_VALUE;
 		Fix[] sVertices = getVertices();
 		Fix[] dVertices = other.getVertices();
@@ -80,11 +82,12 @@ public class RectangleSet {
 		return vertices; 
 	}
 
-	public boolean equals(RectangleSet other) {
+	@Override
+	public boolean equals(Object otherO) {
 		Fix[] vertices = getVertices();
-		Fix[] otherVertices = other.getVertices();
+		Fix[] otherVertices = ((RectangleSet)otherO).getVertices();
 		for (int i=0; i<vertices.length; i++)
-			if (!vertices[i].equals(otherVertices[i]))
+			if (!vertices[i].equivalent(otherVertices[i], false))
 				return false;
 		return true;	
 	}

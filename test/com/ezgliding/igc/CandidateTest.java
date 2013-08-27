@@ -47,12 +47,52 @@ public class CandidateTest {
 
 	@Test
 	public void testMax() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes3));
+
+		Candidate candate = new Candidate(sets);
+		double expected = Util.distance(sets.get(0).nw, sets.get(1).se) 
+			+ Util.distance(sets.get(1).nw, sets.get(2).se);
+		assertEquals(expected, candate.max(), 0.0);
 	}
 
 	@Test
 	public void testMin() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes3));
+
+		Candidate candate = new Candidate(sets);
+		double expected = Util.distance(sets.get(0).se, sets.get(1).nw) 
+			+ Util.distance(sets.get(1).se, sets.get(2).nw);
+		assertEquals(expected, candate.max(), 0.0);
 	}
 
 	@Test

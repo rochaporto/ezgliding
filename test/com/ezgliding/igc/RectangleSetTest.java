@@ -90,7 +90,21 @@ public class RectangleSetTest {
 
 	@Test
 	public void testSplit() { 
-		assertTrue(false);
+		ArrayList<Fix> all = new ArrayList<Fix>();
+		all.add(new Fix(new Date(), 40.300, 106.999, 0, 0, 'V'));
+		all.add(new Fix(new Date(), 42.700, 108.008, 0, 0, 'V'));
+		all.add(new Fix(new Date(), 43.500, 110.999, 0, 0, 'V'));
+		all.add(new Fix(new Date(), 44.234, 111.877, 0, 0, 'V'));
+		RectangleSet allSet = new RectangleSet(all);
+
+		RectangleSet firstHalfSet = new RectangleSet(all.subList(0,2));
+		RectangleSet secondHalfSet = new RectangleSet(all.subList(2,4));
+
+		RectangleSet[] result = allSet.split();
+		assertNotNull(result);
+		assertEquals(2, result.length);
+		assertEquals(firstHalfSet, result[0]);
+		assertEquals(secondHalfSet, result[1]);
 	}
 
 	@Test
@@ -106,18 +120,14 @@ public class RectangleSetTest {
 
 	@Test
 	public void testMaxDistance() {
-		Fix v11 = new Fix(new Date(), 47.900, 106.700, 0, 0, 'V');
-		Fix v12 = new Fix(new Date(), 45.900, 108.700, 0, 0, 'V');
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(v11);
-		fixes1.add(v12);
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
 		RectangleSet set1 = new RectangleSet(fixes1);
 
-		Fix v21 = new Fix(new Date(), 43.900, 110.700, 0, 0, 'V');
-		Fix v22 = new Fix(new Date(), 41.900, 112.700, 0, 0, 'V');
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(v21);
-		fixes2.add(v22);
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
 		RectangleSet set2 = new RectangleSet(fixes2);
 
 		double expected = Util.distance(set1.nw, set2.se);
@@ -127,22 +137,33 @@ public class RectangleSetTest {
 
 	@Test
 	public void testMinDistance() { 
-		Fix v11 = new Fix(new Date(), 47.900, 106.700, 0, 0, 'V');
-		Fix v12 = new Fix(new Date(), 45.900, 108.700, 0, 0, 'V');
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(v11);
-		fixes1.add(v12);
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
 		RectangleSet set1 = new RectangleSet(fixes1);
 
-		Fix v21 = new Fix(new Date(), 43.900, 110.700, 0, 0, 'V');
-		Fix v22 = new Fix(new Date(), 41.900, 112.700, 0, 0, 'V');
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(v21);
-		fixes2.add(v22);
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
 		RectangleSet set2 = new RectangleSet(fixes2);
 
 		double expected = Util.distance(set1.se, set2.nw);
 		assertEquals(expected, set1.minDistance(set2), 0.0);
+	}
+
+	@Test
+	public void testMinDistanceOverlap() { 
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		RectangleSet set1 = new RectangleSet(fixes1);
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 46.900, 107.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 48.900, 112.700, 0, 0, 'V'));
+		RectangleSet set2 = new RectangleSet(fixes2);
+
+		assertEquals(0.0, set1.minDistance(set2), 0.0);
 	}
 
 	@Test

@@ -19,6 +19,7 @@ public class Flight {
 		fixes.add(fix);
 	}
 
+	@Override
 	public String toString() {
 		return "Fixes: " + fixes.size();
 	}
