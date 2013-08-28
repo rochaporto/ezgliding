@@ -6,6 +6,8 @@
 	<property name="test" location="test"/>
 	
 	<property name="junit.dir" location="/usr/share/java"/>
+	<!-- use this to add the debug flag to compile (useful for testing) -->
+	<property name="compile.debug" location="off"/>
 	<presetdef name="javac"><javac includeantruntime="false" /></presetdef>
 
 	<target name="init">
@@ -17,7 +19,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${src}" destdir="${build}/src"/>
+		<javac srcdir="${src}" destdir="${build}/src" debug="${compile.debug}"/>
 	</target>
 
 	<target name="compiletest" depends="dist" description="compile test sources">
