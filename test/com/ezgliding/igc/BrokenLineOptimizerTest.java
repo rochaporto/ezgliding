@@ -46,13 +46,38 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
-	public void testBound() {
-		assertTrue(false);
-	}
-
-	@Test
 	public void testBranch() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 45.888, 108.999, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 44.223, 109.112, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 43.123, 110.998, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 42.077, 111.877, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 42.888, 111.999, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.223, 112.112, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.123, 113.998, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+
+		Candidate candate = new Candidate(sets);
+
+		ArrayList<Fix> expected1F = new ArrayList<Fix>();
+		expected1F.add(fixes1.get(0));
+		expected1F.add(fixes1.get(1));
+		RectangleSet expected1 = new RectangleSet(expected1F);
+		ArrayList<Fix> expected2F = new ArrayList<Fix>();
+		expected2F.add(fixes1.get(2));
+		expected2F.add(fixes1.get(3));
+		RectangleSet expected2 = new RectangleSet(expected2F);
+	
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		List<Candidate> result = opt.branch(candate);
+		assertEquals(2, result.size()); // As 2 is == sets.size(), we get 2 candidates
+		assertEquals(result.get(0).getRectangles().get(0), expected1);
+		assertEquals(result.get(1).getRectangles().get(0), expected2);
 	}
 
 	@Test
@@ -65,6 +90,19 @@ public class BrokenLineOptimizerTest {
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
 		assertEquals(15, result.size());
+	}
+
+	@Test
+	public void testGetFlight() {
+		Flight flight = new Flight();
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
+		assertEquals(flight, opt.getFlight());
+	}
+
+	@Test
+	public void testGetNumPoints() {
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 4);
+		assertEquals(4, opt.getNumPoints());
 	}
 
 }

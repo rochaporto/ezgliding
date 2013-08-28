@@ -60,7 +60,7 @@ public class BrokenLineOptimizer extends Optimizer {
 		return new Result(points.toArray(new Fix[] {}));
 	}
 
-	private List<Candidate> branch(Candidate candate) {
+	protected List<Candidate> branch(Candidate candate) {
 		if (candate.getRectangles().size() <= 0) 
 			throw new IllegalArgumentException("Cannot branch empty candidate");
 
