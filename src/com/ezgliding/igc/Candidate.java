@@ -57,7 +57,7 @@ public class Candidate implements Comparable<Candidate> {
 	public void replace(int i, RectangleSet[] newSets) {
 		List<RectangleSet> sets = getRectangles();
 
-		if (i<sets.size() || i>sets.size()-1)
+		if (i<0 || i>sets.size()-1)
 			throw new IllegalArgumentException("Invalid index given");
 		if (newSets == null || newSets.length == 0)
 			throw new IllegalArgumentException("No new sets provided, cannot replace");

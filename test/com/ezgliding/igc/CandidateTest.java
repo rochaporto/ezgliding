@@ -128,17 +128,87 @@ public class CandidateTest {
 
 	@Test
 	public void testReplaceSingle() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+	
+		Candidate candate = new Candidate(sets);
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 45.900, 112.700, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 43.900, 115.700, 0, 0, 'V'));
+		RectangleSet replacement = new RectangleSet(fixes3);
+		
+		assertEquals(2, candate.getRectangles().size());
+		assertFalse(replacement.equals(candate.getRectangles().get(1)));
+		candate.replace(1, replacement);
+		assertEquals(2, candate.getRectangles().size());
+		assertEquals(replacement, candate.getRectangles().get(1));
 	}
 
 	@Test
 	public void testReplaceMultiple() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+	
+		Candidate candate = new Candidate(sets);
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 45.900, 112.700, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 43.900, 115.700, 0, 0, 'V'));
+		RectangleSet replacement1 = new RectangleSet(fixes3);
+		ArrayList<Fix> fixes4 = new ArrayList<Fix>();
+		fixes4.add(new Fix(new Date(), 47.900, 122.700, 0, 0, 'V'));
+		fixes4.add(new Fix(new Date(), 49.900, 125.700, 0, 0, 'V'));
+		RectangleSet replacement2 = new RectangleSet(fixes3);
+		
+		assertEquals(2, candate.getRectangles().size());
+		assertFalse(replacement1.equals(candate.getRectangles().get(1)));
+		assertFalse(replacement2.equals(candate.getRectangles().get(1)));
+		candate.replace(1, new RectangleSet[] { replacement1, replacement2 });
+		assertEquals(3, candate.getRectangles().size());
+		assertEquals(replacement1, candate.getRectangles().get(1));
+		assertEquals(replacement2, candate.getRectangles().get(2));
 	}
 
 	@Test
 	public void testLargestDiagonal() {
-		assertTrue(false);
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 40.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 35.900, 103.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+	
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 48.900, 107.700, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 49.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes3));
+
+		Candidate candate = new Candidate(sets);
+		assertEquals(1, candate.largestDiagonal());
 	}
 
 	@Test
