@@ -46,6 +46,35 @@ public class CandidateTest {
 	}
 
 	@Test
+	public void testIsFinal() {
+		ArrayList<RectangleSet> sets1 = new ArrayList<RectangleSet>();
+		ArrayList<RectangleSet> sets2 = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets1.add(new RectangleSet(fixes1));
+		sets2.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets1.add(new RectangleSet(fixes2));
+		sets2.add(new RectangleSet(fixes2));
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets1.add(new RectangleSet(fixes3));
+
+		Candidate candate1 = new Candidate(sets1);
+		Candidate candate2 = new Candidate(sets2);
+
+		assertEquals(3, candate1.getRectangles().size());
+		assertEquals(2, candate2.getRectangles().size());
+		assertFalse(candate1.isFinal());
+		assertTrue(candate2.isFinal());
+	}
+	
+	@Test
 	public void testMax() {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 

@@ -8,8 +8,6 @@ public class Candidate implements Comparable<Candidate> {
 	
 	ArrayList<RectangleSet> rectangles;
 
-	boolean isFinal;
-
 	public Candidate() {
 		this(null);
 	}
@@ -17,7 +15,6 @@ public class Candidate implements Comparable<Candidate> {
 	public Candidate(ArrayList<RectangleSet> inputRectangles) {
 		this.rectangles = new ArrayList<RectangleSet>();
 
-		isFinal = true;
 		if (inputRectangles != null)
 			this.rectangles.addAll(inputRectangles);
 	}
@@ -37,7 +34,9 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public boolean isFinal() {
-		return isFinal;			
+		for (RectangleSet set: getRectangles())
+			if (set.getFixes().size() != 1) return false;
+		return true;
 	}
 
 	public List<RectangleSet> getRectangles() {
@@ -100,7 +99,10 @@ public class Candidate implements Comparable<Candidate> {
 
 	@Override
 	public String toString() { 
-		return rectangles.size() + "";
+		String str = "";
+		for (RectangleSet set: getRectangles())
+			str += "{" + set.getFixes().size() + "}, ";
+		return str;
 	}
 }
 
