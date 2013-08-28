@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class BrokenLineOptimizer extends Optimizer {
@@ -37,23 +39,34 @@ public class BrokenLineOptimizer extends Optimizer {
 
 		// From here we start the branch / bound procedure 
 		Map.Entry<Double,Candidate> maxEntry = null;
-		Candidate current;
+		Candidate current = null;
+		Set<Double> pruneKeys;
+		Double[] prune;
+		List<Candidate> branchCandidates;
+		int numIter = 0;
 		while (maxTree.size() != 0) {
 			maxEntry = maxTree.lastEntry();
 			current = maxEntry.getValue();
 			maxTree.remove(maxEntry.getKey());
 			// If final and better than current max, update result
-			if (current.isFinal() && current.max() > result.max())
+			if (current.isFinal() && (result == null || current.max() > result.max())) {
 				result = current;
-			else // If not final, branch and add to treemap
-				for (Candidate candate: branch(current))
+			}
+			else { // If not final, branch and add to treemap
+				branchCandidates = branch(current);
+				for (Candidate candate: branchCandidates)
 					maxTree.put(candate.max(), candate);
+			}
 
 			// Prune the tree (remove keys < current.min())
-			for (Double d: maxTree.headMap(current.min()).keySet())
+			pruneKeys = maxTree.headMap(current.min()).keySet();
+			prune = pruneKeys.toArray(new Double[] {});
+			pruneKeys = null;
+			for (Double d: prune)
 				maxTree.remove(d);
+			++numIter;
 		}
-	
+		
 		ArrayList<Fix> points = new ArrayList<Fix>();
 		for (RectangleSet set: result.getRectangles())
 			points.add(set.getFixes().get(0));

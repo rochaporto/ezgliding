@@ -6,9 +6,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.text.ParseException;
 
 public class BrokenLineOptimizerTest {
 
@@ -41,8 +44,14 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
-	public void testOptimize() {
-		assertTrue(false);
+	public void testOptimize() throws IOException, ParseException {
+		Parser parser = new Parser();
+		Flight flight = parser.parse(
+			FileSystems.getDefault().getPath("test/com/ezgliding/igc/SampleFlight.igc"));
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
+		Optimizer.Result result = opt.optimize();
+		assertNotNull(result);
+		assertEquals(111, result.distance(), 0.0);
 	}
 
 	@Test
