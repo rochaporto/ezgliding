@@ -42,6 +42,8 @@ public class Fix {
 	 * Like equal(), but ignoring the date, and usage of pressureAlt is optional.
 	 */
 	public boolean equivalent(Fix other, boolean withAlt) {
+		if (other == null) return false;
+
 		if (latrd != other.latrd || lonrd != other.lonrd)
 			return false;
 		if (withAlt && pressureAlt != other.pressureAlt)
@@ -51,7 +53,13 @@ public class Fix {
 
 	@Override
 	public boolean equals(Object otherO) {
-		Fix other = (Fix)otherO;
+		if (otherO == null) return false;
+
+		Fix other;
+		try {
+			other = (Fix)otherO;
+		} catch(ClassCastException e) { return false; }
+
 		if (!date.equals(other.date) || latrd != other.latrd || lonrd != other.lonrd
 			|| pressureAlt != other.pressureAlt || gnssAlt != other.gnssAlt
 			|| validity != other.validity) 
@@ -67,7 +75,7 @@ public class Fix {
 
 	@Override
 	public String toString() {
-		return "Lat(rd): " + lat + "(" + latrd + ") Lon(rd): " + lon + "(" + lonrd
-			+ ") Alt(gnss): " + pressureAlt + "(" + gnssAlt + ")"; 
+		return "{" + date + "," + lat + "(" + latrd + ")," + lon + "(" + lonrd
+			+ ")," + pressureAlt + "(" + gnssAlt + ")," + validity + "}"; 
 	}
 }

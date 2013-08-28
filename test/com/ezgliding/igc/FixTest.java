@@ -19,6 +19,12 @@ public class FixTest {
 	}
 
 	@Test
+	public void testEquivalentNull() {
+		Fix fix1 = new Fix(new Date(), 45.020, 108.000, 0, 0, 'V');
+		assertFalse(fix1.equivalent(null, true));
+	}
+	
+	@Test
 	public void testEquivalent() {
 		Date d = new Date();
 		Fix fix1 = new Fix(d, -45.666, 108.345, 267, 288, 'V');
@@ -31,6 +37,12 @@ public class FixTest {
 		fix2.gnssAlt = 1288;
 		assertTrue(fix1.equivalent(fix2,false));
 		assertFalse(fix1.equivalent(fix2,true));
+	}
+
+	@Test
+	public void testEqualsWrongType() {
+		Fix fix1 = new Fix(new Date(), 45.020, 108.000, 0, 0, 'V');
+		assertFalse(fix1.equals(new Flight()));
 	}
 
 	@Test
@@ -91,5 +103,14 @@ public class FixTest {
 		fix1.setLon(lon);
 		assertEquals(lon, fix1.lon(), 0.0);
 		assertEquals(Math.toRadians(lon), fix1.lonrd(), 0.0);
+	}
+
+	@Test
+	public void testToString() {
+		Fix fix1 = new Fix(new Date(), -45.666, 108.345, 267, 288, 'V');
+		String str = "{" + fix1.date + "," + fix1.lat() + "(" + fix1.latrd() + "),"
+			+ fix1.lon() + "(" + fix1.lonrd() + ")," + fix1.pressureAlt
+			+ "(" + fix1.gnssAlt + ")," + fix1.validity + "}";
+		assertEquals(str, fix1.toString());
 	}
 }
