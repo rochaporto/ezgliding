@@ -82,6 +82,10 @@ public class RectangleSet {
 		return vertices; 
 	}
 
+	public List<Fix> getFixes() {
+		return fixes;
+	}
+
 	@Override
 	public boolean equals(Object otherO) {
 		Fix[] vertices = getVertices();

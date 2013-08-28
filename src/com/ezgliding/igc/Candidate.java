@@ -45,8 +45,38 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public void add(RectangleSet rSet) {
-		if (rSet == null) return;
+		if (rSet == null) 
+			throw new IllegalArgumentException("Cannot add empty set");
 		rectangles.add(rSet);
+	}
+
+	public void replace(int i, RectangleSet newSet) {
+		getRectangles().set(i, newSet);
+	}
+
+	public void replace(int i, RectangleSet[] newSets) {
+		List<RectangleSet> sets = getRectangles();
+
+		if (i<sets.size() || i>sets.size()-1)
+			throw new IllegalArgumentException("Invalid index given");
+		if (newSets == null || newSets.length == 0)
+			throw new IllegalArgumentException("No new sets provided, cannot replace");
+
+		sets.remove(i);
+		for (RectangleSet newSet: newSets)
+			sets.add(i, newSet);	
+	}
+
+	public int largestDiagonal() {
+		List<RectangleSet> sets = getRectangles();
+		if (sets.size() == 0) return -1;
+
+		int larger = 0;
+		for (int i=1; i<sets.size(); i++)
+			if (sets.get(i).diagonal() > sets.get(larger).diagonal())
+				larger = i;
+
+		return larger;
 	}
 
 	@Override

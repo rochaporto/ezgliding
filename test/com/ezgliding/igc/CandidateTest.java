@@ -111,14 +111,10 @@ public class CandidateTest {
 		assertEquals(newSet, candate.getRectangles().get(1));
 	}
 
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testAddNull() {
 		Candidate candate = new Candidate();
-		candate.add(set);
-		assertEquals(1, candate.getRectangles().size());
-
 		candate.add(null);
-		assertEquals(1, candate.getRectangles().size());
 	}
 
 	@Test
@@ -128,6 +124,21 @@ public class CandidateTest {
 		assertNotNull(candate.getRectangles());
 		assertEquals(1, candate.getRectangles().size());
 		assertEquals(set, candate.getRectangles().get(0));
+	}
+
+	@Test
+	public void testReplaceSingle() {
+		assertTrue(false);
+	}
+
+	@Test
+	public void testReplaceMultiple() {
+		assertTrue(false);
+	}
+
+	@Test
+	public void testLargestDiagonal() {
+		assertTrue(false);
 	}
 
 	@Test
