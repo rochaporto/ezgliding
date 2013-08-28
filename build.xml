@@ -55,14 +55,15 @@
 		</junitreport>
 	</target>
 
-	<target name="stest" depends="disttest" description="runs single tests">
+	<target name="stest" depends="disttest" description="runs single test from argument">
+		<!-- ex: ant stest -Dclass=com.ezgliding.igc.CandidateTest -Dmethod=testLargestDiagonal -->
 		<junit printsummary="withOutAndErr" showoutput="on">
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
 			</classpath>
 			<formatter type="brief" usefile="false"/>
-			<test name="com.ezgliding.igc.BrokenLineOptimizerTest" methods="testPermutations"/>
+			<test name="${class}" methods="${method}"/>
 		</junit>
 	</target>
 
