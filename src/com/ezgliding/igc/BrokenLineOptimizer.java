@@ -11,7 +11,7 @@ public class BrokenLineOptimizer extends Optimizer {
 
 	private int numPoints;
 
-	private TreeMap<Candidate,Double> maxTree;
+	private TreeMap<Double,Candidate> maxTree;
 
 	public BrokenLineOptimizer(Flight flight, int numPoints) {
 		super(flight);
@@ -20,36 +20,70 @@ public class BrokenLineOptimizer extends Optimizer {
 			throw new IllegalArgumentException("numPoints should be 1 or greater");
 		
 		this.numPoints = numPoints;
-		maxTree = new TreeMap<Candidate,Double>();
+		maxTree = new TreeMap<Double,Candidate>();
 	}
 
 	@Override
 	public Result optimize() {
 		if (flight == null || flight.fixes() == null) return null;
 
+		Candidate result = null;
+
 		// We start with a candidate containing only one rectangle (with all points)
 		ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
 		initialSet.add(new RectangleSet(flight.fixes()));
 		Candidate first = new Candidate(initialSet);
-		maxTree.put(first, first.max());
+		maxTree.put(first.max(), first);
 
-		// From here we trigger the logic of fetching the max from tree
-		Map.Entry<Candidate,Double> maxEntry = null;
+		// From here we start the branch / bound procedure 
+		Map.Entry<Double,Candidate> maxEntry = null;
+		Candidate current;
 		while (maxTree.size() != 0) {
 			maxEntry = maxTree.lastEntry();
-			bound(maxEntry.getKey());
-			maxTree.remove(maxEntry.getKey()); //TODO: remove this
+			current = maxEntry.getValue();
+			maxTree.remove(maxEntry.getKey());
+			// If final and better than current max, update result
+			if (current.isFinal() && current.max() > result.max())
+				result = current;
+			else // If not final, branch and add to treemap
+				for (Candidate candate: branch(current))
+					maxTree.put(candate.max(), candate);
+
+			// Prune the tree (remove keys < current.min())
+			for (Double d: maxTree.headMap(current.min()).keySet())
+				maxTree.remove(d);
 		}
 	
-		return null;	
+		ArrayList<Fix> points = new ArrayList<Fix>();
+		for (RectangleSet set: result.getRectangles())
+			points.add(set.getFixes().get(0));
+		return new Result(points.toArray(new Fix[] {}));
 	}
 
-	private void bound(Candidate candate) {
+	private List<Candidate> branch(Candidate candate) {
+		if (candate.getRectangles().size() <= 0) 
+			throw new IllegalArgumentException("Cannot branch empty candidate");
 
-	}
+		ArrayList<Candidate> result = new ArrayList<Candidate>();
 
-	private Iterator<Candidate> branch(Candidate candate) {
-		return null;
+		// Get the index of the rectangle with the largest diagonal
+		int largerDiagonal = candate.largestDiagonal();
+
+		RectangleSet[] newSets = candate.getRectangles().get(largerDiagonal).split();
+		// If we already had enough rectangles, then create new candidate per rect 
+		if (candate.getRectangles().size() == numPoints) {
+			for (RectangleSet set: newSets) {
+				Candidate newCandidate = candate.clone();
+				newCandidate.replace(largerDiagonal, set);
+				result.add(newCandidate);
+			}
+		} else { // Else replace with both new rects in a single candidate
+			Candidate newCandidate = candate.clone();
+			newCandidate.replace(largerDiagonal, newSets);
+			result.add(newCandidate);
+		}
+
+		return result;
 	}
 
 	protected List<Candidate> permutations(List<RectangleSet> availableSets) {
