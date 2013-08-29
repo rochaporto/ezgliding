@@ -8,6 +8,10 @@ public class Candidate implements Comparable<Candidate> {
 	
 	ArrayList<RectangleSet> rectangles;
 
+	private double max = 0.0;
+
+	private double min = Double.MAX_VALUE;
+
 	public Candidate() {
 		this(null);
 	}
@@ -17,17 +21,18 @@ public class Candidate implements Comparable<Candidate> {
 
 		if (inputRectangles != null)
 			this.rectangles.addAll(inputRectangles);
+		reset();
 	}
 
-	public double max() { //TODO: this should take the chosen point into account
-		double max = 0.0;
+	public double max() {
+		max = 0.0;
 		for (int i=0; i<rectangles.size()-1; i++)
 			max += rectangles.get(i).maxDistance(rectangles.get(i+1));
 		return max;
 	}
 
-	public double min() { //TODO: this should take the chosen point into account
-		double min = 0;
+	public double min() {
+		min = 0.0;
 		for (int i=0; i<rectangles.size()-1; i++)
 			min += rectangles.get(i).minDistance(rectangles.get(i+1));
 		return min;
@@ -47,10 +52,12 @@ public class Candidate implements Comparable<Candidate> {
 		if (rSet == null) 
 			throw new IllegalArgumentException("Cannot add empty set");
 		rectangles.add(rSet);
+		reset();
 	}
 
 	public void replace(int i, RectangleSet newSet) {
 		getRectangles().set(i, newSet);
+		reset();
 	}
 
 	public void replace(int i, RectangleSet[] newSets) {
@@ -64,6 +71,7 @@ public class Candidate implements Comparable<Candidate> {
 		sets.remove(i);
 		for (RectangleSet newSet: newSets)
 			sets.add(i, newSet);	
+		reset();
 	}
 
 	public int largestDiagonal() {
@@ -76,6 +84,10 @@ public class Candidate implements Comparable<Candidate> {
 				larger = i;
 
 		return larger;
+	}
+
+	private void reset() {
+		max = 0.0; min = Double.MAX_VALUE;
 	}
 
 	@Override

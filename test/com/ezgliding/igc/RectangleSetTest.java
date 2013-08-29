@@ -34,20 +34,15 @@ public class RectangleSetTest {
 	@Test
 	public void testCreation() {
 		RectangleSet set = new RectangleSet(fixes1);
-		Fix[] manualVertices = new Fix[] { 
-			new Fix(null, 45.888, 108.999, 0, 0, 'V'),
-			new Fix(null, 43.123, 108.999, 0, 0, 'V'),
-			new Fix(null, 45.888, 109.998, 0, 0, 'V'),
-			new Fix(null, 43.123, 109.998, 0, 0, 'V')
-		};
-
-		Fix[] vertices = set.getVertices();
-		assertNotNull(vertices);
-		for (int i=0; i<vertices.length; i++) {
-			assertTrue("Unexpected vertice (" + i + ")\n" 
-				+ vertices[i] + "\n" + manualVertices[i],
-				vertices[i].equivalent(manualVertices[i], false));
-		}
+		assertNotNull(set.getVertices());
+		Fix nw = new Fix(null, 45.888, 108.999, 0, 0, 'V');
+		Fix sw = new Fix(null, 43.123, 108.999, 0, 0, 'V');
+		Fix ne = new Fix(null, 45.888, 109.998, 0, 0, 'V');
+		Fix se = new Fix(null, 43.123, 109.998, 0, 0, 'V');
+		assertTrue(set.nw().equivalent(nw, false));
+		assertTrue(set.sw().equivalent(sw, false));
+		assertTrue(set.ne().equivalent(ne, false));
+		assertTrue(set.se().equivalent(se, false));
 	}
 
 	@Test
@@ -130,7 +125,7 @@ public class RectangleSetTest {
 		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
 		RectangleSet set2 = new RectangleSet(fixes2);
 
-		double expected = Util.distance(set1.nw, set2.se);
+		double expected = Util.distance(set1.nw(), set2.se());
 		assertEquals(expected, set1.maxDistance(set2), 0.0);
 		assertEquals(expected, set2.maxDistance(set1), 0.0);
 	}
@@ -147,7 +142,7 @@ public class RectangleSetTest {
 		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
 		RectangleSet set2 = new RectangleSet(fixes2);
 
-		double expected = Util.distance(set1.se, set2.nw);
+		double expected = Util.distance(set1.se(), set2.nw());
 		assertEquals(expected, set1.minDistance(set2), 0.0);
 	}
 

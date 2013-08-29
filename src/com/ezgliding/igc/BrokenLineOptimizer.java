@@ -53,7 +53,7 @@ public class BrokenLineOptimizer extends Optimizer {
 			current = maxEntry.getValue();
 			maxTree.remove(maxEntry.getKey());
 
-			logger.finest("iteration " + numIter + " (" + maxTree.size() + ") :: " + current + " :: ");
+			//logger.finest("iteration " + numIter + " (" + maxTree.size() + ") :: " + current + " :: ");
 			// If final and better than current max, update result
 			if (current.isFinal() && (result == null || current.max() > result.max())) {
 				result = current;
@@ -62,7 +62,7 @@ public class BrokenLineOptimizer extends Optimizer {
 				for (Candidate candate: branchCandidates)
 					maxTree.put(candate.max(), candate);
 			}
-			logger.finest(" " + (branchCandidates == null ? 0 : branchCandidates.size()));
+			//logger.finest(" " + (branchCandidates == null ? 0 : branchCandidates.size()));
 
 			// Prune the tree (remove keys < current.min())
 			pruneKeys = maxTree.headMap(current.min()).keySet();
@@ -70,7 +70,7 @@ public class BrokenLineOptimizer extends Optimizer {
 			pruneKeys = null;
 			for (Double d: prune)
 				maxTree.remove(d);
-			logger.finest(" :: " + prune.length);
+			//logger.finest(" :: " + prune.length);
 
 			++numIter;
 		}

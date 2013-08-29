@@ -6,8 +6,6 @@ public class RectangleSet {
 
 	List<Fix> fixes;
 
-	Fix nw, ne, se, sw;
-
 	Fix[] vertices; // set by setBound()
 
 	private double diagonal = -1;
@@ -28,8 +26,8 @@ public class RectangleSet {
 	public boolean contains(Fix fix) {
 		if (fix == null) return false;
 
-		if (fix.latrd() <= nw.latrd() && fix.latrd() >= sw.latrd()
-			&& fix.lonrd() >= nw.lonrd() && fix.lonrd() <= ne.lonrd())
+		if (fix.latrd() <= nw().latrd() && fix.latrd() >= sw().latrd()
+			&& fix.lonrd() >= nw().lonrd() && fix.lonrd() <= ne().lonrd())
 			return true;
 		return false;
 	}
@@ -43,7 +41,7 @@ public class RectangleSet {
 
 	public double diagonal() {
 		if (diagonal == -1)
-			diagonal = Util.distance(nw, se);
+			diagonal = Util.distance(nw(), se());
 		return diagonal;
 	}
 
@@ -96,35 +94,39 @@ public class RectangleSet {
 		return true;	
 	}
 
+	public Fix ne() { return getVertices()[0]; }
+
+	public Fix se() { return getVertices()[1]; }
+
+	public Fix nw() { return getVertices()[2]; }
+
+	public Fix sw() { return getVertices()[3]; }
+
 	private void setBound() {
 		if (fixes == null || fixes.size() < 1) return;
 
 		Fix f = fixes.get(0);
 		f.pressureAlt = f.gnssAlt = 0;
-		nw = f.clone();
-		ne = f.clone();
-		se = f.clone();
-		sw = f.clone();
+		this.vertices = new Fix[] { f.clone(), f.clone(), f.clone(), f.clone() };
+
 		for (Fix fix: fixes) {
-			if (fix.lat() < se.lat()) {
-				se.setLat(fix.lat());
-				sw.setLat(fix.lat());
+			if (fix.lat() < se().lat()) {
+				se().setLat(fix.lat());
+				sw().setLat(fix.lat());
 			}
-			if (fix.lat() > ne.lat()) {
-				ne.setLat(fix.lat());
-				nw.setLat(fix.lat());
+			if (fix.lat() > ne().lat()) {
+				ne().setLat(fix.lat());
+				nw().setLat(fix.lat());
 			}
-			if (fix.lon() < nw.lon()) {
-				nw.setLon(fix.lon());
-				sw.setLon(fix.lon());
+			if (fix.lon() < nw().lon()) {
+				nw().setLon(fix.lon());
+				sw().setLon(fix.lon());
 			}
-			if (fix.lon() > ne.lon()) {
-				ne.setLon(fix.lon());
-				se.setLon(fix.lon());
+			if (fix.lon() > ne().lon()) {
+				ne().setLon(fix.lon());
+				se().setLon(fix.lon());
 			}
 		}
-
-		this.vertices = new Fix[] { nw, sw, ne, se };
 	}
 
 	@Override

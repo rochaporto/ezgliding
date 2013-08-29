@@ -1,0 +1,87 @@
+	public double maxAlt() { 
+		if (max != 0.0) return max;
+
+		ArrayList<Double> results = new ArrayList<Double>();
+		Fix[] vertices = rectangles.get(0).getVertices();
+		for (int i=0; i<vertices.length; i++)
+			pointDistance(vertices[i], 1, 0.0, results);
+		for (Double v: results) if (v>max) max = v;
+		return max;
+	}
+
+	public double minAlt() { 
+		if (min != Double.MAX_VALUE) return min;
+
+		ArrayList<Double> results = new ArrayList<Double>();
+		Fix[] vertices = rectangles.get(0).getVertices();
+		for (int i=0; i<vertices.length-1; i++)
+			pointDistance(vertices[i], 1, 0.0, results);
+		double min = Double.MAX_VALUE;
+		for (int i=0; i<results.size(); i++)
+			if (results.get(i)<min) 
+				min = results.get(i); 
+		return min;
+	}
+
+	private void pointDistance(Fix point, int rectI, double value, ArrayList<Double> results) {
+		if (rectI == rectangles.size()) {
+			results.add(value); 
+			return;
+		}
+		Fix[] vertices = rectangles.get(rectI).getVertices();
+		for (int i=0; i<vertices.length; i++)
+			pointDistance(vertices[i], rectI+1, value + Util.distance(point, vertices[i]), results);
+	}
+
+
+
+	@Test
+	public void testMax() {
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes3));
+
+		Candidate candate = new Candidate(sets);
+		double expected = Util.distance(sets.get(0).nw(), sets.get(1).ne()) 
+			+ Util.distance(sets.get(1).ne(), sets.get(2).se());
+		assertEquals(expected, candate.max(), 0.0);
+	}
+
+	@Test
+	public void testMin() {
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
+		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes1));
+
+		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
+		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes2));
+
+		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
+		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		sets.add(new RectangleSet(fixes3));
+
+		Candidate candate = new Candidate(sets);
+		double expected = Util.distance(sets.get(0).se(), sets.get(1).nw()) 
+			+ Util.distance(sets.get(1).nw(), sets.get(2).nw());
+		assertEquals(expected, candate.min(), 0.0);
+	}
+

@@ -94,8 +94,8 @@ public class CandidateTest {
 		sets.add(new RectangleSet(fixes3));
 
 		Candidate candate = new Candidate(sets);
-		double expected = Util.distance(sets.get(0).nw, sets.get(1).se) 
-			+ Util.distance(sets.get(1).nw, sets.get(2).se);
+		double expected = Util.distance(sets.get(0).nw(), sets.get(1).se()) 
+			+ Util.distance(sets.get(1).nw(), sets.get(2).se());
 		assertEquals(expected, candate.max(), 0.0);
 	}
 
@@ -119,8 +119,8 @@ public class CandidateTest {
 		sets.add(new RectangleSet(fixes3));
 
 		Candidate candate = new Candidate(sets);
-		double expected = Util.distance(sets.get(0).se, sets.get(1).nw) 
-			+ Util.distance(sets.get(1).se, sets.get(2).nw);
+		double expected = Util.distance(sets.get(0).se(), sets.get(1).nw()) 
+			+ Util.distance(sets.get(1).se(), sets.get(2).nw());
 		assertEquals(expected, candate.min(), 0.0);
 	}
 
