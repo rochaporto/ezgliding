@@ -11,9 +11,12 @@ import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.text.ParseException;
 
 public class BrokenLineOptimizerTest {
+
+	private static Logger logger = Logger.getLogger(BrokenLineOptimizerTest.class.getName());
 
 	ArrayList<Fix> fixes;
 
@@ -52,6 +55,7 @@ public class BrokenLineOptimizerTest {
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(111, result.distance(), 0.0);
+		logger.finest("" + result);
 	}
 
 	@Test

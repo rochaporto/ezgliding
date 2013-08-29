@@ -8,8 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 public class BrokenLineOptimizer extends Optimizer {
+
+	private static Logger logger = Logger.getLogger(BrokenLineOptimizer.class.getName());
 
 	private int numPoints;
 
@@ -42,21 +45,24 @@ public class BrokenLineOptimizer extends Optimizer {
 		Candidate current = null;
 		Set<Double> pruneKeys;
 		Double[] prune;
-		List<Candidate> branchCandidates;
+		List<Candidate> branchCandidates = null;
 		int numIter = 0;
 		while (maxTree.size() != 0) {
+			// We get the max entry and remove it from the tree
 			maxEntry = maxTree.lastEntry();
 			current = maxEntry.getValue();
 			maxTree.remove(maxEntry.getKey());
+
+			logger.finest("iteration " + numIter + " (" + maxTree.size() + ") :: " + current + " :: ");
 			// If final and better than current max, update result
 			if (current.isFinal() && (result == null || current.max() > result.max())) {
 				result = current;
-			}
-			else { // If not final, branch and add to treemap
+			} else { // If not final, branch and add to treemap
 				branchCandidates = branch(current);
 				for (Candidate candate: branchCandidates)
 					maxTree.put(candate.max(), candate);
 			}
+			logger.finest(" " + (branchCandidates == null ? 0 : branchCandidates.size()));
 
 			// Prune the tree (remove keys < current.min())
 			pruneKeys = maxTree.headMap(current.min()).keySet();
@@ -64,6 +70,8 @@ public class BrokenLineOptimizer extends Optimizer {
 			pruneKeys = null;
 			for (Double d: prune)
 				maxTree.remove(d);
+			logger.finest(" :: " + prune.length);
+
 			++numIter;
 		}
 		
