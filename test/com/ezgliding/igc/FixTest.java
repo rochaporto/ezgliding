@@ -105,12 +105,4 @@ public class FixTest {
 		assertEquals(Math.toRadians(lon), fix1.lonrd(), 0.0);
 	}
 
-	@Test
-	public void testToString() {
-		Fix fix1 = new Fix(new Date(), -45.666, 108.345, 267, 288, 'V');
-		String str = "{" + fix1.date + "," + fix1.lat() + "(" + fix1.latrd() + "),"
-			+ fix1.lon() + "(" + fix1.lonrd() + ")," + fix1.pressureAlt
-			+ "(" + fix1.gnssAlt + ")," + fix1.validity + "}";
-		assertEquals(str, fix1.toString());
-	}
 }
