@@ -41,6 +41,7 @@
 
 	<target name="test" depends="disttest" description="runs all tests">
 		<junit printsummary="withOutAndErr" showoutput="on">
+			<sysproperty key="java.util.logging.config.file" value="test/logging.properties"/>
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
@@ -60,6 +61,7 @@
 	<target name="stest" depends="disttest" description="runs single test from argument">
 		<!-- ex: ant stest -Dclass=com.ezgliding.igc.CandidateTest -Dmethod=testLargestDiagonal -->
 		<junit printsummary="withOutAndErr" showoutput="on">
+			<sysproperty key="java.util.logging.config.file" value="test/logging.properties"/>
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
