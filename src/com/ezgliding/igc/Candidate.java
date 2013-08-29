@@ -24,18 +24,36 @@ public class Candidate implements Comparable<Candidate> {
 		reset();
 	}
 
-	public double max() {
-		max = 0.0;
-		for (int i=0; i<rectangles.size()-1; i++)
-			max += rectangles.get(i).maxDistance(rectangles.get(i+1));
+	public double max() { 
+		if (max > 0.0) return max;
+
+		ArrayList<Double> results = new ArrayList<Double>();
+		Fix[] vertices = rectangles.get(0).getVertices();
+		for (int i=0; i<vertices.length; i++)
+			pointDistance(vertices[i], 1, 0.0, results);
+		for (Double v: results) if (v>max) max = v;
 		return max;
 	}
 
-	public double min() {
-		min = 0.0;
-		for (int i=0; i<rectangles.size()-1; i++)
-			min += rectangles.get(i).minDistance(rectangles.get(i+1));
+	public double min() { 
+		if (min < Double.MAX_VALUE) return min;
+
+		ArrayList<Double> results = new ArrayList<Double>();
+		Fix[] vertices = rectangles.get(0).getVertices();
+		for (int i=0; i<vertices.length-1; i++)
+			pointDistance(vertices[i], 1, 0.0, results);
+		for (Double v: results) if (v<min) min = v; 
 		return min;
+	}
+
+	private void pointDistance(Fix point, int rectI, double value, ArrayList<Double> results) {
+		if (rectI == rectangles.size()) {
+			results.add(value); 
+			return;
+		}
+		Fix[] vertices = rectangles.get(rectI).getVertices();
+		for (int i=0; i<vertices.length; i++)
+			pointDistance(vertices[i], rectI+1, value + Util.distance(point, vertices[i]), results);
 	}
 
 	public boolean isFinal() {
