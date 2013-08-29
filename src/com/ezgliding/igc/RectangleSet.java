@@ -126,4 +126,9 @@ public class RectangleSet {
 
 		this.vertices = new Fix[] { nw, sw, ne, se };
 	}
+
+	@Override
+	public String toString() {
+		return "{" + getFixes().size() + " " + String.format("%1$,.2f", diagonal()) + "}";
+	}
 }

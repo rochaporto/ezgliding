@@ -99,10 +99,11 @@ public class Candidate implements Comparable<Candidate> {
 
 	@Override
 	public String toString() { 
-		String str = "";
+		String str = String.format("%1$,.2f", min()) + " " + String.format("%1$,.2f", max()) 
+			+ " " + isFinal() + " " + largestDiagonal() + " {";
 		for (RectangleSet set: getRectangles())
-			str += "{" + set.getFixes().size() + "}, ";
-		return str;
+			str += set + ",";
+		return str + "}";
 	}
 }
 

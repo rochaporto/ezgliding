@@ -35,10 +35,10 @@ public abstract class Optimizer {
 		}
 
 		public String toString() {
-			String str = "- Result Distance: " + distance + " - - - - - - - - - - - - -";
+			String str = "{" + String.format("%1$,.2f", distance) + ",";
 			for (Fix point: points)
-				str += "\n" + point;
-			return str;
+				str += point + ",";
+			return str + "}";
 		}
 	}
 }

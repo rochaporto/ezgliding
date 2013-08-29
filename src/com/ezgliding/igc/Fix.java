@@ -1,9 +1,12 @@
 package com.ezgliding.igc;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Fix {
 	
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("kk:mm");
+
 	public Date date;
 	private double lat, latrd;
 	private double lon, lonrd;
@@ -75,7 +78,8 @@ public class Fix {
 
 	@Override
 	public String toString() {
-		return "{" + date + "," + lat + "(" + latrd + ")," + lon + "(" + lonrd
-			+ ")," + pressureAlt + "(" + gnssAlt + ")," + validity + "}"; 
+		return "{" + (date == null ? null : dateFormat.format(date)) + "," + String.format("%1$,.2f",lat()) 
+			+ ":" + String.format("%1$,.2f",latrd()) + "," + String.format("%1$,.2f",lon()) 
+			+ ":" + String.format("%1$,.2f",lonrd()) + "," + pressureAlt + ":" + gnssAlt + "," + validity + "}"; 
 	}
 }
