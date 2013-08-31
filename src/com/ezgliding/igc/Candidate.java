@@ -8,9 +8,9 @@ public class Candidate implements Comparable<Candidate> {
 	
 	ArrayList<RectangleSet> rectangles;
 
-	private double max = 0.0;
+	private double max;
 
-	private double min = Double.MAX_VALUE;
+	private double min;
 
 	public Candidate() {
 		this(null);
@@ -25,16 +25,16 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public double max() {
-		max = 0.0;
-		for (int i=0; i<rectangles.size()-1; i++)
-			max += rectangles.get(i).maxDistance(rectangles.get(i+1));
+		if (max == 0.0)
+			for (int i=0; i<rectangles.size()-1; i++)
+				max += rectangles.get(i).maxDistance(rectangles.get(i+1));
 		return max;
 	}
 
 	public double min() {
-		min = 0.0;
-		for (int i=0; i<rectangles.size()-1; i++)
-			min += rectangles.get(i).minDistance(rectangles.get(i+1));
+		if (min == 0.0)
+			for (int i=0; i<rectangles.size()-1; i++)
+				min += rectangles.get(i).minDistance(rectangles.get(i+1));
 		return min;
 	}
 
@@ -56,6 +56,8 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public void replace(int i, RectangleSet newSet) {
+		if (newSet == null)
+			throw new IllegalArgumentException("Cannot add empry set");
 		getRectangles().set(i, newSet);
 		reset();
 	}
@@ -87,7 +89,7 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	private void reset() {
-		max = 0.0; min = Double.MAX_VALUE;
+		max = 0.0; min = 0.0;
 	}
 
 	@Override
