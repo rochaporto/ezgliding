@@ -4,9 +4,14 @@ public abstract class Optimizer {
 
 	protected Flight flight;
 
-	public Optimizer(Flight flight) {
+	protected int numPoints;
+
+	public Optimizer(Flight flight, int numPoints) {
 		if (flight == null) throw new IllegalArgumentException("Flight cannot be null");
+		if (numPoints < 3) throw new IllegalArgumentException("Invalid number of points :: < 3");
+
 		this.flight = flight;
+		this.numPoints = numPoints;
 	}
 
 	public abstract Result optimize();
@@ -17,12 +22,16 @@ public abstract class Optimizer {
 		
 		public Fix[] points;
 
+		public Result() {
+			this(null);
+		}
+
 		public Result(Fix[] points) {
 			this.points = points;
 		}
 
 		public double distance() {
-			if (distance != -1) return distance;
+			if (distance != -1 || points == null) return distance;
 			for (int i=0; i<points.length-1; i++)
 				distance += Util.distance(points[i], points[i+1]);
 			return distance;

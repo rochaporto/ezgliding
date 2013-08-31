@@ -14,23 +14,17 @@ public class BrokenLineOptimizer extends Optimizer {
 
 	private static Logger logger = Logger.getLogger(BrokenLineOptimizer.class.getName());
 
-	private int numPoints;
-
 	private TreeMap<Double,Candidate> maxTree;
 
 	public BrokenLineOptimizer(Flight flight, int numPoints) {
-		super(flight);
-
-		if (numPoints <= 0) 
-			throw new IllegalArgumentException("numPoints should be 1 or greater");
-		
-		this.numPoints = numPoints;
-		maxTree = new TreeMap<Double,Candidate>();
+		super(flight, numPoints);
 	}
 
 	@Override
 	public Result optimize() {
 		if (flight == null || flight.fixes() == null) return null;
+
+		maxTree = new TreeMap<Double,Candidate>();
 
 		Candidate result = null;
 
