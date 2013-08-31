@@ -28,7 +28,7 @@ public class Util {
 		//d = 2*asin(sqrt((sin((lat1-lat2)/2))^2 + cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))
 		return 2 * Math.asin(
 			Math.sqrt( Math.pow((Math.sin( (fix1.latrd() - fix2.latrd()) / 2) ), 2)
-				+ Math.cos(fix1.latrd()) * Math.cos(fix2.latrd()) * Math.pow( (Math.sin( (fix1.lonrd()-fix2.lonrd()) / 2) ), 2))
+				+ fix1.coslat() * fix2.coslat() * Math.pow( (Math.sin( (fix1.lonrd()-fix2.lonrd()) / 2) ), 2))
 			) * earthRadius;
 	}
 }
