@@ -32,6 +32,7 @@ public abstract class Optimizer {
 
 		public double distance() {
 			if (distance != -1 || points == null) return distance;
+			distance = 0;
 			for (int i=0; i<points.length-1; i++)
 				distance += Util.distance(points[i], points[i+1]);
 			return distance;
