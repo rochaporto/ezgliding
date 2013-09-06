@@ -18,9 +18,9 @@ public class CandidateTest {
 	@Before
 	public void setUp() {
 		ArrayList<Fix> fixes = new ArrayList<Fix>();
-		fixes.add(new Fix(new Date(), 45.888, 108.999, 0, 0, 'V'));
-		fixes.add(new Fix(new Date(), 44.223, 109.112, 0, 0, 'V'));
-		fixes.add(new Fix(new Date(), 43.123, 109.998, 0, 0, 'V'));
+		fixes.add(new Fix(0, 45.888, 108.999, 0, 0, 'V'));
+		fixes.add(new Fix(0, 44.223, 109.112, 0, 0, 'V'));
+		fixes.add(new Fix(0, 43.123, 109.998, 0, 0, 'V'));
 
 		set = new RectangleSet(fixes);
 	}
@@ -51,18 +51,18 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets2 = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets1.add(new RectangleSet(fixes1));
 		sets2.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets1.add(new RectangleSet(fixes2));
 		sets2.add(new RectangleSet(fixes2));
 
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 43.900, 110.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 41.900, 112.700, 0, 0, 'V'));
 		sets1.add(new RectangleSet(fixes3));
 
 		Candidate candate1 = new Candidate(sets1);
@@ -79,18 +79,18 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.900, 112.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 38.120, 115.330, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes3));
 
 		Candidate candate = new Candidate(sets);
@@ -104,18 +104,18 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.900, 112.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 40.700, 114.800, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 38.120, 115.330, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 40.700, 114.800, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 38.120, 115.330, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes3));
 
 		Candidate candate = new Candidate(sets);
@@ -131,8 +131,8 @@ public class CandidateTest {
 		assertEquals(1, candate.getRectangles().size());
 
 		ArrayList<Fix> fixes = new ArrayList<Fix>();
-		fixes.add(new Fix(new Date(), 42.111, 107.333, 0, 0, 'V'));
-		fixes.add(new Fix(new Date(), 44.411, 103.333, 0, 0, 'A'));
+		fixes.add(new Fix(0, 42.111, 107.333, 0, 0, 'V'));
+		fixes.add(new Fix(0, 44.411, 103.333, 0, 0, 'A'));
 		RectangleSet newSet = new RectangleSet(fixes);
 		candate.add(newSet);
 		
@@ -160,20 +160,20 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.900, 112.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 	
 		Candidate candate = new Candidate(sets);
 
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 45.900, 112.700, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 43.900, 115.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 45.900, 112.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 43.900, 115.700, 0, 0, 'V'));
 		RectangleSet replacement = new RectangleSet(fixes3);
 		
 		assertEquals(2, candate.getRectangles().size());
@@ -188,24 +188,24 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 43.900, 110.700, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.900, 112.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 43.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.900, 112.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 	
 		Candidate candate = new Candidate(sets);
 
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 45.900, 112.700, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 43.900, 115.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 45.900, 112.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 43.900, 115.700, 0, 0, 'V'));
 		RectangleSet replacement1 = new RectangleSet(fixes3);
 		ArrayList<Fix> fixes4 = new ArrayList<Fix>();
-		fixes4.add(new Fix(new Date(), 47.900, 122.700, 0, 0, 'V'));
-		fixes4.add(new Fix(new Date(), 49.900, 125.700, 0, 0, 'V'));
+		fixes4.add(new Fix(0, 47.900, 122.700, 0, 0, 'V'));
+		fixes4.add(new Fix(0, 49.900, 125.700, 0, 0, 'V'));
 		RectangleSet replacement2 = new RectangleSet(fixes3);
 		
 		assertEquals(2, candate.getRectangles().size());
@@ -222,18 +222,18 @@ public class CandidateTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 47.900, 106.700, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 45.900, 108.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 47.900, 106.700, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 40.900, 110.700, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 35.900, 103.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 40.900, 110.700, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 35.900, 103.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 	
 		ArrayList<Fix> fixes3 = new ArrayList<Fix>();
-		fixes3.add(new Fix(new Date(), 48.900, 107.700, 0, 0, 'V'));
-		fixes3.add(new Fix(new Date(), 49.900, 108.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 48.900, 107.700, 0, 0, 'V'));
+		fixes3.add(new Fix(0, 49.900, 108.700, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes3));
 
 		Candidate candate = new Candidate(sets);

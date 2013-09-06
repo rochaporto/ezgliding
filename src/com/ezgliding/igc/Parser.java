@@ -7,15 +7,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Parser {
-
-	/** A date formatter to parse B record times. */
-	private static DateFormat dateFormat = new SimpleDateFormat("HHmmss");
 
 	public Parser() {
 
@@ -69,7 +63,9 @@ public class Parser {
 		if (line == null || flight == null) return;
 
 		Fix fix = new Fix(
-			dateFormat.parse(line.substring(1,7)),
+			Integer.parseInt(line.substring(1,3))*3600 
+				+ Integer.parseInt(line.substring(3,5))*60
+				+ Integer.parseInt(line.substring(5,7)),
 			Util.minDec2decimal(line.substring(7,15)),
 			Util.minDec2decimal(line.substring(15,24)),
 			Integer.parseInt(line.substring(25,30)),

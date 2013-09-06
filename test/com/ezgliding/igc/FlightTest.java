@@ -19,7 +19,7 @@ public class FlightTest {
 		Flight flight = new Flight();
 		assertEquals(0, flight.fixes().size());
 
-		Fix fix = new Fix(new Date(), -45.666, 108.345, 1089, 1200, 'V');
+		Fix fix = new Fix(0, -45.666, 108.345, 1089, 1200, 'V');
 		flight.addFix(fix);
 		assertEquals(1, flight.fixes().size());
 

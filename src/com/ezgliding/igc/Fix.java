@@ -1,21 +1,16 @@
 package com.ezgliding.igc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Fix {
 	
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("kk:mm");
-
-	public Date date;
+	public int time;
 	private double lat, latrd;
 	private double lon, lonrd;
 	public int pressureAlt;
 	public int gnssAlt;
 	public char validity;
 
-	public Fix(Date date, double lat, double lon, int pressureAlt, int gnssAlt, char validity) {
-		this.date = date;
+	public Fix(int time, double lat, double lon, int pressureAlt, int gnssAlt, char validity) {
+		this.time = time;
 		setLat(lat);
 		setLon(lon);
 		this.pressureAlt = pressureAlt;
@@ -63,7 +58,7 @@ public class Fix {
 			other = (Fix)otherO;
 		} catch(ClassCastException e) { return false; }
 
-		if (!date.equals(other.date) || latrd != other.latrd || lonrd != other.lonrd
+		if (time != other.time || latrd != other.latrd || lonrd != other.lonrd
 			|| pressureAlt != other.pressureAlt || gnssAlt != other.gnssAlt
 			|| validity != other.validity) 
 			return false;
@@ -73,12 +68,12 @@ public class Fix {
 
 	@Override
 	public Fix clone() {
-		return new Fix((Date)date.clone(), lat, lon, pressureAlt, gnssAlt, validity);
+		return new Fix(time, lat, lon, pressureAlt, gnssAlt, validity);
 	}
 
 	@Override
 	public String toString() {
-		return "{" + (date == null ? null : dateFormat.format(date)) + "," + String.format("%1$,.2f",lat()) 
+		return "{" + time + "," + String.format("%1$,.2f",lat()) 
 			+ ":" + String.format("%1$,.2f",latrd()) + "," + String.format("%1$,.2f",lon()) 
 			+ ":" + String.format("%1$,.2f",lonrd()) + "," + pressureAlt + ":" + gnssAlt + "," + validity + "}"; 
 	}

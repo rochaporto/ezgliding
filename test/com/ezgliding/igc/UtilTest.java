@@ -45,8 +45,8 @@ public class UtilTest {
 	public void testDistance() {
 		HashMap<Double,Fix[]> examples = new HashMap<Double,Fix[]>();
 		examples.put(968.85348, new Fix[] {
-			new Fix(null, Util.minDec2decimal("5003983N"), Util.minDec2decimal("00542883W"), 0, 0, 'V'),
-			new Fix(null, Util.minDec2decimal("5838633N"), Util.minDec2decimal("00304200W"), 0, 0, 'V') });
+			new Fix(0, Util.minDec2decimal("5003983N"), Util.minDec2decimal("00542883W"), 0, 0, 'V'),
+			new Fix(0, Util.minDec2decimal("5838633N"), Util.minDec2decimal("00304200W"), 0, 0, 'V') });
 
 		for (Entry<Double,Fix[]> ex: examples.entrySet()) {
 			assertEquals(ex.getKey(), Util.distance(ex.getValue()[0], ex.getValue()[1]), 0.00001);
