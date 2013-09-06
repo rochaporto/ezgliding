@@ -8,7 +8,7 @@ public abstract class Optimizer {
 
 	public Optimizer(Flight flight, int numPoints) {
 		if (flight == null) throw new IllegalArgumentException("Flight cannot be null");
-		if (numPoints < 3) throw new IllegalArgumentException("Invalid number of points :: < 3");
+		if (numPoints < 2) throw new IllegalArgumentException("Invalid number of points :: < 3");
 
 		this.flight = flight;
 		this.numPoints = numPoints;
