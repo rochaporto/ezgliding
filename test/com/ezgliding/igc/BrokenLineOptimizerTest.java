@@ -129,6 +129,32 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
+	public void testOptimize3TPFew() throws IOException, ParseException {
+		Parser parser = new Parser();
+		Flight flight = parser.parse(
+			FileSystems.getDefault().getPath("test/data/optimize-with-few-points.igc"));
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
+		Optimizer.Result result = opt.optimize();
+		assertNotNull(result);
+		assertEquals(693.038, result.distance(), 0.001);
+		Fix[] points = new Fix[] {
+			new Fix(getTime(17,21,15), Util.minDec2decimal("4533504N"), 
+				Util.minDec2decimal("00558638E"), 0, 0, 'A'),
+			new Fix(getTime(16,39,44), Util.minDec2decimal("4547266N"), 
+				Util.minDec2decimal("00644677E"), 0, 0, 'A'),
+			new Fix(getTime(15,05,57), Util.minDec2decimal("4451913N"), 
+				Util.minDec2decimal("00641047E"), 0, 0, 'A'),
+			new Fix(getTime(12,52,56), Util.minDec2decimal("4621959N"), 
+				Util.minDec2decimal("00730485E"), 0, 0, 'A'),
+			new Fix(getTime(9,31,18), Util.minDec2decimal("4533432N"), 
+				Util.minDec2decimal("00558760E"), 0, 0, 'A'),
+		};
+		assertEquals(points.length, result.points.length);
+		for (int i=0; i<points.length; i++)
+			assertEquals(points[i], result.points[i]);
+	}
+
+	@Test
 	public void testOptimize3TPLarge() throws IOException, ParseException {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
