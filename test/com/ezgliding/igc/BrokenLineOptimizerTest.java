@@ -1,6 +1,7 @@
 package com.ezgliding.igc;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,11 +9,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-import java.text.ParseException;
 
 public class BrokenLineOptimizerTest {
 
@@ -20,12 +23,19 @@ public class BrokenLineOptimizerTest {
 
 	ArrayList<Fix> fixes;
 
+	private static Calendar calendar;
+
+	@BeforeClass
+	public static void setUpClass() {
+		calendar = Calendar.getInstance();
+	}
+
 	@Before
 	public void setUp() {
 		fixes = new ArrayList<Fix>();
-		fixes.add(new Fix(new Date(), 45.888, 108.999, 0, 0, 'V'));
-		fixes.add(new Fix(new Date(), 44.223, 109.112, 0, 0, 'V'));
-		fixes.add(new Fix(new Date(), 43.123, 109.998, 0, 0, 'V'));
+		fixes.add(new Fix(0, 45.888, 108.999, 0, 0, 'V'));
+		fixes.add(new Fix(0, 44.223, 109.112, 0, 0, 'V'));
+		fixes.add(new Fix(0, 43.123, 109.998, 0, 0, 'V'));
 	}
 
 	@Test
@@ -47,15 +57,28 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
-	public void testOptimize() throws IOException, ParseException {
+	public void testOptimize5TP5Points() throws IOException, ParseException {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points-only.igc"));
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
-		assertEquals(111, result.distance(), 0.0);
-		logger.finest("" + result);
+		assertEquals(494.785, result.distance(), 0.001);
+		Fix[] points = new Fix[] {
+			new Fix(getTime(17,21,15), Util.minDec2decimal("4533504N"), 
+				Util.minDec2decimal("00558638E"), 0, 0, 'A'),
+			new Fix(getTime(16,39,44), Util.minDec2decimal("4547266N"), 
+				Util.minDec2decimal("00644677E"), 0, 0, 'A'),
+			new Fix(getTime(15,05,57), Util.minDec2decimal("4451913N"), 
+				Util.minDec2decimal("00641047E"), 0, 0, 'A'),
+			new Fix(getTime(12,52,56), Util.minDec2decimal("4621959N"), 
+				Util.minDec2decimal("00730485E"), 0, 0, 'A'),
+			new Fix(getTime(9,31,18), Util.minDec2decimal("4533432N"), 
+				Util.minDec2decimal("00558760E"), 0, 0, 'A'),
+		};
+		for (int i=0; i<points.length; i++)
+			assertEquals(points[1], result.points[1]);
 	}
 
 	@Test
@@ -63,16 +86,16 @@ public class BrokenLineOptimizerTest {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
 
 		ArrayList<Fix> fixes1 = new ArrayList<Fix>();
-		fixes1.add(new Fix(new Date(), 45.888, 108.999, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 44.223, 109.112, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 43.123, 110.998, 0, 0, 'V'));
-		fixes1.add(new Fix(new Date(), 42.077, 111.877, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 45.888, 108.999, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 44.223, 109.112, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 43.123, 110.998, 0, 0, 'V'));
+		fixes1.add(new Fix(0, 42.077, 111.877, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes1));
 
 		ArrayList<Fix> fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(new Date(), 42.888, 111.999, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.223, 112.112, 0, 0, 'V'));
-		fixes2.add(new Fix(new Date(), 41.123, 113.998, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 42.888, 111.999, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.223, 112.112, 0, 0, 'V'));
+		fixes2.add(new Fix(0, 41.123, 113.998, 0, 0, 'V'));
 		sets.add(new RectangleSet(fixes2));
 
 		Candidate candate = new Candidate(sets);
@@ -116,6 +139,10 @@ public class BrokenLineOptimizerTest {
 	public void testGetNumPoints() {
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 4);
 		assertEquals(4, opt.getNumPoints());
+	}
+
+	private int getTime(int hour, int min, int second) {
+		return (hour*3600)+(min*60)+second;
 	}
 
 }
