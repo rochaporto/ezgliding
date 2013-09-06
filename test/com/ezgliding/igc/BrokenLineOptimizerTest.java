@@ -50,7 +50,7 @@ public class BrokenLineOptimizerTest {
 	public void testOptimize() throws IOException, ParseException {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/com/ezgliding/igc/SampleFlight.igc"));
+			FileSystems.getDefault().getPath("test/data/optimize-with-5-points-only.igc"));
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
