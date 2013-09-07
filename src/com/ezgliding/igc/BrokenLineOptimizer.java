@@ -16,17 +16,19 @@ public class BrokenLineOptimizer extends Optimizer {
 
 	private TreeMap<Double,Candidate> maxTree;
 
+	private Candidate current;
+
+	private Iterator<Candidate> candIter;
+
 	public BrokenLineOptimizer(Flight flight, int numPoints) {
 		super(flight, numPoints);
+
+		reset();
 	}
 
-	@Override
-	public Result optimize() {
-		if (flight == null || flight.fixes() == null) return null;
+	public void reset() {
 
 		maxTree = new TreeMap<Double,Candidate>();
-
-		Candidate result = null;
 
 		// We start with a candidate containing only one rectangle (with all points)
 		ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
@@ -34,38 +36,23 @@ public class BrokenLineOptimizer extends Optimizer {
 		Candidate first = new Candidate(initialSet);
 		maxTree.put(first.max(), first);
 
-		// From here we start the branch / bound procedure 
-		Map.Entry<Double,Candidate> maxEntry = null;
-		Candidate current = null;
-		Set<Double> pruneKeys;
-		Double[] prune;
-		List<Candidate> branchCandidates = null;
-		int numIter = 0;
-		while (maxTree.size() != 0) {
+		candIter = iterator();
+	}
+
+	@Override
+	public Result optimize() {
+		if (flight == null || flight.fixes() == null) return null;
+
+		Candidate result = null, current;
+
+		while (candIter.hasNext()) {
 			// We get the max entry and remove it from the tree
-			maxEntry = maxTree.lastEntry();
-			current = maxEntry.getValue();
-			maxTree.remove(maxEntry.getKey());
+			current = candIter.next();
 
 			// If final and better than current max, update result
-			if (current.isFinal() && (result == null || current.max() > result.max())) {
+			if (current.isFinal() && (result == null || current.max() > result.max()))
 				result = current;
-			} else { // If not final, branch and add to treemap
-				branchCandidates = branch(current);
-				for (Candidate candate: branchCandidates)
-					maxTree.put(candate.max(), candate);
-			}
 
-			// Prune the tree (remove keys < current.min())
-			pruneKeys = maxTree.headMap(current.min()).keySet();
-			prune = pruneKeys.toArray(new Double[] {});
-			pruneKeys = null;
-			for (Double d: prune)
-				maxTree.remove(d);
-			logger.finest("iteration " + numIter + " (" + maxTree.size() + ") :: " + current + " :: "
-				+ " " + (branchCandidates == null ? 0 : branchCandidates.size()) + " :: " + prune.length);
-
-			++numIter;
 		}
 		
 		ArrayList<Fix> points = new ArrayList<Fix>();
@@ -120,6 +107,58 @@ public class BrokenLineOptimizer extends Optimizer {
 			newCurrent.add(availableSets.get(i));
 			permutations(availableSets, size, i, newCurrent, candidates);
 		}
+	}
+
+	protected void prune(double min) {
+		Set<Double> pruneKeys = maxTree.headMap(min).keySet();
+		Double[] prune = pruneKeys.toArray(new Double[] {});
+		pruneKeys = null;
+		for (Double d: prune)
+			maxTree.remove(d);
+	}
+
+	public Iterator<Candidate> iterator() {
+		return new CandidateIterator();
+	}
+
+	public class CandidateIterator implements Iterator {
+
+		private Map.Entry<Double,Candidate> entry;
+
+		private Candidate current;
+
+		public CandidateIterator() {
+
+		}
+
+		public boolean hasNext() { 
+			if (maxTree != null && maxTree.size() != 0)
+				return true; 
+			return false;
+		}
+
+		public Candidate next() { 
+			if (!hasNext()) return null;
+	
+			// Get maximum and remove it from tree
+			entry = maxTree.lastEntry();
+			maxTree.remove(entry.getKey());
+			current = entry.getValue();
+
+			// If not final, branch and add to treemap
+			if (!current.isFinal()) {
+				List<Candidate> branchCandidates = branch(current);
+				for (Candidate candate: branchCandidates)
+					maxTree.put(candate.max(), candate);
+			}
+
+			// Prune the tree
+			prune(current.min());
+
+			return entry.getValue(); 
+		}
+
+		public void remove() { }
 	}
 
 	public Flight getFlight() {
