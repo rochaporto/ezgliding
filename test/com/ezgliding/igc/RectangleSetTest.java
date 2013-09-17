@@ -103,6 +103,39 @@ public class RectangleSetTest {
 	}
 
 	@Test
+	public void testSplitTwo() { 
+		ArrayList<Fix> all = new ArrayList<Fix>();
+		all.add(new Fix(0, 40.300, 106.999, 0, 0, 'V'));
+		all.add(new Fix(0, 44.234, 111.877, 0, 0, 'V'));
+		RectangleSet allSet = new RectangleSet(all);
+
+		RectangleSet firstHalfSet = new RectangleSet(all.subList(0,1));
+		RectangleSet secondHalfSet = new RectangleSet(all.subList(1,2));
+
+		RectangleSet[] result = allSet.split();
+		assertNotNull(result);
+		assertEquals(2, result.length);
+		assertNotNull(result[0]);
+		assertNotNull(result[1]);
+		assertEquals(1, firstHalfSet.getFixes().size());
+		assertEquals(1, secondHalfSet.getFixes().size());
+		assertEquals(1, result[0].getFixes().size());
+		assertEquals(1, result[1].getFixes().size());
+		assertEquals(firstHalfSet, result[0]);
+		assertEquals(secondHalfSet, result[1]);
+	}
+
+	@Test
+	public void testSplitSingle() { //TODO: what should we expect here?
+		ArrayList<Fix> all = new ArrayList<Fix>();
+		all.add(new Fix(0, 40.300, 106.999, 0, 0, 'V'));
+		RectangleSet allSet = new RectangleSet(all);
+
+		RectangleSet[] result = allSet.split();
+		assertNotNull(result);
+	}
+
+	@Test
 	public void testDiagonal() {
 		RectangleSet set1 = new RectangleSet(fixes1);
 
@@ -162,12 +195,48 @@ public class RectangleSetTest {
 	}
 
 	@Test
+	public void testStart() {
+		//TODO:
+	}
+
+	@Test
+	public void testEnd() {
+		//TODO:
+	}
+
+	@Test
+	public void testNumFixes() {
+		//TODO:
+	}
+
+	@Test
 	public void testGetVertices() {
 		RectangleSet set1 = new RectangleSet(fixes1);
 		assertNotNull(set1.getVertices());
 		assertEquals(4, set1.getVertices().length);
 		for (Fix v: set1.getVertices())
 			assertNotNull(v);
+	}
+
+	@Test
+	public void testCompareTo() {
+		RectangleSet set1 = new RectangleSet(fixes1, 0, 1);
+		RectangleSet set2 = new RectangleSet(fixes1, 1, 3);
+		assertEquals(-1, set1.compareTo(set2));
+		assertEquals(1, set2.compareTo(set1));
+
+		RectangleSet set3 = new RectangleSet(fixes1, 1, 3);
+		assertEquals(0, set2.compareTo(set3));
+		assertEquals(0, set3.compareTo(set2));
+	}
+
+	@Test
+	public void testNotEquals() {
+		RectangleSet set1 = new RectangleSet(fixes1);
+		ArrayList<Fix> fixes = new ArrayList<Fix>();
+		fixes.add(new Fix(0, 45.888, 108.999, 0, 0, 'V'));
+		RectangleSet set2 = new RectangleSet(fixes);
+		assertFalse(set1.equals(set2));
 	}
 
 	@Test

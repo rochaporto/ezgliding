@@ -7,81 +7,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 public class BrokenLineOptimizer extends Optimizer {
 
 	private static Logger logger = Logger.getLogger(BrokenLineOptimizer.class.getName());
 
-	private TreeMap<Double,Candidate> maxTree;
-
-	private Candidate current;
-
-	private Iterator<Candidate> candIter;
-
 	public BrokenLineOptimizer(Flight flight, int numPoints) {
 		super(flight, numPoints);
-
-		reset();
-	}
-
-	public void reset() {
-
-		maxTree = new TreeMap<Double,Candidate>();
-
-		// We start with a candidate containing only one rectangle (with all points)
-		ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
-		initialSet.add(new RectangleSet(flight.fixes()));
-		Candidate first = new Candidate(initialSet);
-		maxTree.put(first.max(), first);
-
-		candIter = iterator();
 	}
 
 	@Override
 	public Result optimize() {
 		if (flight == null || flight.fixes() == null) return null;
 
-		Candidate result = null, current;
+		Iterator<Candidate> candIter = iterator();
+
+		Candidate curResult = null;
+		Candidate current = null;
 
 		while (candIter.hasNext()) {
 			// We get the max entry and remove it from the tree
 			current = candIter.next();
 
 			// If final and better than current max, update result
-			if (current.isFinal() && (result == null || current.max() > result.max()))
-				result = current;
-
+			if (current.isFinal() && (curResult == null || current.max() > curResult.max()))
+				curResult = current;
 		}
 		
 		ArrayList<Fix> points = new ArrayList<Fix>();
-		for (RectangleSet set: result.getRectangles())
-			points.add(set.getFixes().get(0));
+		for (RectangleSet set: curResult.getRectangles())
+			points.add(flight.fixes().get(set.start()));
 		return new Result(points.toArray(new Fix[] {}));
 	}
 
 	protected List<Candidate> branch(Candidate candate) {
-		if (candate.getRectangles().size() <= 0) 
+		if (candate == null || candate.getRectangles() == null || candate.getRectangles().size() <= 0) 
 			throw new IllegalArgumentException("Cannot branch empty candidate");
 
+		ArrayList<Candidate> splitCdates = new ArrayList<Candidate>();
+
+		// Get the indexes of the rectangles with the largest diagonal, and split them
+		RectangleSet largerDiagSet = candate.largestDiagonal();
+		RectangleSet[] largerDiagSplits = largerDiagSet.split();
+
+		// Replace the larger rect with the split ones
+		Candidate newCandidate = candate.clone();
+		newCandidate.replace(largerDiagSet, largerDiagSplits);
+		splitCdates.add(newCandidate);
+
+		// Do all possible permutations
 		ArrayList<Candidate> result = new ArrayList<Candidate>();
-
-		// Get the index of the rectangle with the largest diagonal
-		int largerDiagonal = candate.largestDiagonal();
-
-		RectangleSet[] newSets = candate.getRectangles().get(largerDiagonal).split();
-		// If we already had enough rectangles, then create new candidate per rect 
-		if (candate.getRectangles().size() == numPoints) {
-			for (RectangleSet set: newSets) {
-				Candidate newCandidate = candate.clone();
-				newCandidate.replace(largerDiagonal, set);
-				result.add(newCandidate);
-			}
-		} else { // Else replace with both new rects in a single candidate
-			Candidate newCandidate = candate.clone();
-			newCandidate.replace(largerDiagonal, newSets);
-			result.add(newCandidate);
+		for (Candidate c: splitCdates) {
+			result.addAll(permutations(c.getRectangles()));
 		}
 
 		return result;
@@ -109,26 +88,25 @@ public class BrokenLineOptimizer extends Optimizer {
 		}
 	}
 
-	protected void prune(double min) {
-		Set<Double> pruneKeys = maxTree.headMap(min).keySet();
-		Double[] prune = pruneKeys.toArray(new Double[] {});
-		pruneKeys = null;
-		for (Double d: prune)
-			maxTree.remove(d);
-	}
-
 	public Iterator<Candidate> iterator() {
 		return new CandidateIterator();
 	}
 
 	public class CandidateIterator implements Iterator {
 
-		private Map.Entry<Double,Candidate> entry;
+		private double min;
 
 		private Candidate current;
 
-		public CandidateIterator() {
+		private TreeSet<Candidate> maxTree;
 
+		public CandidateIterator() {
+			maxTree = new TreeSet<Candidate>();
+
+			// We start with a candidate containing only one rectangle (with all points)
+			ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
+			initialSet.add(new RectangleSet(flight.fixes()));
+			maxTree.add(new Candidate(initialSet));
 		}
 
 		public boolean hasNext() { 
@@ -140,25 +118,36 @@ public class BrokenLineOptimizer extends Optimizer {
 		public Candidate next() { 
 			if (!hasNext()) return null;
 	
-			// Get maximum and remove it from tree
-			entry = maxTree.lastEntry();
-			maxTree.remove(entry.getKey());
-			current = entry.getValue();
-
-			// If not final, branch and add to treemap
-			if (!current.isFinal()) {
-				List<Candidate> branchCandidates = branch(current);
-				for (Candidate candate: branchCandidates)
-					maxTree.put(candate.max(), candate);
-			}
+			// Get maximum and remove it from tree (and update cur min if required)
+			current = maxTree.pollLast();
+			if (current.min() > min) min = current.min();
 
 			// Prune the tree
 			prune(current.min());
 
-			return entry.getValue(); 
+			// If not final, branch and add to treemap
+			if (!current.isFinal()) {
+				List<Candidate> branchCandidates = branch(current);
+				for (Candidate c: branchCandidates)
+					if (c.max() > min) maxTree.add(c);
+			} 
+
+			return current; 
 		}
 
 		public void remove() { }
+
+		protected void prune(double min) {
+			Iterator<Candidate> iterCands = maxTree.iterator();
+			Candidate c;
+			ArrayList<Candidate> removableCands = new ArrayList<Candidate>();
+			while (iterCands.hasNext()) {
+				c = iterCands.next();	
+				if (c.max() <= min) removableCands.add(c);
+			}
+			for (Candidate z: removableCands) 
+				maxTree.remove(z);
+		}
 	}
 
 	public Flight getFlight() {

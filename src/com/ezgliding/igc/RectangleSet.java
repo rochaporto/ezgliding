@@ -2,16 +2,30 @@ package com.ezgliding.igc;
 
 import java.util.List;
 
-public class RectangleSet {
+public class RectangleSet implements Comparable<RectangleSet> {
 
 	List<Fix> fixes;
 
+	List<Fix> fixesSublist;
+
 	Fix[] vertices; // set by setBound()
+
+	int start;
+	
+	int end;
 
 	private double diagonal = -1;
 
 	public RectangleSet(List<Fix> fixes) {
+		this(fixes, 0, fixes == null ? 0 : fixes.size());
+	}
+
+	public RectangleSet(List<Fix> fixes, int start, int end) {
 		this.fixes = fixes;
+		this.start = start;
+		this.end = end;
+		if (fixes != null)
+			this.fixesSublist = fixes.subList(start, end);
 		setBound();
 	}
 	
@@ -33,10 +47,11 @@ public class RectangleSet {
 	}
 
 	public RectangleSet[] split() {
-		int mid = fixes.size() / 2;
-		return new RectangleSet[] {
-			new RectangleSet(fixes.subList(0, mid)),
-			new RectangleSet(fixes.subList(mid, fixes.size())) };
+		int mid = start + ((end-start) / 2);
+		RectangleSet[] sets = new RectangleSet[] {
+			new RectangleSet(fixes, start, mid),
+			new RectangleSet(fixes, mid, end) };
+		return sets;
 	}
 
 	public double diagonal() {
@@ -81,11 +96,19 @@ public class RectangleSet {
 	}
 
 	public List<Fix> getFixes() {
-		return fixes;
+		return fixesSublist;
+	}
+
+	@Override
+	public int compareTo(RectangleSet other) {
+		if (start == other.start()) return 0;
+		else if (start > other.start()) return 1;
+		else return -1;
 	}
 
 	@Override
 	public boolean equals(Object otherO) {
+		if (otherO == null) return false;
 		Fix[] vertices = getVertices();
 		Fix[] otherVertices = ((RectangleSet)otherO).getVertices();
 		for (int i=0; i<vertices.length; i++)
@@ -102,14 +125,22 @@ public class RectangleSet {
 
 	public Fix sw() { return getVertices()[3]; }
 
+	public int start() { return start; }
+	
+	public int end() { return end; }
+
+	public int numFixes() { return end() - start(); }
+
 	private void setBound() {
 		if (fixes == null || fixes.size() < 1) return;
 
-		Fix f = fixes.get(0);
+		Fix f = fixes.get(start);
 		f.pressureAlt = f.gnssAlt = 0;
 		this.vertices = new Fix[] { f.clone(), f.clone(), f.clone(), f.clone() };
 
-		for (Fix fix: fixes) {
+		Fix fix;
+		for (int i=start; i<end; i++) {
+			fix = fixes.get(i);
 			if (fix.lat() < se().lat()) {
 				se().setLat(fix.lat());
 				sw().setLat(fix.lat());
@@ -131,6 +162,12 @@ public class RectangleSet {
 
 	@Override
 	public String toString() {
-		return "{" + getFixes().size() + " " + String.format("%1$,.2f", diagonal()) + "}";
+		String str = "\t(" + start + "," + end + ")\n";
+		Fix fix;
+		for (int i=start; i<end; i++) {
+			fix = fixes.get(i);
+			str += "\t" + fix + ",\n";
+		}
+		return str;
 	}
 }
