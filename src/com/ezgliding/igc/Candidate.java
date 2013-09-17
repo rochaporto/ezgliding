@@ -110,6 +110,14 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	@Override
+	public int hashCode() {
+		int result = 0;
+		for (RectangleSet set: getRectangles())
+			result += set.start;
+		return result;
+	}	
+
+	@Override
 	public Candidate clone() {
 		return new Candidate(this.rectangles);
 	}

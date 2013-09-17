@@ -109,12 +109,15 @@ public class RectangleSet implements Comparable<RectangleSet> {
 	@Override
 	public boolean equals(Object otherO) {
 		if (otherO == null) return false;
-		Fix[] vertices = getVertices();
-		Fix[] otherVertices = ((RectangleSet)otherO).getVertices();
-		for (int i=0; i<vertices.length; i++)
-			if (!vertices[i].equivalent(otherVertices[i], false))
-				return false;
-		return true;	
+		RectangleSet other = (RectangleSet)otherO;
+		if (start == other.start && end == other.end)
+			return true;
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return start + end;
 	}
 
 	public Fix ne() { return getVertices()[0]; }
