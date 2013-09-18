@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BrokenLineOptimizer extends Optimizer {
@@ -30,6 +31,7 @@ public class BrokenLineOptimizer extends Optimizer {
 		while (candIter.hasNext()) {
 			// We get the max entry and remove it from the tree
 			current = candIter.next();
+			logger.log(Level.FINE, "New candidate\n[{0}]", current);
 
 			// If final and better than current max, update result
 			if (current.isFinal() && (curResult == null || current.max() > curResult.max()))
@@ -39,7 +41,10 @@ public class BrokenLineOptimizer extends Optimizer {
 		ArrayList<Fix> points = new ArrayList<Fix>();
 		for (RectangleSet set: curResult.getRectangles())
 			points.add(flight.fixes().get(set.start()));
-		return new Result(points.toArray(new Fix[] {}));
+		Result result = new Result(points.toArray(new Fix[] {}));
+
+		logger.log(Level.INFO, "Optimize result:\n[{0}]", result);
+		return result;
 	}
 
 	protected List<Candidate> branch(Candidate candate) {
@@ -70,6 +75,8 @@ public class BrokenLineOptimizer extends Optimizer {
 		ArrayList<Candidate> finalCandidates = new ArrayList<Candidate>();
 
 		permutations(availableSets, numPoints, 0, new int[availableSets.size()], new Candidate(), finalCandidates);
+
+		logger.log(Level.FINEST, "Permutation results:\n[{0}]", finalCandidates);
 		return finalCandidates; 
 	}
 
@@ -131,6 +138,7 @@ public class BrokenLineOptimizer extends Optimizer {
 			// If not final, branch and add to treemap
 			if (!current.isFinal()) {
 				List<Candidate> branchCandidates = branch(current);
+				logger.log(Level.FINEST, "Branch result:\n[{0}]", branchCandidates);
 				for (Candidate c: branchCandidates)
 					if (c.max() > min) maxTree.add(c);
 			} 
