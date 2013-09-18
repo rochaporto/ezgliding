@@ -20,7 +20,7 @@ public class OptimizerTest {
 		};
 		Optimizer.Result result = new BrokenLineOptimizer(new Flight(), 3).new Result(fixes);
 		assertEquals(
-			"<LineString><coordinates>108.766,45.664,1001 108.966,45.264,1201 109.766,44.964,1301 </coordinates></LineString>",
+			"<LineString><coordinates>108.766,45.664,0 108.966,45.264,0 109.766,44.964,0 </coordinates></LineString>",
 			result.toKml());
 	}
 }
