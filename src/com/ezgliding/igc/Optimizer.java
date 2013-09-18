@@ -16,6 +16,14 @@ public abstract class Optimizer {
 
 	public abstract Result optimize();
 
+	public int flightStart() {
+		return 0;
+	}
+
+	public int flightEnd() {
+		return flight.fixes().size();
+	}
+
 	public class Result implements Comparable<Result> {
 		
 		private double distance = -1;
@@ -28,6 +36,12 @@ public abstract class Optimizer {
 
 		public Result(Fix[] points) {
 			this.points = points;
+			// We take off alt and validity (not relevant here)
+			for (Fix fix: points) { 
+				fix.pressureAlt = 0;
+				fix.gnssAlt = 0;
+				fix.validity = 'A';
+			}
 		}
 
 		public double distance() {
