@@ -92,8 +92,8 @@ public class RectangleSetTest {
 		all.add(new Fix(0, 44.234, 111.877, 0, 0, 'V'));
 		RectangleSet allSet = new RectangleSet(all);
 
-		RectangleSet firstHalfSet = new RectangleSet(all.subList(0,2));
-		RectangleSet secondHalfSet = new RectangleSet(all.subList(2,4));
+		RectangleSet firstHalfSet = new RectangleSet(all, 0, 2);
+		RectangleSet secondHalfSet = new RectangleSet(all, 2, 4);
 
 		RectangleSet[] result = allSet.split();
 		assertNotNull(result);
@@ -109,8 +109,8 @@ public class RectangleSetTest {
 		all.add(new Fix(0, 44.234, 111.877, 0, 0, 'V'));
 		RectangleSet allSet = new RectangleSet(all);
 
-		RectangleSet firstHalfSet = new RectangleSet(all.subList(0,1));
-		RectangleSet secondHalfSet = new RectangleSet(all.subList(1,2));
+		RectangleSet firstHalfSet = new RectangleSet(all, 0, 1);
+		RectangleSet secondHalfSet = new RectangleSet(all, 1, 2);
 
 		RectangleSet[] result = allSet.split();
 		assertNotNull(result);
