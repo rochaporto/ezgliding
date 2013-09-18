@@ -43,7 +43,6 @@ public class BrokenLineOptimizer extends Optimizer {
 			points.add(flight.fixes().get(set.start()));
 		Result result = new Result(points.toArray(new Fix[] {}));
 
-		logger.log(Level.INFO, "Optimize result:\n[{0}]", result);
 		return result;
 	}
 
