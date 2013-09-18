@@ -111,9 +111,9 @@ public class Candidate implements Comparable<Candidate> {
 
 	@Override
 	public int hashCode() {
-		int result = 0;
+		int result = 17;
 		for (RectangleSet set: getRectangles())
-			result += set.start;
+			result = 37 * result + set.hashCode();
 		return result;
 	}	
 

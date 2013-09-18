@@ -10,9 +10,9 @@ public class RectangleSet implements Comparable<RectangleSet> {
 
 	Fix[] vertices; // set by setBound()
 
-	int start;
+	final int start;
 	
-	int end;
+	final int end;
 
 	private double diagonal = -1;
 
@@ -117,7 +117,10 @@ public class RectangleSet implements Comparable<RectangleSet> {
 
 	@Override
 	public int hashCode() {
-		return start + end;
+		int result = 17;
+		result = 37 * result + start;
+		result = 13 * result + end;
+		return result;
 	}
 
 	public Fix ne() { return getVertices()[0]; }

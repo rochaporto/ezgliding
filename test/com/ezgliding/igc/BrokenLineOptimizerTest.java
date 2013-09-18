@@ -178,7 +178,7 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
-	public void testOptimize2TP10101010101010101010Points() throws IOException, ParseException {
+	public void testOptimize2TP10Points() throws IOException, ParseException {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
@@ -225,6 +225,17 @@ public class BrokenLineOptimizerTest {
 		assertEquals(points.length, result.points.length);
 		for (int i=0; i<points.length; i++)
 			assertEquals(points[i], result.points[i]);
+	}
+
+	@Test
+	public void testOptimize1TPSampleFlight() throws IOException, ParseException {
+		Parser parser = new Parser();
+		Flight flight = parser.parse(
+			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 3);
+		Optimizer.Result result = opt.optimize();
+		assertNotNull(result);
+		assertEquals(492.646, result.distance(), 0.001);
 	}
 
 	@Test
