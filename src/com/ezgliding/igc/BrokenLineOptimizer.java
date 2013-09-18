@@ -105,7 +105,7 @@ public class BrokenLineOptimizer extends Optimizer {
 
 			// We start with a candidate containing only one rectangle (with all points)
 			ArrayList<RectangleSet> initialSet = new ArrayList<RectangleSet>();
-			initialSet.add(new RectangleSet(flight.fixes().subList(flightStart(), flightEnd()+1)));
+			initialSet.add(new RectangleSet(flight.fixes().subList(flightStart(), flightEnd())));
 			maxTree.add(new Candidate(initialSet));
 		}
 
