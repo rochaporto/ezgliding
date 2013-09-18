@@ -21,7 +21,7 @@ public class BrokenLineOptimizerTest {
 
 	private static Logger logger = Logger.getLogger(BrokenLineOptimizerTest.class.getName());
 
-	ArrayList<Fix> fixes, fixes2;
+	ArrayList<Fix> fixes;
 
 	private static Calendar calendar;
 
@@ -36,11 +36,9 @@ public class BrokenLineOptimizerTest {
 		fixes.add(new Fix(1000, 41.000, 101.000, 0, 0, 'V'));
 		fixes.add(new Fix(2000, 42.000, 102.000, 0, 0, 'V'));
 		fixes.add(new Fix(3000, 43.000, 103.000, 0, 0, 'V'));
-
-		fixes2 = new ArrayList<Fix>();
-		fixes2.add(new Fix(4000, 44.000, 104.000, 0, 0, 'V'));
-		fixes2.add(new Fix(5000, 45.000, 105.000, 0, 0, 'V'));
-		fixes2.add(new Fix(6000, 48.000, 108.000, 0, 0, 'V'));
+		fixes.add(new Fix(4000, 44.000, 104.000, 0, 0, 'V'));
+		fixes.add(new Fix(5000, 45.000, 105.000, 0, 0, 'V'));
+		fixes.add(new Fix(6000, 48.000, 108.000, 0, 0, 'V'));
 	}
 
 	@Test
@@ -240,13 +238,26 @@ public class BrokenLineOptimizerTest {
 	}
 
 	@Test
-	public void testBranch() {
+	public void testBranch2Points() {
 		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
-		sets.add(new RectangleSet(fixes));
-		sets.add(new RectangleSet(fixes2)); // fixes2 has larger diagonal
+		sets.add(new RectangleSet(fixes, 0, 3));
+		sets.add(new RectangleSet(fixes, 3, 6)); // has larger diagonal
 
 		Candidate candate = new Candidate(sets);
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		List<Candidate> result = opt.branch(candate);
+		assertEquals(5, result.size()); 
+		// TODO: Check each element
+	}
+
+	@Test
+	public void testBranch3Points() {
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+		sets.add(new RectangleSet(fixes, 0, 3));
+		sets.add(new RectangleSet(fixes, 3, 6)); // has larger diagonal
+
+		Candidate candate = new Candidate(sets);
+		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
 		List<Candidate> result = opt.branch(candate);
 		assertEquals(6, result.size()); 
 		// TODO: Check each element
@@ -257,8 +268,8 @@ public class BrokenLineOptimizerTest {
 		ArrayList<RectangleSet> tmp;
 
 		ArrayList<RectangleSet> availableSets = new ArrayList<RectangleSet>();
-		availableSets.add(new RectangleSet(fixes));
-		availableSets.add(new RectangleSet(fixes2));
+		availableSets.add(new RectangleSet(fixes, 0, 3));
+		availableSets.add(new RectangleSet(fixes, 3, 6));
 
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
 		List<Candidate> result = opt.permutations(availableSets);
@@ -295,35 +306,14 @@ public class BrokenLineOptimizerTest {
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
-		assertEquals(4, result.size());
+		assertEquals(1, result.size());
 
 		tmp = new ArrayList<RectangleSet>();
 		tmp.add(availableSets.get(0));
-		tmp.add(availableSets.get(0));
-		tmp.add(availableSets.get(0));
+		tmp.add(availableSets.get(1));
+		tmp.add(availableSets.get(1));
 		assertEquals(tmp.size(), result.get(0).getRectangles().size());
 		assertEquals(tmp, result.get(0).getRectangles());
-			
-		tmp = new ArrayList<RectangleSet>();
-		tmp.add(availableSets.get(0));
-		tmp.add(availableSets.get(0));
-		tmp.add(availableSets.get(1));
-		assertEquals(tmp.size(), result.get(1).getRectangles().size());
-		assertEquals(tmp, result.get(1).getRectangles());
-
-		tmp = new ArrayList<RectangleSet>();
-		tmp.add(availableSets.get(0));
-		tmp.add(availableSets.get(1));
-		tmp.add(availableSets.get(1));
-		assertEquals(tmp.size(), result.get(2).getRectangles().size());
-		assertEquals(tmp, result.get(2).getRectangles());
-
-		tmp = new ArrayList<RectangleSet>();
-		tmp.add(availableSets.get(1));
-		tmp.add(availableSets.get(1));
-		tmp.add(availableSets.get(1));
-		assertEquals(tmp.size(), result.get(3).getRectangles().size());
-		assertEquals(tmp, result.get(3).getRectangles());
 	}
 	@Test
 
@@ -338,7 +328,7 @@ public class BrokenLineOptimizerTest {
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
-		assertEquals(10, result.size());
+		assertEquals(1, result.size());
 	}
 
 

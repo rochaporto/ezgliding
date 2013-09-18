@@ -69,12 +69,12 @@ public class BrokenLineOptimizer extends Optimizer {
 	protected List<Candidate> permutations(List<RectangleSet> availableSets) {
 		ArrayList<Candidate> finalCandidates = new ArrayList<Candidate>();
 
-		permutations(availableSets, numPoints, 0, new Candidate(), finalCandidates);
+		permutations(availableSets, numPoints, 0, new int[availableSets.size()], new Candidate(), finalCandidates);
 		return finalCandidates; 
 	}
 
 	private void permutations(List<RectangleSet> availableSets, int size, int from, 
-		Candidate current, List<Candidate> candidates) {
+		int[] useCount, Candidate current, List<Candidate> candidates) {
 		
 		if (current.getRectangles().size() == size) { // Final condition, add and return
 			candidates.add(current);
@@ -82,9 +82,12 @@ public class BrokenLineOptimizer extends Optimizer {
 		}
 
 		for (int i=from; i<availableSets.size(); i++) {
+			if (useCount[i] > availableSets.get(i).numFixes()-1) continue;
 			Candidate newCurrent = current.clone();
 			newCurrent.add(availableSets.get(i));
-			permutations(availableSets, size, i, newCurrent, candidates);
+			int[] newUseCount = useCount.clone();
+			++newUseCount[i];
+			permutations(availableSets, size, i, newUseCount, newCurrent, candidates);
 		}
 	}
 
