@@ -122,7 +122,7 @@ public class BrokenLineOptimizerAnim extends JFrame {
 					Parser parser = new Parser();
 					Flight flight = parser.parse(
 						FileSystems.getDefault().getPath(args[0]));
-					BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
+					BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, Integer.parseInt(args[1]));
 					BrokenLineOptimizerAnim optAnim = new BrokenLineOptimizerAnim(opt);
 					optAnim.setVisible(true);
 				} catch(Exception e) { System.out.println("EXCEPTION!!"); e.printStackTrace(); }
