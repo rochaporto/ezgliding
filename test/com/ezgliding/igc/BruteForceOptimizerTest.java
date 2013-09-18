@@ -186,39 +186,6 @@ public class BruteForceOptimizerTest {
 			assertEquals(points[i], result.points[i]);
 	}
 
-	@Test
-	public void testOptimize1TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 3);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(492.646, result.distance(), 0.001);
-	}
-
-	@Test
-	public void testOptimize2TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 4);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(646.424, result.distance(), 0.001);
-	}
-
-	@Test
-	public void testOptimize3TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 5);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(742.052, result.distance(), 0.001);
-	}
-
 	private int getTime(int hour, int min, int second) {
 		return (hour*3600)+(min*60)+second;
 	}

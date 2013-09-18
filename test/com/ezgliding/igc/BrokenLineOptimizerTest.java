@@ -227,39 +227,6 @@ public class BrokenLineOptimizerTest {
 			assertEquals(points[i], result.points[i]);
 	}
 
-	@Test
-	public void testOptimize1TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 3);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(492.646, result.distance(), 0.001);
-	}
-
-	@Test
-	public void testOptimize2TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(646.424, result.distance(), 0.001);
-	}
-
-	@Test
-	public void testOptimize3TPSampleFlight() throws IOException, ParseException {
-		Parser parser = new Parser();
-		Flight flight = parser.parse(
-			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
-		Optimizer.Result result = opt.optimize();
-		assertNotNull(result);
-		assertEquals(742.052, result.distance(), 0.001);
-	}
-
 	@Test(expected=IllegalArgumentException.class)
 	public void testBranchNull() {
 		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
