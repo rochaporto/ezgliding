@@ -65,4 +65,15 @@ public class Task {
 
 	public ArrayList<WayPoint> getTurnPoints() { return turnPoints; }
 
+	@Override
+	public String toString() {
+		String str = getDate() + "," + getFlightDate() + ","
+			+ getTaskId() + "," + getDescription() + ","
+			+ getTakeoff() + "," + getStart();
+		for (WayPoint wp: getTurnPoints())
+			str += "," + wp;
+		str += "," + getFinish() + "," + getLanding();
+		return str;
+	}
+
 }

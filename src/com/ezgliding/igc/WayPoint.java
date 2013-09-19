@@ -15,4 +15,9 @@ public class WayPoint {
 
 	public String getDescription() { return description; }
 
+	@Override
+	public String toString() { 
+		return "{" + point + ",\"" + description + "\"}";
+	}
+
 }
