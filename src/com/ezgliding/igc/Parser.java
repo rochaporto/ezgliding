@@ -57,9 +57,9 @@ public class Parser {
 				parseLine(lines[i], flight);
 			else { // C is a special case, need to pass multiple lines at once
 				ArrayList<String> cLines = new ArrayList<String>();
-				cLines.add(lines[i++]);
-				while (lines[i].charAt(0) == 'C')
-					cLines.add(lines[i++]);
+				cLines.add(lines[i]);
+				while (lines[i+1].charAt(0) == 'C')
+					cLines.add(lines[++i]);
 				parseC(cLines.toArray(new String[] {}), flight);
 			}
 		}
