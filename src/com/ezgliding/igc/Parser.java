@@ -52,11 +52,22 @@ public class Parser {
 
 		char type = line.charAt(0);
 		switch(type) {
+			case 'A':
+				parseA(line, flight);
+				break;
 			case 'B': 
 				parseB(line, flight);
 				break;
 			default: break;
 		}
+	}
+
+	private void parseA(String line, Flight flight) throws ParseException {
+		if (line == null || flight == null) return;
+
+		flight.setManufacturer(line.substring(1,4));
+		flight.setUniqueID(line.substring(4,7));
+		flight.setAdditionalData(line.substring(7));
 	}
 
 	private void parseB(String line, Flight flight) throws ParseException {
