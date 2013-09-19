@@ -8,8 +8,18 @@ import java.nio.file.Files;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Parser {
+
+	private enum HSubType { 
+		DTE, FXA, PLT, CM2, GTY, GID, DTM, RFW, RHW, FTY, GPS, PRS, CID, CCL
+	}
+
+	private static Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+	static { cal.set(Calendar.MILLISECOND, 0); }
 
 	public Parser() {
 
@@ -58,6 +68,9 @@ public class Parser {
 			case 'B': 
 				parseB(line, flight);
 				break;
+			case 'H': 
+				parseH(line, flight);
+				break;
 			default: break;
 		}
 	}
@@ -66,7 +79,7 @@ public class Parser {
 		if (line == null || flight == null) return;
 
 		flight.setManufacturer(line.substring(1,4));
-		flight.setUniqueID(line.substring(4,7));
+		flight.setUniqueId(line.substring(4,7));
 		flight.setAdditionalData(line.substring(7));
 	}
 
@@ -85,4 +98,63 @@ public class Parser {
 		);
 		flight.addFix(fix);
 	}
+
+	private void parseH(String line, Flight flight) throws ParseException {
+		if (line == null || flight == null) return;
+
+		String subType = line.substring(2,5);
+
+		switch (HSubType.valueOf(subType)) {
+			case DTE:
+				cal.set(
+					Integer.parseInt(line.substring(9,11)), 
+					Integer.parseInt(line.substring(7,9))-1, 
+					Integer.parseInt(line.substring(5,7)),
+					0, 0, 0);
+				flight.setDate(cal.getTime());
+				break;
+			case FXA:
+				flight.setFixAccuracy(Integer.parseInt(line.substring(5,8)));
+				break;
+			case PLT:
+				flight.setPilot(line.substring(line.indexOf(":")+1));
+				break;
+			case CM2:
+				flight.setCrew2(line.substring(line.indexOf(":")+1));
+				break;
+			case GTY:
+				flight.setGliderType(line.substring(line.indexOf(":")+1));
+				break;
+			case GID:
+				flight.setGliderId(line.substring(line.indexOf(":")+1));
+				break;
+			case DTM:
+				flight.setGpsDatum(line.substring(line.indexOf(":")+1));
+				break;
+			case RFW:
+				flight.setFirmwareVersion(line.substring(line.indexOf(":")+1));
+				break;
+			case RHW:
+				flight.setHardwareVersion(line.substring(line.indexOf(":")+1));
+				break;
+			case FTY:
+				flight.setFrType(line.substring(line.indexOf(":")+1));
+				break;
+			case GPS:
+				flight.setGpsManufacturer(line.substring(line.indexOf(":")+1));
+				break;
+			case PRS:
+				flight.setPressAltSensor(line.substring(line.indexOf(":")+1));
+				break;
+			case CID:
+				flight.setCompetitionId(line.substring(line.indexOf(":")+1));
+				break;
+			case CCL:
+				flight.setCompetitionClass(line.substring(line.indexOf(":")+1));
+				break;
+			default:
+				break;
+		}
+	}
+
 }

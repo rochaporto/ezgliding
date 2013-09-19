@@ -8,14 +8,20 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.ezgliding.igc.Parser;
 
 public class ParserTest {
 
-	Flight flight;
+	private Flight flight;
 
-	Fix[] fixes;
+	private Fix[] fixes;
+
+	private static Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+	static { cal.set(Calendar.MILLISECOND, 0); }
 
 	@Before
 	public void setUp() throws IOException, ParseException {
@@ -44,7 +50,7 @@ public class ParserTest {
 	@Test
 	public void testParseA() {
 		assertEquals("MAN", flight.getManufacturer());
-		assertEquals("UID", flight.getUniqueID());
+		assertEquals("UID", flight.getUniqueId());
 		assertEquals("MOREDATA", flight.getAdditionalData());
 	}
 
@@ -53,6 +59,25 @@ public class ParserTest {
 		assertEquals(fixes.length, flight.fixes().size());
 		for (int i=0; i<fixes.length; i++)
 			assertEquals(fixes[i], flight.fixes().get(i));
+	}
+
+	@Test
+	public void testParseH() {
+		cal.set(3, 1, 1, 0, 0, 0);
+		assertEquals(cal.getTime(), flight.getDate());
+		assertEquals(123, flight.getFixAccuracy());
+		assertEquals("EZPILOT", flight.getPilot());
+		assertEquals("EZCREW2", flight.getCrew2());
+		assertEquals("EZGLIDER", flight.getGliderType());
+		assertEquals("EZGLIDERID", flight.getGliderId());
+		assertEquals("WGS-1984", flight.getGpsDatum());
+		assertEquals("1.1", flight.getFirmwareVersion());
+		assertEquals("2.2", flight.getHardwareVersion());
+		assertEquals("EZFRTYPE", flight.getFrType());
+		assertEquals("EZGPS", flight.getGpsManufacturer());
+		assertEquals("EZPRESSALTSENSOR", flight.getPressAltSensor());
+		assertEquals("EZCOMPID", flight.getCompetitionId());
+		assertEquals("EZCOMPCLASS", flight.getCompetitionClass());
 	}
 
 	private int getTime(int hour, int min, int second) {
