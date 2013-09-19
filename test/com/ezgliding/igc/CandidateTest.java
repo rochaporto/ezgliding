@@ -79,11 +79,22 @@ public class CandidateTest {
 
 		sets.add(new RectangleSet(fixes,0,2));
 		sets.add(new RectangleSet(fixes,2,4));
+
+		Candidate candate = new Candidate(sets);
+		double expected = Util.distance(sets.get(0).sw(), sets.get(1).ne());
+		assertEquals(expected, candate.max(), 0.0);
+	}
+	@Test
+	public void testMax3Sets() {
+		ArrayList<RectangleSet> sets = new ArrayList<RectangleSet>();
+
+		sets.add(new RectangleSet(fixes,0,2));
+		sets.add(new RectangleSet(fixes,2,4));
 		sets.add(new RectangleSet(fixes,4,6));
 
 		Candidate candate = new Candidate(sets);
-		double expected = Util.distance(sets.get(0).sw(), sets.get(1).ne()) 
-			+ Util.distance(sets.get(1).sw(), sets.get(2).ne());
+		double expected = Util.distance(sets.get(0).sw(), sets.get(1).se()) 
+			+ Util.distance(sets.get(1).se(), sets.get(2).ne());
 		assertEquals(expected, candate.max(), 0.0);
 	}
 

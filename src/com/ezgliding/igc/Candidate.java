@@ -26,9 +26,9 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public double max() {
-		if (max == 0.0)
+		if (max == 0.0) 
 			for (int i=0; i<rectangles.size()-1; i++)
-				max += rectangles.get(i).maxDistance(rectangles.get(i+1));
+				max += rectangles.get(i).maxDistance(rectangles.get(i+1));	
 		return max;
 	}
 
