@@ -42,6 +42,8 @@ public class Flight {
 
 	private ArrayList<Fix> fixes;
 
+	private Task task;
+
 	public Flight() {
 		this.fixes = new ArrayList<Fix>();
 	}
@@ -121,6 +123,10 @@ public class Flight {
 	public void setCompetitionClass(String competitionClass) { this.competitionClass = competitionClass; }
 
 	public String getCompetitionClass() { return competitionClass; }
+
+	public void setTask(Task task) { this.task = task; }
+
+	public Task getTask() { return task; }
 
 	@Override
 	public String toString() {

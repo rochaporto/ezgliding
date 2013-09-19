@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -51,8 +52,17 @@ public class Parser {
 		Flight flight = new Flight();
 
 		String[] lines = content.split("\n");
-		for (String line: lines)
-			parseLine(line, flight);
+		for (int i=0; i<lines.length; i++) {
+			if (lines[i].charAt(0) != 'C')
+				parseLine(lines[i], flight);
+			else { // C is a special case, need to pass multiple lines at once
+				ArrayList<String> cLines = new ArrayList<String>();
+				cLines.add(lines[i++]);
+				while (lines[i].charAt(0) == 'C')
+					cLines.add(lines[i++]);
+				parseC(cLines.toArray(new String[] {}), flight);
+			}
+		}
 
 		return flight;
 	}	
@@ -97,6 +107,59 @@ public class Parser {
 			line.charAt(24)
 		);
 		flight.addFix(fix);
+	}
+
+	private void parseC(String[] lines, Flight flight) throws ParseException {
+		if (lines == null || flight == null) return;
+
+		Task task = new Task();
+		cal.set(
+			Integer.parseInt(lines[0].substring(5,7)), 
+			Integer.parseInt(lines[0].substring(3,5))-1, 
+			Integer.parseInt(lines[0].substring(1,3)),
+			Integer.parseInt(lines[0].substring(7,9)), 
+			Integer.parseInt(lines[0].substring(9,11)), 
+			Integer.parseInt(lines[0].substring(11,13)));
+		task.setDate(cal.getTime());
+		cal.set(
+			Integer.parseInt(lines[0].substring(17,19)), 
+			Integer.parseInt(lines[0].substring(15,17))-1, 
+			Integer.parseInt(lines[0].substring(13,15)),
+			0,0,0); 
+		task.setFlightDate(cal.getTime());
+		task.setTaskId(Integer.parseInt(lines[0].substring(19, 23)));
+		task.setDescription(lines[0].substring(25));
+
+		task.setTakeoff(new WayPoint( new Fix(0, 
+					Util.minDec2decimal(lines[1].substring(1,9)),
+					Util.minDec2decimal(lines[1].substring(9,18)),
+					0, 0, 'A'),
+				lines[1].substring(19)));
+		task.setStart(new WayPoint(new Fix(0, 
+					Util.minDec2decimal(lines[2].substring(1,9)),
+					Util.minDec2decimal(lines[2].substring(9,18)),
+					0, 0, 'A'),
+				lines[2].substring(19)));
+		task.setFinish(new WayPoint(new Fix(0, 
+					Util.minDec2decimal(lines[lines.length-2].substring(1,9)),
+					Util.minDec2decimal(lines[lines.length-2].substring(9,18)),
+					0, 0, 'A'),
+				lines[lines.length-2].substring(19)));
+		task.setLanding(new WayPoint(new Fix(0, 
+					Util.minDec2decimal(lines[lines.length-1].substring(1,9)),
+					Util.minDec2decimal(lines[lines.length-1].substring(9,18)),
+					0, 0, 'A'),
+				lines[lines.length-1].substring(19)));
+
+		for (int i=3; i<lines.length-2; i++)
+			task.addTurnPoint(new WayPoint(new Fix(0, 
+					Util.minDec2decimal(lines[i].substring(1,9)),
+					Util.minDec2decimal(lines[i].substring(9,18)),
+					0, 0, 'A'),
+				lines[i].substring(19)));
+
+		flight.setTask(task);
+
 	}
 
 	private void parseH(String line, Flight flight) throws ParseException {

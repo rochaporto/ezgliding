@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -59,6 +60,39 @@ public class ParserTest {
 		assertEquals(fixes.length, flight.fixes().size());
 		for (int i=0; i<fixes.length; i++)
 			assertEquals(fixes[i], flight.fixes().get(i));
+	}
+
+	@Test 
+	public void testParseC() {
+		Task task = flight.getTask();
+		WayPoint[] taskPoints = new WayPoint[] {
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("4505005N"), 
+				Util.minDec2decimal("00505005E"), 0, 0, 'A'), "EZTAKEOFF"),
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("4606006N"), 
+				Util.minDec2decimal("00606006E"), 0, 0, 'A'), "EZSTART"),
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("4707007N"), 
+				Util.minDec2decimal("00707007E"), 0, 0, 'A'), "EZTP1"),
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("4808008N"), 
+				Util.minDec2decimal("00808008E"), 0, 1112, 'A'), "EZTP2"),
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("4909009N"), 
+				Util.minDec2decimal("00909009E"), 0, 0, 'A'), "EZFINISH"),
+			new WayPoint(new Fix(getTime(0,0,0), Util.minDec2decimal("5050050N"), 
+				Util.minDec2decimal("01010010E"), 0, 0, 'A'), "EZLANDING"),
+		};
+		cal.set(3,1,1,10,11,12);
+		assertEquals(cal.getTime(), task.getDate());
+		cal.set(4,2,2,0,0,0);
+		assertEquals(cal.getTime(), task.getFlightDate());
+		assertEquals(1234, task.getTaskId());
+		assertEquals(2, task.getTurnPoints().size());
+		assertEquals("EZTASK", task.getDescription());
+		assertTrue(taskPoints[0].getPoint().equivalent(task.getTakeoff().getPoint(), false));
+		assertTrue(taskPoints[1].getPoint().equivalent(task.getStart().getPoint(), false));
+		assertEquals(2, task.getTurnPoints().size());
+		assertTrue(taskPoints[2].getPoint().equivalent(task.getTurnPoints().get(0).getPoint(), false));
+		assertTrue(taskPoints[3].getPoint().equivalent(task.getTurnPoints().get(1).getPoint(), false));
+		assertTrue(taskPoints[4].getPoint().equivalent(task.getFinish().getPoint(), false));
+		assertTrue(taskPoints[5].getPoint().equivalent(task.getLanding().getPoint(), false));
 	}
 
 	@Test
