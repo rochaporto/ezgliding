@@ -14,7 +14,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BruteForceOptimizerTest {
+public class OptimizerBruteForceTest {
 
 	@Before
 	public void setUp() {
@@ -25,7 +25,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-3-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 3);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(845.129, result.distance(), 0.001);
@@ -47,7 +47,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 3);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.378, result.distance(), 0.001);
@@ -69,7 +69,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 4);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 4);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.424, result.distance(), 0.001);
@@ -93,7 +93,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 5);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.439, result.distance(), 0.001);
@@ -119,7 +119,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 3);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(315.589, result.distance(), 0.001);
@@ -141,7 +141,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 4);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 4);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(417.724, result.distance(), 0.001);
@@ -165,7 +165,7 @@ public class BruteForceOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 5);
+		OptimizerBruteForce opt = new OptimizerBruteForce(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(425.883, result.distance(), 0.001);

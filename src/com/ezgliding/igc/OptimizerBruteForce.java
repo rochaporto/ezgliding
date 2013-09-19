@@ -3,13 +3,13 @@ package com.ezgliding.igc;
 import java.util.HashMap;
 import java.util.List;
 
-public class BruteForceOptimizer extends Optimizer {
+public class OptimizerBruteForce extends Optimizer {
 
 	private HashMap<String,Double> distCache = new HashMap<String,Double>();
 
 	private List<Fix> fixes;
 
-	public BruteForceOptimizer(Flight flight, int numPoints) {
+	public OptimizerBruteForce(Flight flight, int numPoints) {
 		super(flight, numPoints);
 	
 		if (flight != null) fixes = flight.fixes();

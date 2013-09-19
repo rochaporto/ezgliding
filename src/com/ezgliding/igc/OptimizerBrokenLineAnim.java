@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class BrokenLineOptimizerAnim extends JFrame {
+public class OptimizerBrokenLineAnim extends JFrame {
 
 	public class CandidatePanel extends JPanel {
 
@@ -62,7 +62,7 @@ public class BrokenLineOptimizerAnim extends JFrame {
 		}
 	}
 
-	private BrokenLineOptimizer opt;
+	private OptimizerBrokenLine opt;
 
 	private Candidate current;
 
@@ -72,7 +72,7 @@ public class BrokenLineOptimizerAnim extends JFrame {
 
 	private Iterator<Candidate> candIter;
 
-	public BrokenLineOptimizerAnim(BrokenLineOptimizer opt) {
+	public OptimizerBrokenLineAnim(OptimizerBrokenLine opt) {
 		this.opt = opt;
 
 		initUI();
@@ -122,8 +122,8 @@ public class BrokenLineOptimizerAnim extends JFrame {
 					Parser parser = new Parser();
 					Flight flight = parser.parse(
 						FileSystems.getDefault().getPath(args[0]));
-					BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, Integer.parseInt(args[1]));
-					BrokenLineOptimizerAnim optAnim = new BrokenLineOptimizerAnim(opt);
+					OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, Integer.parseInt(args[1]));
+					OptimizerBrokenLineAnim optAnim = new OptimizerBrokenLineAnim(opt);
 					optAnim.setVisible(true);
 				} catch(Exception e) { System.out.println("EXCEPTION!!"); e.printStackTrace(); }
 			}

@@ -11,11 +11,11 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BrokenLineOptimizer extends Optimizer {
+public class OptimizerBrokenLine extends Optimizer {
 
-	private static Logger logger = Logger.getLogger(BrokenLineOptimizer.class.getName());
+	private static Logger logger = Logger.getLogger(OptimizerBrokenLine.class.getName());
 
-	public BrokenLineOptimizer(Flight flight, int numPoints) {
+	public OptimizerBrokenLine(Flight flight, int numPoints) {
 		super(flight, numPoints);
 	}
 

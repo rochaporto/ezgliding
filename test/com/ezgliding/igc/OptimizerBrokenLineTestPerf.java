@@ -11,8 +11,15 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.sql.Time;
 import java.text.ParseException;
+import java.util.logging.Logger;
 
-public class BruteForceOptimizerTestPerf {
+public class OptimizerBrokenLineTestPerf {
+
+	private static Logger logger = Logger.getLogger(OptimizerBrokenLineTestPerf.class.getName());
+
+	@BeforeClass
+	public static void setUpClass() {
+	}
 
 	@Before
 	public void setUp() {
@@ -23,7 +30,7 @@ public class BruteForceOptimizerTestPerf {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(492.646, result.distance(), 0.001);
@@ -34,7 +41,7 @@ public class BruteForceOptimizerTestPerf {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 4);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 4);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(646.424, result.distance(), 0.001);
@@ -45,7 +52,7 @@ public class BruteForceOptimizerTestPerf {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/SampleFlight.igc"));
-		BruteForceOptimizer opt = new BruteForceOptimizer(flight, 5);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(742.052, result.distance(), 0.001);

@@ -18,7 +18,7 @@ public class OptimizerTest {
 			new Fix(0, 45.264, 108.966, 1201, 1210, 'V'),	
 			new Fix(0, 44.964, 109.766, 1301, 1310, 'V')
 		};
-		Optimizer.Result result = new BrokenLineOptimizer(new Flight(), 3).new Result(fixes);
+		Optimizer.Result result = new OptimizerBrokenLine(new Flight(), 3).new Result(fixes);
 		assertEquals(
 			"<LineString><coordinates>108.766,45.664,0 108.966,45.264,0 109.766,44.964,0 </coordinates></LineString>",
 			result.toKml());

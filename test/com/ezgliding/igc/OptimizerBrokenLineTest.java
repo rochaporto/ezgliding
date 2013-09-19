@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class BrokenLineOptimizerTest {
+public class OptimizerBrokenLineTest {
 
-	private static Logger logger = Logger.getLogger(BrokenLineOptimizerTest.class.getName());
+	private static Logger logger = Logger.getLogger(OptimizerBrokenLineTest.class.getName());
 
 	ArrayList<Fix> fixes;
 
@@ -44,19 +44,19 @@ public class BrokenLineOptimizerTest {
 	@Test
 	public void testCreation() {
 		Flight flight = new Flight();
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 5);
 		assertEquals(5, opt.getNumPoints());
 		assertEquals(flight, opt.getFlight());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreationNull() {
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(null, 5);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(null, 5);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreationNegativePoints() {
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), -1);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), -1);
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-3-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(845.129, result.distance(), 0.001);
@@ -86,7 +86,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.378, result.distance(), 0.001);
@@ -108,7 +108,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 4);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.424, result.distance(), 0.001);
@@ -132,7 +132,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-5-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(855.439, result.distance(), 0.001);
@@ -158,7 +158,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 3);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(315.589, result.distance(), 0.001);
@@ -180,7 +180,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 4);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(417.724, result.distance(), 0.001);
@@ -204,7 +204,7 @@ public class BrokenLineOptimizerTest {
 		Parser parser = new Parser();
 		Flight flight = parser.parse(
 			FileSystems.getDefault().getPath("test/data/optimize-with-10-points.igc"));
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 5);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 5);
 		Optimizer.Result result = opt.optimize();
 		assertNotNull(result);
 		assertEquals(425.883, result.distance(), 0.001);
@@ -227,13 +227,13 @@ public class BrokenLineOptimizerTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testBranchNull() {
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 2);
 		List<Candidate> result = opt.branch(null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testBranch0Rects() {
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 2);
 		List<Candidate> result = opt.branch(new Candidate());
 	}
 
@@ -244,7 +244,7 @@ public class BrokenLineOptimizerTest {
 		sets.add(new RectangleSet(fixes, 3, 6)); // has larger diagonal
 
 		Candidate candate = new Candidate(sets);
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 2);
 		List<Candidate> result = opt.branch(candate);
 		assertEquals(5, result.size()); 
 		// TODO: Check each element
@@ -257,7 +257,7 @@ public class BrokenLineOptimizerTest {
 		sets.add(new RectangleSet(fixes, 3, 6)); // has larger diagonal
 
 		Candidate candate = new Candidate(sets);
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 3);
 		List<Candidate> result = opt.branch(candate);
 		assertEquals(6, result.size()); 
 		// TODO: Check each element
@@ -271,7 +271,7 @@ public class BrokenLineOptimizerTest {
 		availableSets.add(new RectangleSet(fixes, 0, 3));
 		availableSets.add(new RectangleSet(fixes, 3, 6));
 
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 2);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 2);
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
 		assertEquals(3, result.size());
@@ -303,7 +303,7 @@ public class BrokenLineOptimizerTest {
 		availableSets.add(new RectangleSet(fixes,0,1));
 		availableSets.add(new RectangleSet(fixes,1,3));
 
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 3);
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -325,7 +325,7 @@ public class BrokenLineOptimizerTest {
 		availableSets.add(new RectangleSet(fixes,1,2));
 		availableSets.add(new RectangleSet(fixes,2,3));
 
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 3);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 3);
 		List<Candidate> result = opt.permutations(availableSets);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -335,13 +335,13 @@ public class BrokenLineOptimizerTest {
 	@Test
 	public void testGetFlight() {
 		Flight flight = new Flight();
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(flight, 4);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(flight, 4);
 		assertEquals(flight, opt.getFlight());
 	}
 
 	@Test
 	public void testGetNumPoints() {
-		BrokenLineOptimizer opt = new BrokenLineOptimizer(new Flight(), 4);
+		OptimizerBrokenLine opt = new OptimizerBrokenLine(new Flight(), 4);
 		assertEquals(4, opt.getNumPoints());
 	}
 
