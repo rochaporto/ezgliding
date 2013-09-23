@@ -12,6 +12,7 @@
 
 	<target name="init">
 		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/ae"/>
 		<mkdir dir="${build}/reports"/>
 		<mkdir dir="${build}/src"/>
 		<mkdir dir="${build}/test"/>
@@ -19,7 +20,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${src}" destdir="${build}/src" debug="${compile.debug}"/>
+		<javac srcdir="${src}/com/ezgliding/igc" destdir="${build}/src" debug="${compile.debug}"/>
 	</target>
 
 	<target name="compiletest" depends="dist" description="compile test sources">
@@ -94,4 +95,61 @@
 		<delete dir="${build}"/>
 		<delete dir="${dist}"/>
 	</target>
+
+	<!-- AppEngine Targets -->
+	<property name="sdk.dir" location="/home/rocha/opt/appengine-java-sdk-1.8.4" />
+	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+
+	<path id="ae.classpath">
+		<pathelement path="${build}/ae/WEB-INF/classes" />
+ 		<fileset dir="${build}/ae/WEB-INF/lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${sdk.dir}/lib">
+			<include name="shared/**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="aecpjars" description="Copies the App Engine JARs to the WAR.">
+		<copy todir="${build}/ae/WEB-INF/lib" flatten="true">
+			<fileset dir="${sdk.dir}/lib/user"><include name="**/*.jar" /></fileset>
+		</copy>
+	</target>
+
+	<target name="aecompile" depends="compile,aecpjars"
+		description="Compiles Java source and copies other source files to the WAR.">
+		<mkdir dir="${build}/ae/WEB-INF/classes" />
+		<copy todir="${build}/ae/WEB-INF">
+			<fileset dir="${src}/WEB-INF">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		<javac srcdir="${src}" destdir="${build}/ae/WEB-INF/classes" 
+			classpathref="ae.classpath" debug="${compile.debug}" />
+	</target>
+
+	<target name="aerun" depends="aecompile" description="Starts the development server.">
+		<dev_appserver war="${build}/ae/" />
+	</target>
+
+	<target name="aeupdate" depends="aecompile" description="Uploads the application to App Engine.">
+		<appcfg action="update" war="${build}/ae">
+			<options><arg value="--oauth2"/></options>
+		</appcfg>
+	</target>
+
+	<target name="aerollback" depends="aecompile" description="Rolls back an interrupted application update.">
+		<appcfg action="rollback" war="${build}/ae">
+			<options><arg value="--oauth2"/></options>
+		</appcfg>
+	</target>
+
+	<target name="aegetlogs" depends="aecompile" description="Downloads log data from App Engine for the application.">
+		<appcfg action="request_logs" war="${build}/ae">
+			<options><arg value="--oauth2"/><arg value="--num_days=5"/></options>
+			<args><arg value="build/ae/logs.txt"/></args>
+		</appcfg>
+	</target>	
+
 </project>
