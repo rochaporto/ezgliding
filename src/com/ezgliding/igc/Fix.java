@@ -50,6 +50,17 @@ public class Fix {
 	}
 
 	@Override
+	public int hashCode() {
+		double result = 17;
+		result = result * 37 + latrd();
+		result = result * 37 + lonrd();
+		result = result * 37 + pressureAlt;
+		result = result * 37 + gnssAlt;
+		result = result * 37 + validity;
+		return (int)result;
+	}
+
+	@Override
 	public boolean equals(Object otherO) {
 		if (otherO == null) return false;
 
