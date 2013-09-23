@@ -1,6 +1,7 @@
 package com.ezgliding.igc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 
@@ -11,6 +12,10 @@ public class Candidate implements Comparable<Candidate> {
 	private double max;
 
 	private double min;
+
+	private boolean isFinal;
+
+	private RectangleSet largestDiagonal;
 
 	public Candidate() {
 		this(null);
@@ -25,9 +30,9 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public double max() {
-		if (max == 0.0)
+		if (max == 0.0) 
 			for (int i=0; i<rectangles.size()-1; i++)
-				max += rectangles.get(i).maxDistance(rectangles.get(i+1));
+				max += rectangles.get(i).maxDistance(rectangles.get(i+1));	
 		return max;
 	}
 
@@ -39,9 +44,7 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public boolean isFinal() {
-		for (RectangleSet set: getRectangles())
-			if (set.getFixes().size() != 1) return false;
-		return true;
+		return isFinal;
 	}
 
 	public List<RectangleSet> getRectangles() {
@@ -55,56 +58,72 @@ public class Candidate implements Comparable<Candidate> {
 		reset();
 	}
 
-	public void replace(int i, RectangleSet newSet) {
-		if (newSet == null)
-			throw new IllegalArgumentException("Cannot add empry set");
-		getRectangles().set(i, newSet);
-		reset();
+	public void replace(RectangleSet oldSet, RectangleSet newSet) {
+		replace(oldSet, new RectangleSet[] { newSet });
 	}
 
-	public void replace(int i, RectangleSet[] newSets) {
+	public void replace(RectangleSet oldSet, RectangleSet[] newSets) {
 		List<RectangleSet> sets = getRectangles();
 
-		if (i<0 || i>sets.size()-1)
-			throw new IllegalArgumentException("Invalid index given");
 		if (newSets == null || newSets.length == 0)
 			throw new IllegalArgumentException("No new sets provided, cannot replace");
 
-		sets.remove(i);
+		while (sets.remove(oldSet)) continue;
 		for (RectangleSet newSet: newSets)
-			sets.add(i, newSet);	
+			sets.add(newSet);	
 		reset();
 	}
 
-	public int largestDiagonal() {
+	public RectangleSet largestDiagonal() {
+		if (largestDiagonal != null) return largestDiagonal;
+
 		List<RectangleSet> sets = getRectangles();
-		if (sets.size() == 0) return -1;
+		if (sets.size() == 0) return null;
 
-		int larger = 0;
+		largestDiagonal = sets.get(0);
 		for (int i=1; i<sets.size(); i++)
-			if (sets.get(i).diagonal() > sets.get(larger).diagonal())
-				larger = i;
+			if (sets.get(i).diagonal() > largestDiagonal.diagonal())
+				largestDiagonal = sets.get(i);
 
-		return larger;
+		return largestDiagonal;
 	}
 
 	private void reset() {
 		max = 0.0; min = 0.0;
+		isFinal = true;
+		largestDiagonal = null;
+		for (RectangleSet set: getRectangles())
+			if (set.numFixes() != 1) isFinal = false;
+		Collections.sort(rectangles);
 	}
 
 	@Override
 	public int compareTo(Candidate other) {
 		double diff = max() - other.max();
-		if (diff == 0) return 0;
+		if (this.equals(other) && diff == 0)
+			return 0;
 		else if (diff > 0) return 1;
-		return -1;
+		else return -1;
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if (compareTo((Candidate)other) == 0) return true;
-		return false;
+		Candidate otherC = (Candidate)other;
+		if (otherC.getRectangles().size() != getRectangles().size())
+			return false;
+		for (int i=0; i<getRectangles().size(); i++)
+			if (!getRectangles().get(i).equals(otherC.getRectangles().get(i)))
+				return false;
+		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		int result = 17;
+		for (RectangleSet set: getRectangles())
+			result = 37 * result + set.hashCode();
+		return result;
+	}	
 
 	@Override
 	public Candidate clone() {
@@ -113,11 +132,13 @@ public class Candidate implements Comparable<Candidate> {
 
 	@Override
 	public String toString() { 
-		String str = String.format("%1$,.2f", min()) + " " + String.format("%1$,.2f", max()) 
-			+ " " + isFinal() + " " + largestDiagonal() + " {";
-		for (RectangleSet set: getRectangles())
-			str += set + ",";
-		return str + "}";
+		String str = "Candidate (" 
+			+ String.format("%1$,.2f", min()) + " " + String.format("%1$,.2f", max()) 
+			+ " " + isFinal() + " " + largestDiagonal() + ")\n";
+		str += "{";
+		for (int i=0; i<getRectangles().size(); i++)
+			str += "\n\tRectangle " + i + " {\n" + getRectangles().get(i) + "\n\t},";
+		return str + "\n}";
 	}
 }
 
