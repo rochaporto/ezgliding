@@ -13,6 +13,10 @@ public class Candidate implements Comparable<Candidate> {
 
 	private double min;
 
+	private boolean isFinal;
+
+	private RectangleSet largestDiagonal;
+
 	public Candidate() {
 		this(null);
 	}
@@ -40,9 +44,7 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public boolean isFinal() {
-		for (RectangleSet set: getRectangles())
-			if (set.numFixes() != 1) return false;
-		return true;
+		return isFinal;
 	}
 
 	public List<RectangleSet> getRectangles() {
@@ -73,19 +75,25 @@ public class Candidate implements Comparable<Candidate> {
 	}
 
 	public RectangleSet largestDiagonal() {
+		if (largestDiagonal != null) return largestDiagonal;
+
 		List<RectangleSet> sets = getRectangles();
 		if (sets.size() == 0) return null;
 
-		RectangleSet result = sets.get(0);
+		largestDiagonal = sets.get(0);
 		for (int i=1; i<sets.size(); i++)
-			if (sets.get(i).diagonal() > result.diagonal())
-				result = sets.get(i);
+			if (sets.get(i).diagonal() > largestDiagonal.diagonal())
+				largestDiagonal = sets.get(i);
 
-		return result;
+		return largestDiagonal;
 	}
 
 	private void reset() {
 		max = 0.0; min = 0.0;
+		isFinal = true;
+		largestDiagonal = null;
+		for (RectangleSet set: getRectangles())
+			if (set.numFixes() != 1) isFinal = false;
 		Collections.sort(rectangles);
 	}
 
