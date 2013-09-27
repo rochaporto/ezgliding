@@ -2,7 +2,9 @@ package com.ezgliding.appengine;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class HelloEZGlidingServlet extends HttpServlet {
 	
