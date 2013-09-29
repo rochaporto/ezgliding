@@ -20,8 +20,9 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${src}/com/ezgliding/igc" destdir="${build}/src" debug="${compile.debug}"/>
-		<javac srcdir="${src}/com/ezgliding/crawl" destdir="${build}/src" debug="${compile.debug}"/>
+		<javac srcdir="${src}" destdir="${build}/src" debug="${compile.debug}">
+			<exclude name="**/appengine/**"/>
+		</javac>
 	</target>
 
 	<target name="compiletest" depends="dist" description="compile test sources">
