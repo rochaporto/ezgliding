@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OptimizerBrokenLine extends Optimizer {
+public class OptimizerBrokenLine extends Optimizer implements Iterable {
 
 	private static Logger logger = Logger.getLogger(OptimizerBrokenLine.class.getName());
 
@@ -97,6 +97,7 @@ public class OptimizerBrokenLine extends Optimizer {
 		}
 	}
 
+	@Override
 	public Iterator<Candidate> iterator() {
 		return new CandidateIterator();
 	}
