@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import com.ezgliding.igc.Task;
 import com.ezgliding.igc.WayPoint;
 
-public class CrawlerNetcoupe {
+public class CrawlerNetcoupe extends Crawler {
 
 	private static Logger logger = Logger.getLogger(CrawlerNetcoupe.class.getName());
 
@@ -51,26 +51,24 @@ public class CrawlerNetcoupe {
 
 	private Pattern regex;
 
-	public CrawlerNetcoupe() {
-		this(null);
-	}
-
 	public CrawlerNetcoupe(String baseUrl) {
+		if (baseUrl == null) throw new IllegalArgumentException("A baseUrl must be provided");
 		this.baseUrl = baseUrl;
 		regex = Pattern.compile(FLIGHT_DETAIL_REGEX, Pattern.MULTILINE | Pattern.DOTALL);
 	}
 
-	public ArrayList<FlightEntry> crawl() {
-		return null;
-	}
+	@Override
+	public int getLastId() { return 0; }
 
-	public String getBaseUrl() { return baseUrl; }
+	@Override
+	public void setLastId(int lastId) { }
 
+	@Override
 	public FlightEntry getFlight(int id) {
 		return getFlight(FLIGHT_DETAIL_SUBURL + id);
 	}
 
-	public FlightEntry getFlight(String urlStr) {
+	protected FlightEntry getFlight(String urlStr) {
 		if (urlStr == null) return null;
 
 		StringBuffer buff = new StringBuffer();
@@ -93,7 +91,7 @@ public class CrawlerNetcoupe {
 		return parseFlightEntry(buff.toString());
 	}
 
-	private FlightEntry parseFlightEntry(String data) {
+	protected FlightEntry parseFlightEntry(String data) {
 		if (data == null) return null;
 
 		FlightEntry flight = new FlightEntry();
@@ -133,4 +131,5 @@ public class CrawlerNetcoupe {
 
 		return flight;
 	}
+
 }

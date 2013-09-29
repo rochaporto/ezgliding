@@ -22,7 +22,7 @@ public class CrawlerNetcoupeTest {
 
 	@Before
 	public void setUp() {
-		crawlerNetcoupe = new CrawlerNetcoupe();
+		crawlerNetcoupe = new CrawlerNetcoupe("file:///home/rocha/ws/ezgliding/test/data");
 	}
 
 	@Test
