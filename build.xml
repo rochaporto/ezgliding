@@ -4,6 +4,7 @@
 	<property name="dist" location="dist"/>
 	<property name="src" location="src"/>
 	<property name="test" location="test"/>
+	<property name="project" location="project"/>
 	
 	<property name="junit.dir" location="/usr/share/java"/>
 	<!-- use this to add the debug flag to compile (useful for testing) -->
@@ -100,59 +101,56 @@
 	</target>
 
 	<!-- AppEngine Targets -->
-	<property name="sdk.dir" location="/home/rocha/opt/appengine-java-sdk-1.8.4" />
-	<import file="${sdk.dir}/config/user/ant-macros.xml" optional="true" />
+	<!-- The actual targets are in ${project}/ae-build.xml, but we need the wrappers here
+             as we need to init the appengine (download the sdk) before importing the
+             ant-macros.xml that comes with it -->
+	<property name="ae.version" value="1.8.5" />
+	<property name="ae.sdk.dir" location="${build}/ae/appengine-java-sdk-${ae.version}" />
 
 	<path id="ae.classpath">
 		<pathelement path="${build}/ae/WEB-INF/classes" />
  		<fileset dir="${build}/ae/WEB-INF/lib">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="${sdk.dir}/lib">
+		<fileset dir="${ae.sdk.dir}/lib">
 			<include name="shared/**/*.jar" />
 		</fileset>
 	</path>
 
-	<target name="aecpjars" description="Copies the App Engine JARs to the WAR.">
-		<copy todir="${build}/ae/WEB-INF/lib" flatten="true">
-			<fileset dir="${sdk.dir}/lib/user"><include name="**/*.jar" /></fileset>
-		</copy>
+	<target name="aecheck" description="Checks if appengine should be downloaded">
+		<available file="${build}/ae/appengine-java-sdk-${ae.version}" property="appengine.exists"/>
 	</target>
 
-	<target name="aecompile" depends="compile,aecpjars"
+	<target name="aeinit" depends="init,aecheck" description="Downloads and extracts the appengine sdk" unless="appengine.exists">
+		<get src="http://googleappengine.googlecode.com/files/appengine-java-sdk-${ae.version}.zip" 
+			dest="${build}/ae" usetimestamp="true" />
+		<unzip src="${build}/ae/appengine-java-sdk-${ae.version}.zip" dest="${build}/ae"/>
+		<delete file="${build}/ae/appengine-java-sdk-${ae.version}.zip"/>
+	</target>
+
+	<target name="aecpjars" depends="aeinit" description="Copies the App Engine JARs to the WAR.">
+		<ant antfile="${project}/ae-build.xml" target="aecpjars"/>
+	</target>
+
+	<target name="aecompile" depends="aeinit"
 		description="Compiles Java source and copies other source files to the WAR.">
-		<mkdir dir="${build}/ae/WEB-INF/classes" />
-		<copy todir="${build}/ae/WEB-INF">
-			<fileset dir="${src}/WEB-INF">
-				<include name="**/*.xml" />
-				<include name="**/*.properties" />
-			</fileset>
-		</copy>
-		<javac srcdir="${src}" destdir="${build}/ae/WEB-INF/classes" 
-			classpathref="ae.classpath" debug="${compile.debug}" />
+		<ant antfile="${project}/ae-build.xml" target="aecompile"/>
 	</target>
 
-	<target name="aerun" depends="aecompile" description="Starts the development server.">
-		<dev_appserver war="${build}/ae/" />
+	<target name="aerun" depends="aeinit" description="Starts the development server.">
+		<ant antfile="${project}/ae-build.xml" target="aerun"/>
 	</target>
 
-	<target name="aeupdate" depends="aecompile" description="Uploads the application to App Engine.">
-		<appcfg action="update" war="${build}/ae">
-			<options><arg value="--oauth2"/></options>
-		</appcfg>
+	<target name="aeupdate" depends="aeinit" description="Uploads the application to App Engine.">
+		<ant antfile="${project}/ae-build.xml" target="aeupdate"/>
 	</target>
 
-	<target name="aerollback" depends="aecompile" description="Rolls back an interrupted application update.">
-		<appcfg action="rollback" war="${build}/ae">
-			<options><arg value="--oauth2"/></options>
-		</appcfg>
+	<target name="aerollback" depends="aeinit" description="Rolls back an interrupted application update.">
+		<ant antfile="${project}/ae-build.xml" target="aerollback"/>
 	</target>
 
-	<target name="aegetlogs" depends="aecompile" description="Downloads log data from App Engine for the application.">
-		<appcfg action="request_logs" war="${build}/ae">
-			<options><arg value="--oauth2"/><arg value="--num_days=5"/></options>
-			<args><arg value="build/ae/logs.txt"/></args>
-		</appcfg>
+	<target name="aegetlogs" depends="aeinit" description="Downloads log data from App Engine for the application.">
+		<ant antfile="${project}/ae-build.xml" target="aegetlogs"/>
 	</target>	
 
 </project>
