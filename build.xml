@@ -68,7 +68,7 @@
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
 				<fileset dir="${dist}"><include name="**/*jar"/></fileset>
 			</classpath>
-			<formatter type="brief" usefile="false"/>
+			<formatter type="plain" usefile="false"/>
 			<batchtest todir="${build}/reports">
 				<formatter type="xml"/>
 				<fileset dir="${test}"><include name="**/*TestPerf.java"/></fileset>
