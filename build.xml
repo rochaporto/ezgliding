@@ -98,7 +98,7 @@
 
 	<!-- AppEngine Targets -->
 	<property name="sdk.dir" location="/home/rocha/opt/appengine-java-sdk-1.8.4" />
-	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+	<import file="${sdk.dir}/config/user/ant-macros.xml" optional="true" />
 
 	<path id="ae.classpath">
 		<pathelement path="${build}/ae/WEB-INF/classes" />
