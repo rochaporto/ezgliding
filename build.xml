@@ -41,7 +41,7 @@
 	</target>
 
 	<target name="test" depends="disttest" description="runs basic tests">
-		<junit printsummary="withOutAndErr" showoutput="on">
+		<junit printsummary="withOutAndErr" showoutput="on" failureProperty="test.failure">
 			<sysproperty key="java.util.logging.config.file" value="test/logging.properties"/>
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
@@ -57,10 +57,11 @@
 			<fileset dir="${build}/reports"><include name="TEST-*.xml"/></fileset>
 			<report format="frames" todir="${build}/reports/html"/>
 		</junitreport>
+		<fail message="test failed" if="test.failure"/>
 	</target>
 
 	<target name="ptest" depends="disttest" description="runs performance tests">
-		<junit printsummary="withOutAndErr" showoutput="on">
+		<junit printsummary="withOutAndErr" showoutput="on" failureProperty="ptest.failure">
 			<sysproperty key="java.util.logging.config.file" value="test/logging.properties"/>
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
@@ -76,11 +77,12 @@
 			<fileset dir="${build}/reports"><include name="TEST-*.xml"/></fileset>
 			<report format="frames" todir="${build}/reports/html"/>
 		</junitreport>
+		<fail message="ptest failed" if="ptest.failure"/>
 	</target>
 
 	<target name="stest" depends="disttest" description="runs single test from argument">
 		<!-- ex: ant stest -Dclass=com.ezgliding.igc.CandidateTest -Dmethod=testLargestDiagonal -->
-		<junit printsummary="withOutAndErr" showoutput="on">
+		<junit printsummary="withOutAndErr" showoutput="on" failureProperty="stest.failure">
 			<sysproperty key="java.util.logging.config.file" value="test/logging.properties"/>
 			<classpath>
 				<fileset dir="${junit.dir}"><include name="**/junit*jar"/></fileset>
@@ -89,6 +91,7 @@
 			<formatter type="brief" usefile="false"/>
 			<test name="${class}" methods="${method}"/>
 		</junit>
+		<fail message="stest failed" if="stest.failure"/>
 	</target>
 
 	<target name="clean" description="clean it up">
@@ -98,7 +101,7 @@
 
 	<!-- AppEngine Targets -->
 	<property name="sdk.dir" location="/home/rocha/opt/appengine-java-sdk-1.8.4" />
-	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+	<import file="${sdk.dir}/config/user/ant-macros.xml" optional="true" />
 
 	<path id="ae.classpath">
 		<pathelement path="${build}/ae/WEB-INF/classes" />
