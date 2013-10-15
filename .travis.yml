@@ -6,3 +6,7 @@ jdk:
 env:
   - TESTS=test
   - TESTS=ptest
+matrix:
+  exclude:
+    - jdk: openjdk7
+    - env: TESTS=test
