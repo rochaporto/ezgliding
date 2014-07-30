@@ -7,6 +7,7 @@ A working [Go environment](http://golang.org/doc/code.html) is presumed.
 go get github.com/rochaporto/ezgliding
 cd $GOPATH/src/github.com/rochaporto/ezgliding
 go install
+go test -v ./...
 ```
 
 ### Bugs, features, code review
