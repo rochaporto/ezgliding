@@ -1,3 +1,5 @@
+# ezgliding [![Build Status](https://travis-ci.org/rochaporto/ezgliding.svg?branch=ezgo)](http://travis-ci.org/rochaporto/ezgliding)  [![GoDoc](https://godoc.org/github.com/rochaporto/ezgliding?status.png)](https://godoc.org/github.com/rochaporto/ezgliding) ![Project Status](http://img.shields.io/badge/status-prealpha-red.svg) 
+
 ## What
 
 It is both a website and a set of software applications to help with  
