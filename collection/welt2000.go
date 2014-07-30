@@ -19,6 +19,7 @@
 
 package collection
 
+// WeltRelease contains info about a specific release
 type WeltRelease struct {
 	Source string
 }
