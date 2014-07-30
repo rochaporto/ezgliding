@@ -1,4 +1,4 @@
-package ezgliding
+package collection
 
 import "testing"
 
