@@ -1,12 +1,4 @@
-language: java
-script: ant $TESTS
-jdk:
-  - oraclejdk7
-  - openjdk7
-env:
-  - TESTS=test
-  - TESTS=ptest
-matrix:
-  exclude:
-    - jdk: openjdk7
-    - env: TESTS=test
+language: go
+
+go:
+  - tip
