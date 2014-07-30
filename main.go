@@ -25,7 +25,7 @@ import (
 )
 
 func main() {
-  res := collection.Echo("a")
-  fmt.Println("%v", res)
+  wr := new(collection.WeltRelease)
+  fmt.Printf("%v\n", wr.Source)
 }
 

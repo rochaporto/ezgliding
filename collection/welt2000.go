@@ -19,8 +19,12 @@
 
 package collection
 
-// Echo a string, returning the same value.
-func Echo(v string) string {
-	return v
+type WeltRelease struct {
+	Source string
+}
+
+// Fetch the content of the release corresponding to the object
+func (wr *WeltRelease) Fetch() (string, error) {
+	return "aaa", nil
 }
 

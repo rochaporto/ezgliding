@@ -19,18 +19,17 @@
 
 package collection
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestEcho(t *testing.T) {
-  res := Echo("Hello")
-  if res != "Hello" {
-    t.Errorf("Failed")
-  }
-}
-
-func TestEchoEmpty(t *testing.T) {
-  res := Echo("")
-  if res != "" {
-    t.Errorf("Failed to Echo empty string :: got '%v'", res)
-  }
+func TestFetch(t *testing.T) {
+	var wr = WeltRelease { Source: "aa" }
+	content, error := wr.Fetch()
+	fmt.Println("%v", content)
+	if error != nil {
+		t.Errorf("Failed to fetch welt release content :: %v :: %v",
+			wr.Source, error)
+	}
 }
