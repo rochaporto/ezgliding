@@ -1,6 +1,6 @@
 # ezgliding [![Build Status](https://travis-ci.org/rochaporto/ezgliding.svg?branch=ezgo)](http://travis-ci.org/rochaporto/ezgliding)  [![GoDoc](https://godoc.org/github.com/rochaporto/ezgliding?status.png)](https://godoc.org/github.com/rochaporto/ezgliding) ![Project Status](http://img.shields.io/badge/status-prealpha-red.svg) 
 
-Applications for glider pilots
+Applications, Tools and Libraries for Glider Pilots
 
 ## Status
 
@@ -16,6 +16,14 @@ Ongoing work on the first set of tools and libraries:
 ## What
 
 A set of applications and libraries useful for glider pilots.
+
+This includes tools for:
+
+* Backend data collection and management (airfields, airspace, waypoints, ...)
+* Flight analysis (igc parsing) and optimization
+* Flight data storage and management
+
+It also includes a web application, which is its most visible part.
 
 ## How
 
