@@ -1,9 +1,1 @@
-build
 *.swp
-
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
