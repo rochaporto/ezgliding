@@ -17,14 +17,37 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package ezgliding
+package welt2000
 
 import (
 	"fmt"
-	"github.com/rochaporto/ezgliding/welt2000"
+	"testing"
 )
 
-func main() {
-	wr := new(welt2000.WeltRelease)
-	fmt.Printf("%v\n", wr.Airfields)
+func TestList(t *testing.T) {
+	releases, err := List()
+	if err != nil {
+		t.Errorf("Failed to list releases :: %v", err)
+	}
+	if len(releases) < 1 {
+		t.Errorf("Got wrong number of releases :: %v", len(releases))
+	}
+	for _, r := range releases {
+		fmt.Println("Release: ", r)
+	}
+}
+
+func TestFetch(t *testing.T) {
+	releases, err := List()
+	if err != nil {
+		t.Errorf("Failed to list releases :: %v", err)
+	}
+
+	err = releases[0].Fetch()
+	if err != nil {
+		t.Errorf("Failed to fetch release :: %v :: %v",
+			releases[0], err)
+	}
+
+	fmt.Println("Release :: %v", releases[0])
 }

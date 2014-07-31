@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WELT2000 Updates</title>
+    <link>http://www.segelflug.de/vereine/welt2000/</link>
+    <description>Updates of the WELT2000 database</description>
+    <language>en</language>
+    <copyright>Copyright WELT2000 2014</copyright>
+    <ttl>1440</ttl>
+    <atom:link href="http://www.segelflug.de/vereine/welt2000/content/en/rss/updates.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2014-02-24-12-00-00.php</link>
+      <pubDate>24 Feb 2014 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2014-02-24-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2013-08-02-12-00-00.php</link>
+      <pubDate>02 Aug 2013 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2013-03-02-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2013-02-03-12-00-00.php</link>
+      <pubDate>03 Feb 2013 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2013-02-03-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2012-09-12-20-00-00.php</link>
+      <pubDate>12 Sep 2012 20:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2012-09-12-20-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2011-03-18-12-00-00.php</link>
+      <pubDate>18 Mar 2011 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2011-03-18-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2010-06-03-12-00-00.php</link>
+      <pubDate>03 Jun 2010 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2010-06-03-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2010-05-18-12-00-00.php</link>
+      <pubDate>18 May 2010 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2010-05-18-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2010-03-20-12-00-00.php</link>
+      <pubDate>20 Mar 2010 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2010-03-20-12-00-00</guid>
+    </item>
+    <item>
+      <title>Airport and waypoint database updated</title>
+      <description>Airport and waypoint database updated</description>
+      <link>http://www.segelflug.de/vereine/welt2000/content/en/news/update_2009-06-19-12-00-00.php</link>
+      <pubDate>19 Jun 2009 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">2009-06-19-12-00-00</guid>
+    </item>
+  </channel>
+</rss>
