@@ -1,4 +1,4 @@
-# ezgliding [![Build Status](https://travis-ci.org/rochaporto/ezgliding.svg?branch=ezgo)](http://travis-ci.org/rochaporto/ezgliding) [![Coverage Status](https://img.shields.io/coveralls/rochaporto/ezgliding.svg)](https://coveralls.io/r/rochaporto/ezgliding) [![GoDoc](https://godoc.org/github.com/rochaporto/ezgliding?status.png)](https://godoc.org/github.com/rochaporto/ezgliding) ![Project Status](http://img.shields.io/badge/status-prealpha-red.svg) 
+# ezgliding [![Build Status](https://travis-ci.org/rochaporto/ezgliding.svg)](http://travis-ci.org/rochaporto/ezgliding) [![Coverage Status](https://img.shields.io/coveralls/rochaporto/ezgliding.svg)](https://coveralls.io/r/rochaporto/ezgliding) [![GoDoc](https://godoc.org/github.com/rochaporto/ezgliding?status.png)](https://godoc.org/github.com/rochaporto/ezgliding) ![Project Status](http://img.shields.io/badge/status-prealpha-red.svg) 
 
 Applications, Tools and Libraries for Glider Pilots
 
