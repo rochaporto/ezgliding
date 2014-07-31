@@ -25,6 +25,6 @@ import (
 )
 
 func main() {
-	wr := new(welt2000.WeltRelease)
-	fmt.Printf("%v\n", wr.Airfields)
+	r := new(welt2000.Release)
+	fmt.Printf("%v\n", r)
 }
