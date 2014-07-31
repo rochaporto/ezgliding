@@ -20,8 +20,8 @@
 package welt2000
 
 import (
-	"github.com/SlyMarbo/rss"
 	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/rss"
 	"time"
 )
 
