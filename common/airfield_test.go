@@ -27,10 +27,3 @@ func TestAirfield(t *testing.T) {
 		t.Errorf("Wrong name :: %v instead of AirfieldName", a.Name)
 	}
 }
-
-func TestAirfieldString(t *testing.T) {
-	a := Airfield{Name: "TestAirfield"}
-	if a.String() != "TestAirfield" {
-		t.Errorf("Wrong airfield name :: %v instead of TestAirfield", a.Name)
-	}
-}

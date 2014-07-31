@@ -19,11 +19,7 @@
 
 package common
 
+// Airfield keeps details about a specific airfield
 type Airfield struct {
 	Name string
-	aa   string
-}
-
-func (a *Airfield) String() string {
-	return a.Name
 }
