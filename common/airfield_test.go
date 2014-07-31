@@ -29,7 +29,7 @@ func TestAirfield(t *testing.T) {
 }
 
 func TestAirfieldString(t *testing.T) {
-	a := Airfield {Name: "TestAirfield"}
+	a := Airfield{Name: "TestAirfield"}
 	if a.String() != "TestAirfield" {
 		t.Errorf("Wrong airfield name :: %v instead of TestAirfield", a.Name)
 	}

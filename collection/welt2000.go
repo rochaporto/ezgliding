@@ -20,7 +20,7 @@
 package collection
 
 import (
-  "github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/common"
 )
 
 // WeltRelease contains info about a specific release
@@ -30,6 +30,5 @@ type WeltRelease struct {
 
 // Fetch the content of the release corresponding to the object
 func (wr *WeltRelease) Fetch(location string) error {
-  return nil
+	return nil
 }
-

@@ -24,10 +24,10 @@ import (
 )
 
 func TestFetch(t *testing.T) {
-  location := "aaa"
+	location := "aaa"
 	error := new(WeltRelease).Fetch(location)
 	if error != nil {
 		t.Errorf("Failed to fetch welt release content :: %v :: %v",
-		  location, error)
+			location, error)
 	}
 }
