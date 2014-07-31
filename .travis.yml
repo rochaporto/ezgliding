@@ -3,5 +3,5 @@ go:
   - tip
 before_install:
   - go get github.com/axw/gocov/gocov
-  - go get code.google.com/p/go.tools/cover
+  - sudo go get code.google.com/p/go.tools/cover
 script: go test -v ./... -cover
