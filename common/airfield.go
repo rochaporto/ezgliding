@@ -21,6 +21,7 @@ package common
 
 type Airfield struct {
 	Name string
+	aa   string
 }
 
 func (a *Airfield) String() string {

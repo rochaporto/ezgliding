@@ -20,16 +20,14 @@
 package collection
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestFetch(t *testing.T) {
-	var wr = WeltRelease { Source: "aa" }
-	content, error := wr.Fetch()
-	fmt.Println("%v", content)
+  location := "aaa"
+	error := new(WeltRelease).Fetch(location)
 	if error != nil {
 		t.Errorf("Failed to fetch welt release content :: %v :: %v",
-			wr.Source, error)
+		  location, error)
 	}
 }

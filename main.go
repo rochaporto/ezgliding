@@ -17,7 +17,7 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package main
+package ezgliding
 
 import (
   "fmt"
@@ -26,6 +26,6 @@ import (
 
 func main() {
   wr := new(collection.WeltRelease)
-  fmt.Printf("%v\n", wr.Source)
+  fmt.Printf("%v\n", wr.Airfields)
 }
 

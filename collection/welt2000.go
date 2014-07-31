@@ -19,13 +19,17 @@
 
 package collection
 
+import (
+  "github.com/rochaporto/ezgliding/common"
+)
+
 // WeltRelease contains info about a specific release
 type WeltRelease struct {
-	Source string
+	Airfields []common.Airfield
 }
 
 // Fetch the content of the release corresponding to the object
-func (wr *WeltRelease) Fetch() (string, error) {
-	return "aaa", nil
+func (wr *WeltRelease) Fetch(location string) error {
+  return nil
 }
 
