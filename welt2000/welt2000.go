@@ -17,6 +17,12 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
+// welt2000 provides functionality to fetch and parse airfield and
+// waypoint information, taking the welt release as input.
+//
+// Check the welt2000 website for more information on the data:
+// http://www.segelflug.de/vereine/welt2000/
+//
 package welt2000
 
 import (
@@ -33,8 +39,8 @@ type Release struct {
 }
 
 // List checks the welt2000 rss feed and lists the releases found
-func List() ([]Release, error) {
-	feed, err := rss.Fetch("http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml")
+func List(location string) ([]Release, error) {
+	feed, err := rss.Fetch(location)
 	if err != nil {
 		return nil, err
 	}
