@@ -24,32 +24,21 @@ import (
 	"testing"
 )
 
-var feed = "http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml"
-
 func TestList(t *testing.T) {
-	releases, err := List(feed)
+	releases, err := List("./updates.xml")
 	if err != nil {
 		t.Fatalf("Failed to list releases :: %v", err)
 	}
 	if len(releases) < 1 {
 		t.Fatalf("Got wrong number of releases :: %v", len(releases))
 	}
-	for _, r := range releases {
-		fmt.Println("Release: ", r)
-	}
 }
 
 func TestFetch(t *testing.T) {
-	releases, err := List(feed)
+	release, err := Fetch("./release.txt")
 	if err != nil {
-		t.Fatalf("Failed to list releases :: %v", err)
+		t.Fatalf("Failed to fetch release :: %v", err)
 	}
 
-	err = releases[0].Fetch()
-	if err != nil {
-		t.Fatalf("Failed to fetch release :: %v :: %v",
-			releases[0], err)
-	}
-
-	fmt.Println("Release :: %v", releases[0])
+	fmt.Println("Release :: %v", release)
 }

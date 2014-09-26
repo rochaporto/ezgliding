@@ -28,6 +28,8 @@ package welt2000
 import (
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/rss"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
@@ -40,7 +42,19 @@ type Release struct {
 
 // List checks the welt2000 rss feed and lists the releases found
 func List(location string) ([]Release, error) {
-	feed, err := rss.Fetch(location)
+	var content []byte
+	resp, err := http.Get(location)
+	if err == nil {
+		defer resp.Body.Close()
+		content, err = ioutil.ReadAll(resp.Body)
+	} else {
+		resp, err := ioutil.ReadFile(location)
+		if err != nil {
+			return nil, err
+		}
+		content = resp
+	}
+	feed, err := rss.Parse(content)
 	if err != nil {
 		return nil, err
 	}
