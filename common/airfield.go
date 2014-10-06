@@ -21,5 +21,34 @@ package common
 
 // Airfield keeps details about a specific airfield
 type Airfield struct {
-	Name string
+	ID        string
+	ShortName string
+	Name      string
+	Text      string
+	ICAO      string
+	Flags     int
+	Catalog   int
+	Length    int
+	Elevation int
+	Runway    string
+	Frequency float64
+	Latitude  string
+	Longitude string
 }
+
+// Enum for Airfield flags
+const (
+	UnclearAirstrip = 1 << iota
+	Outlanding      = 1 << iota
+	ULMSite         = 1 << iota
+	GliderSite      = 1 << iota
+	ElevationProved = 1 << iota
+	Asphalt         = 1 << iota
+	Concrete        = 1 << iota
+	Loam            = 1 << iota
+	Sand            = 1 << iota
+	Clay            = 1 << iota
+	Grass           = 1 << iota
+	Gravel          = 1 << iota
+	Dirt            = 1 << iota
+)
