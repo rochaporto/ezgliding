@@ -37,17 +37,19 @@ import (
 type Release struct {
 	Date      time.Time
 	Source    string
+	Data      []byte
 	Airfields []common.Airfield
 }
 
 // List checks the welt2000 rss feed and lists the releases found
 func List(location string) ([]Release, error) {
 	var content []byte
+	// case http
 	resp, err := http.Get(location)
 	if err == nil {
 		defer resp.Body.Close()
 		content, err = ioutil.ReadAll(resp.Body)
-	} else {
+	} else { // case file
 		resp, err := ioutil.ReadFile(location)
 		if err != nil {
 			return nil, err
@@ -76,5 +78,25 @@ func Fetch(location string) (*Release, error) {
 
 // Fetch fills up the Release object with data after parsing the content at Release.Source
 func (r *Release) Fetch() error {
-	return nil
+	resp, err := http.Get(r.Source)
+	// case http
+	if err == nil {
+		defer http.Body.Close()
+		r.Data, err = ioutil.ReadAll(resp.Body)
+	} else { // case file
+		resp, err := ioutil.ReadFile(r.Source)
+		if err != nil {
+			return nil, err
+		}
+		r.Data = resp
+	}
+	return r.Parse()
+}
+
+// Parse fills in the Release object by parsing r.Data
+func (r *Release) Parse() error {
+	if r.Data == nil {
+		return "No data available to parse"
+	}
+
 }
