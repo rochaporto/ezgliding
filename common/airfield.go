@@ -24,7 +24,6 @@ type Airfield struct {
 	ID        string
 	ShortName string
 	Name      string
-	Text      string
 	ICAO      string
 	Flags     int
 	Catalog   int
