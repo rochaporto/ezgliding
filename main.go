@@ -17,14 +17,42 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package ezgliding
+package main
 
 import (
+	commander "code.google.com/p/go-commander"
+	"flag"
 	"fmt"
 	"github.com/rochaporto/ezgliding/welt2000"
+	"os"
 )
 
 func main() {
-	r := new(welt2000.Release)
-	fmt.Printf("%v\n", r)
+	c := commander.Commander{
+		Name: "ezgliding",
+		Commands: []*commander.Command{
+			&commander.Command{
+				UsageLine: "list-releases [options]",
+				Short:     "lists all available releases (airfields, waypoints, etc)",
+				Long: `
+Lists all available releases for the different kinds of information - airfields,
+waypoints, etc. It includes all releases matching the current configuration.
+`,
+				Run: func(cmd *commander.Command, args []string) {
+					releases, _ := welt2000.List("./welt2000/updates.xml")
+					for i := range releases {
+						fmt.Println("%v", releases[i])
+					}
+				},
+				Flag: *flag.CommandLine,
+			},
+		},
+	}
+
+	if len(os.Args) == 1 {
+		os.Args = append(os.Args, "help")
+	}
+	if err := c.Run(os.Args[1:]); err != nil {
+		fmt.Println("Failed running command %q: %v", os.Args[1:], err)
+	}
 }
