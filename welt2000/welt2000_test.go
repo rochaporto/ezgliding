@@ -21,6 +21,10 @@ package welt2000
 
 import (
 	"github.com/rochaporto/ezgliding/common"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -28,6 +32,22 @@ func TestList(t *testing.T) {
 	releases, err := List("./updates.xml")
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
+	}
+	if len(releases) < 1 {
+		t.Errorf("Got wrong number of releases :: %v", len(releases))
+	}
+}
+
+func TestListHTTP(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp, _ := ioutil.ReadFile("./updates.xml")
+		io.WriteString(w, string(resp))
+	}))
+	defer ts.Close()
+
+	releases, err := List(ts.URL)
+	if err != nil {
+		t.Errorf("Failed to list releases from http endpoint :: %v", err)
 	}
 	if len(releases) < 1 {
 		t.Errorf("Got wrong number of releases :: %v", len(releases))
@@ -45,6 +65,13 @@ func TestListMissing(t *testing.T) {
 	_, err := List("./nonexisting.file")
 	if err == nil {
 		t.Errorf("List non existing file should give error")
+	}
+}
+
+func TestListBrokenFeed(t *testing.T) {
+	_, err := List("./test-brokenfeed.xml")
+	if err == nil {
+		t.Errorf("Parsing a broken rss feed should have failed")
 	}
 }
 
