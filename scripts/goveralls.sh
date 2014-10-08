@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=$PATH:$HOME/gopath/bin
 echo "mode: count" > profile.cov
 for dir in $(find . -maxdepth 10 -not -path './.git*' -not -path '*/_*' -type d); do
 	if ls $dir/*.go &> /dev/null; then
