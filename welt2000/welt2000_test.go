@@ -29,7 +29,7 @@ import (
 )
 
 func TestList(t *testing.T) {
-	releases, err := List("./updates.xml")
+	releases, err := List("./test-releases-list.xml")
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestList(t *testing.T) {
 
 func TestListHTTP(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp, _ := ioutil.ReadFile("./updates.xml")
+		resp, _ := ioutil.ReadFile("./test-releases-list.xml")
 		io.WriteString(w, string(resp))
 	}))
 	defer ts.Close()
@@ -265,7 +265,7 @@ func TestParseWaypoint(t *testing.T) {
 
 func BenchmarkFetch(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_, err := Fetch("./sample-release.txt")
+		_, err := Fetch("./test-release-bench.txt")
 		if err != nil {
 			b.Errorf("Failed to fetch release :: %v", err)
 		}

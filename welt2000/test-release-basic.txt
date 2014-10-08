@@ -1,0 +1,24 @@
+$ WELT2000 DATABASE                                            0
+$                                                              0
+$ THIS WELT2000 DATABASE IS MADE AVAILABLE UNDER THE           0
+$ OPEN DATABASE LICENSE:                                       0
+$ http://opendatacommons.org/LICENSES/ODBL/1.0/                0
+$ ANY RIGHTS IN INDIVIDUAL CONTENTS OF THE DATABASE ARE        0
+$ LICENSED UNDER THE DATABASE CONTENTS LICENSE:                0
+$ http://opendatacommons.org/LICENSES/DBCL/1.0/                0
+$                                                              0
+$ PLEASE CONTRIBUTE TO THE WELT2000 PROJECT!                   0
+$                                                              0
+$ EMAIL:      welt2000@gmx.net                                 0
+$ WEBSITE:    http://www.segelflug.de/vereine/welt2000/        0
+$                                                              0
+$ CREATED BY: MICHAEL-LORENZ MEIER                             0
+$ UPDATED BY: WILLY DOBE                                       0
+$ UPDATED AT: 24.FEB.2014                                      0
+$                                                              0
+$ DOWNLOAD DATABASE SPECIFICATION FROM PROCECT'S WEBSITE AT    0   
+$ URL http://www.segelflug.de/vereine/welt2000/                0 
+$ AREA "DOWNLOADS", SECTION "DOCUMENTATION"                    0
+$                                                              0
+BAGRA1 BAGRAM AFGHNISTA#OAIXA3610321118501494N345647E0691554AFQ0
+$ END OF FILE
