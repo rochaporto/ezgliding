@@ -1,0 +1,525 @@
+
+<!-- saved from url=(0051)http://www.winpilot.com/UsersGuide/UserAirspace.asp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>User's Guide - SUA</title>
+
+
+<style type="text/css">
+	TD {font-size:small;}
+	P, TD, DIV, UL {font-family:'Verdana, Arial';font-size=xx-small}
+	BODY { background:#FFFFFF;font-family:'Verdana, Arial';font-size=xx-small >
+
+</style>
+
+
+
+
+<meta name="Microsoft Border" content="none, default">
+<style type="text/css"></style></head>
+
+<body bgcolor="#FFFFFF">
+
+<p>&nbsp;</p>
+
+<p align="center"><font color="#408080"><strong><big>Special Use Airspace</big></strong>
+&nbsp; </font></p>
+
+<p><font color="#FF8000"><strong><big>O</big>pen<big>A</big>ir</strong><small><small>tm</small></small></font><font color="#400040"><big>&nbsp; Airspace and Terrain description language is an easy to use
+and publicly available standard for displaying map information. <br>
+User can add or modify the data himself, therefore having a full control over what is
+being displayed on the screen. </big></font></p><big>
+
+<p><font color="#400040">For a list of available airspace files see our<big><strong> 
+<a href="http://www.winpilot.com/OpenAir/index.asp">airspace directory</a></strong></big>.</font></p>
+
+<p><font color="#400040"><b><u><i>NEW</i></u></b>: WinPilot Version 1.130 and later:&nbsp;<br>
+In addition to 'Airspace.txt', now WinPilot also reads a file called 'Terrain.txt'.<br>
+Both files can contain all OpenAir commands.<br>
+The intention of the 'Terrain.txt' file is to separate terrain description
+from airspace description.<br>
+The restriction of the maximum number of labels&nbsp; created by the AT command
+has been changed from 3 to unlimited.</font></p>
+
+<p><font color="#400040">There are two new map elements meant for displaying
+terrain and geographic&nbsp; features<br>
+(they differ from airspace in that they don't have popup labels attached):<br>
+<br>
+TO {string}&nbsp;&nbsp;&nbsp; ; Declares Terrain Open Polygon; string&nbsp;-&nbsp;
+name (optional)<br>
+TC {string}&nbsp;&nbsp;&nbsp; ; Declares Terrain Closed Polygon; string&nbsp;-
+name&nbsp; (optional)<br>
+<br>
+This commands make it easy to define things like lakes, roads, borders,
+etc<br>
+For example, to draw a lake using&nbsp; light blue color and a dark blue 1-pixel
+wide, solid border, that is visible at zoom levels 100km or closer, the
+following commands can be used:<br>
+<br>
+TC Lake Tahoe<br>
+SP 0, 1, 0, 0, 255<br>
+SB 200,200,255<br>
+V Z=100<br>
+DP 38:56:00 N 120:02:00 W<br>
+DP 38:56:40 N 120:04:00 W<br>
+DP 39:00:00 N 120:05:55 W<br>
+DP 39:01:45 N 120:07:00 W<br>
+DP 39:03:40 N 120:07:00 W<br>
+DP 39:05:00 N 120:09:00 W<br>
+DP 39:10:30 N 120:07:30 W<br>
+DP 39:11:00 N 120:06:00 W<br>
+...
+<br>
+<br>
+The three new commands seen above are:<br>
+SP - Select Pen - corresponds to Win32 API CreatePen<br>
+SB&nbsp; -Select Brush - corresponds to Win32 API CreateSolidBrush<br>
+and V Z=number (select a zoom level above which the element will not be
+displayed)<br>
+<br>
+<br>
+SP style, width, red, green, blue ; Selects Pen (border) to be used in drawing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PEN STYLES in SP command:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOLID&nbsp;&nbsp;&nbsp; 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DASH&nbsp;&nbsp;&nbsp; 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NULL (transparent=no border displayed) 5<br>
+<br>
+<br>
+&nbsp; Example: for a 1 pixel wide, dashed, light gray pen use: SP
+0,1,192,192,192<br>
+<br>
+&nbsp;SB&nbsp; red, green, blue&nbsp;&nbsp;&nbsp;&nbsp; ; Selects Brush
+(interior)&nbsp; red, green, blue can range from 0 (least intensity) to 255 (max
+intensity)</font></p>
+
+<p><font color="#400040">&nbsp; Example: to select white interior of a closed
+polygon, use: SB 255, 255, 255<br>
+&nbsp; To select transparent interior use: SB -1,-1,-1<br>
+<br>
+<br>
+The SP and SB commands can also be used to alter the default colors of airspace
+segments.&nbsp;<br>
+For example, to change the default color of class C airspace from dark gray to
+magenta, use: '</font>SB 180,0,180'&nbsp; in the first class C segment
+definition, like this:</p>
+
+<p>AC C<br>
+AN RENO-C<br>
+AL SFC<br>
+AH 8400 ft<br>
+SB 180,0,180  *select MAGENTA as the default for class C<br>
+V X=39:29.9 N 119:46.1 W<br>
+DC 5<br>
+<font color="#400040"><br>
+</font></p>
+
+<p>&nbsp;</p>
+
+<p><big><font color="#400040">For a definition of OpenAir, see the listing below:</font></big></p>
+
+<p>******* <strong>OPEN AIR</strong> (tm) TERRAIN and AIRSPACE DESCRIPTION LANGUAGE
+*************<br>
+*&nbsp;&nbsp;&nbsp; Version 1.0<br>
+*&nbsp;&nbsp;&nbsp; December 10, 1998<br>
+*&nbsp;&nbsp;&nbsp; Updated October 15, 1999<br>
+*&nbsp;&nbsp;&nbsp; Send comments to jerryp@winpilot.com<br>
+*<br>
+*<br>
+*&nbsp; AIRSPACE related record types:<br>
+*&nbsp; ==============================<br>
+*<br>
+*&nbsp;<strong>AC&nbsp;class</strong>&nbsp;&nbsp;&nbsp; ;&nbsp;&nbsp;&nbsp; class =
+Airspace Class, see below:<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>R</strong> restricted<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>Q</strong> danger<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>P</strong> prohibited<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>A</strong> Class A<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>B</strong> Class B<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>C</strong> Class C<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>D</strong> Class D <br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>GP</strong> glider prohibited <br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>CTR</strong> CTR<br>
+*&nbsp;&nbsp;&nbsp;&nbsp; <strong>W</strong> Wave Window<br>
+*<br>
+*<br>
+*&nbsp;&nbsp;<strong>AN string</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
+&nbsp;&nbsp;&nbsp; string = Airspace Name<br>
+*&nbsp; <strong>AH string</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
+&nbsp;&nbsp;&nbsp; string = Airspace Ceiling<br>
+*&nbsp; <strong>AL string</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;
+&nbsp;&nbsp;&nbsp; string = Airspace Floor<br>
+*&nbsp; <strong>AT coordinate</strong>&nbsp;&nbsp;&nbsp; ;&nbsp;&nbsp;&nbsp; coordinate =
+Coordinate of where to place a name label on the map (optional)<br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; &nbsp;&nbsp;&nbsp; NOTE: there can be multiple AT records for a single airspace segment<br>
+*&nbsp;&nbsp;&nbsp; <br>
+*&nbsp;&nbsp;&nbsp; <br>
+*&nbsp;&nbsp;&nbsp; TERRAIN related record types (WinPilot version 1.130 and
+newer):<br>
+*&nbsp;&nbsp;&nbsp; ==============================<br>
+*<br>
+*&nbsp;&nbsp;&nbsp; <strong>TO</strong>&nbsp;&nbsp;&nbsp; {string}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Declares Terrain Open Polygon; string = name (optional)<br>
+*&nbsp;&nbsp;&nbsp; <strong>TC</strong>&nbsp;&nbsp;&nbsp; {string}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Declares Terrain Closed Polygon; string = name (optional)<br>
+*&nbsp;&nbsp;&nbsp; <strong>SP style, width, red, green, blue</strong>&nbsp;&nbsp;&nbsp;&nbsp;;
+Selects Pen to be used in drawing<br>
+*&nbsp;&nbsp;&nbsp; <strong>SB red, green, blue</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; ; Selects Brush to be used in drawing<br>
+*<br>
+* <br>
+*&nbsp;&nbsp;&nbsp; Record types common to both TERRAIN and AIRSPACE<br>
+*&nbsp;&nbsp;&nbsp; =================================================<br>
+*<br>
+*&nbsp;&nbsp;&nbsp; <strong>V x=n</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; &nbsp;&nbsp;&nbsp;
+Variable assignment.<br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; &nbsp;&nbsp;&nbsp; Currently the following variables are supported:<br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; &nbsp;&nbsp;&nbsp; D={+|-}&nbsp;&nbsp;&nbsp; sets direction for: DA and DB records<br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'-' means counterclockwise direction; '+' is the default<br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+automatically reset to '+' at the begining of new airspace segment&nbsp;&nbsp;&nbsp; <br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; &nbsp;&nbsp;&nbsp; X=coordinate&nbsp;&nbsp;&nbsp; : sets the center for the following
+records: DA, DB, and DC&nbsp;&nbsp;&nbsp; <br>
+*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; &nbsp;&nbsp;&nbsp; W=number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : sets the width
+of an airway in nm (NYI)<br>
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Z=number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : sets zoom level at
+which the element becomes visible (WP version 1.130 and newer)<br>
+*<br>
+*&nbsp;&nbsp;&nbsp; <strong>DP coordinate</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; add polygon pointC<br>
+*&nbsp;&nbsp;&nbsp; <strong>DA radius, angleStart, angleEnd</strong>&nbsp;&nbsp;&nbsp; ;
+add an arc, angles in degrees, radius in nm (set center using V X=...)<br>
+*&nbsp;&nbsp;&nbsp; <strong>DB coordinate1, coordinate2</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; add an arc, from coordinate1 to coordinate2
+(set center using V X=...)<br>
+*&nbsp;&nbsp;&nbsp; <strong>DC radius </strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; draw a circle (center taken from the previous V X=...&nbsp; record, radius in nm<br>
+*&nbsp;&nbsp;&nbsp; <strong>DY coordinate</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; add a segment of an airway (NYI)<br>
+</p>
+
+<p>* SAMPLE OpenAir(tm) File (for Minden, NV):</p>
+
+<p><br>
+* Reno Class C<br>
+AC C<br>
+AN RENO-C<br>
+AL SFC<br>
+AH 8400 ft<br>
+V X=39:29.9 N 119:46.1 W<br>
+DC 5<br>
+<br>
+* Reno Class C<br>
+AC C<br>
+AN RENO<br>
+AL 7200 ft<br>
+AH 8400 ft<br>
+* this item will have 3 labels<br>
+AT 39:36.8 N 119:46.1W<br>
+AT 39:22.8 N 119:45.1W<br>
+AT 39:29.9 N 119:36.1W<br>
+V X=39:29.9 N 119:46.1W<br>
+DA 10,270,290<br>
+DA 7,290,320<br>
+DA 10,320,200<br>
+V D=-<br>
+DA 5,200,270<br>
+<br>
+<br>
+AC C<br>
+AN BEALE AFB<br>
+AL SFC<br>
+AH 4100 ft<br>
+V X=39:08.2 N 121:26.2 W<br>
+DC 5<br>
+<br>
+AC C<br>
+AN BEALE AFB<br>
+AL 2600ft<br>
+AH 4100 ft<br>
+AT 39:10.2 N 121:17.2 W<br>
+DA 10,9,130<br>
+V D=-<br>
+DA 5,130,9<br>
+<br>
+AC C<br>
+AN BEALE AFB<br>
+AL 1600ft<br>
+AH 4100 ft<br>
+AT 39:06.2 N 121:35.5 W<br>
+DA 10,130,9<br>
+V D=-5<br>
+DA 5,9,130<br>
+<br>
+<br>
+AC C<br>
+AN SACRAMENTO/MCCLEAN<br>
+AL 1600 ft<br>
+AH 4100 ft<br>
+V X=38:41.7 N 121:35.4 W<br>
+DA 10,164,40<br>
+V X=38:40.0 N 121:24.0 W<br>
+DA 10,344,219<br>
+<br>
+******************* RESTRICTED ********************<br>
+<br>
+<br>
+AC R<br>
+AN R 4812 4804<br>
+AL 0<br>
+AH FL 180<br>
+V X=39:13:00 N 118:13:00 W<br>
+DA 5,0,178<br>
+V D=-<br>
+V X=39:10:20 N 118:37:00 W<br>
+DA 5,175,355<br>
+<br>
+AC R<br>
+AN R-4803 S<br>
+AL 0<br>
+AH FL180<br>
+V X=39:20:00 N 118:52:00 W<br>
+DA 3,27,270<br>
+DP 39:35:00 N 118:59:20 W<br>
+DP 39:36:00 N 118:53:30 W<br>
+<br>
+AC R<br>
+AN R-4806 W<br>
+AL 0<br>
+AH UNLIM <br>
+DP 36:41:00 N 115:56:10 W&nbsp;&nbsp;&nbsp; c29<br>
+DP 37:06:00 N 115:56:10 W&nbsp;&nbsp;&nbsp; c30<br>
+DP 37:06:00 N 115:35:00 W&nbsp;&nbsp;&nbsp; c31<br>
+DP 37:16:55 N 115:35:00 W&nbsp;&nbsp;&nbsp; c32<br>
+<br>
+DP 37:16:55 N 115:18:10 W&nbsp;&nbsp;&nbsp; c34<br>
+DP 36:38:08 N 115:18:10 W&nbsp;&nbsp;&nbsp; c35<br>
+DP 36:25:40 N 115:18:10 W&nbsp;&nbsp;&nbsp; c36<br>
+DP 36:25:40 N 115:23:20 W&nbsp;&nbsp;&nbsp; c37<br>
+DP 36:35:00 N 115:37:00 W&nbsp;&nbsp;&nbsp; c38<br>
+DP 36:35:00 N 115:53:00 W&nbsp;&nbsp;&nbsp; c39<br>
+DP 36:35:45 N 115:56:10 W&nbsp;&nbsp;&nbsp; c40<br>
+<br>
+<br>
+AC R<br>
+AN R-4806 E<br>
+AL 100 Agl<br>
+AH UNLIM <br>
+DP 37:16:55 N 115:18:10 W&nbsp;&nbsp;&nbsp; c34<br>
+DP 36:38:08 N 115:18:10 W&nbsp;&nbsp;&nbsp; c35<br>
+<br>
+DP 36:47:40 N 115:07:00 W&nbsp;&nbsp;&nbsp; c41<br>
+DP 37:11:45 N 115:07:00 W&nbsp;&nbsp;&nbsp; c42<br>
+DP 37:16:55 N 115:11:00 W&nbsp;&nbsp;&nbsp; c43<br>
+<br>
+<br>
+AC R<br>
+AN R-4807 A<br>
+AL 0<br>
+AH UNLIM (Mon-Fri)<br>
+AT 37:28:00 N 116:36:00 W <br>
+DP 37:53:00 N 117:06:00 W <br>
+DP 37:53:00 N 116:55:30 W&nbsp;&nbsp;&nbsp; c1<br>
+DP 37:47:00 N 116:55:30 W&nbsp;&nbsp;&nbsp; c2<br>
+DP 37:33:00 N 116:43:20 W&nbsp;&nbsp;&nbsp; c3<br>
+DP 37:33:00 N 116:26:20 W&nbsp;&nbsp;&nbsp; c4<br>
+DP 37:53:00 N 116:26:20 W&nbsp;&nbsp;&nbsp; c5<br>
+DP 37:53:00 N 116:11:00 W&nbsp;&nbsp;&nbsp; <br>
+DP 37:42:00 N 116:11:00 W&nbsp;&nbsp;&nbsp; <br>
+DP 37:42:00 N 115:53:00 W&nbsp;&nbsp;&nbsp; c6<br>
+DP 37:33:00 N 115:53:00 W&nbsp;&nbsp;&nbsp; c7<br>
+DP 37:33:00 N 115:48:00 W&nbsp;&nbsp;&nbsp; c8<br>
+DP 37:28:00 N 115:48:00 W&nbsp;&nbsp;&nbsp; c9<br>
+DP 37:28:00 N 116:00:00 W&nbsp;&nbsp;&nbsp; c10<br>
+DP 37:16:00 N 116:00:00 W&nbsp;&nbsp;&nbsp; c11<br>
+DP 37:16:00 N 116:11:10 W&nbsp;&nbsp;&nbsp; c12<br>
+DP 37:20:00 N 116:11:00 W&nbsp;&nbsp;&nbsp; c13<br>
+DP 37:23:00 N 116:17:15 W&nbsp;&nbsp;&nbsp; c14<br>
+DP 37:23:00 N 116:22:15 W&nbsp;&nbsp;&nbsp; c15<br>
+DP 37:21:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c16<br>
+DP 37:21:00 N 116:34:10 W&nbsp;&nbsp;&nbsp; c17<br>
+DP 37:16:00 N 116:31:00 W&nbsp;&nbsp;&nbsp; c18<br>
+DP 37:08:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c19<br>
+DP 36:55:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c20<br>
+DP 36:55:00 N 116:34:00 W&nbsp;&nbsp;&nbsp; c21<br>
+DP 36:51:00 N 116:34:00 W&nbsp;&nbsp;&nbsp; c22<br>
+DP 37:26:25 N 117:04:45 W&nbsp;&nbsp;&nbsp; c23<br>
+DP 37:32:30 N 117:05:55 W&nbsp;&nbsp;&nbsp; c24<br>
+DP 37:53:00 N 117:06:00 W&nbsp;&nbsp;&nbsp; c25<br>
+<br>
+<br>
+AC R<br>
+AN R-4807 B<br>
+AL 0<br>
+AH UNLIMITED<br>
+DP 37:16:00 N 116:11:10 W&nbsp;&nbsp;&nbsp; c12<br>
+DP 37:20:00 N 116:11:00 W&nbsp;&nbsp;&nbsp; c13<br>
+DP 37:23:00 N 116:17:15 W&nbsp;&nbsp;&nbsp; c14<br>
+DP 37:23:00 N 116:22:15 W&nbsp;&nbsp;&nbsp; c15<br>
+DP 37:21:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c16<br>
+DP 37:21:00 N 116:34:10 W&nbsp;&nbsp;&nbsp; c17<br>
+DP 37:16:00 N 116:31:00 W&nbsp;&nbsp;&nbsp; c18<br>
+<br>
+<br>
+AC R<br>
+AN R-4808 N<br>
+AL 0<br>
+AH UNLIMITED<br>
+DP 37:28:00 N 115:48:00 W&nbsp;&nbsp;&nbsp; c9<br>
+DP 37:28:00 N 116:00:00 W&nbsp;&nbsp;&nbsp; c10<br>
+DP 37:16:00 N 116:00:00 W&nbsp;&nbsp;&nbsp; c11<br>
+DP 37:16:00 N 116:11:10 W&nbsp;&nbsp;&nbsp; c12<br>
+DP 37:16:00 N 116:31:00 W&nbsp;&nbsp;&nbsp; c18<br>
+DP 37:08:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c19<br>
+DP 36:55:00 N 116:27:00 W&nbsp;&nbsp;&nbsp; c20<br>
+DP 36:55:00 N 116:34:00 W&nbsp;&nbsp;&nbsp; c21<br>
+DP 36:51:00 N 116:34:00 W&nbsp;&nbsp;&nbsp; c22<br>
+<br>
+DP 36:51:00 N 116:26:45 W&nbsp;&nbsp;&nbsp; c26<br>
+DP 36:46:00 N 116:26:45 W&nbsp;&nbsp;&nbsp; c27<br>
+DP 36:41:00 N 116:15:00 W&nbsp;&nbsp;&nbsp; c28<br>
+DP 36:41:00 N 115:56:10 W&nbsp;&nbsp;&nbsp; c29<br>
+DP 37:06:00 N 115:56:10 W&nbsp;&nbsp;&nbsp; c30<br>
+DP 37:06:00 N 115:35:00 W&nbsp;&nbsp;&nbsp; c31<br>
+DP 37:16:55 N 115:35:00 W&nbsp;&nbsp;&nbsp; c32<br>
+DP 37:28:00 N 115:35:00 W&nbsp;&nbsp;&nbsp; c33<br>
+<br>
+<br>
+AC R<br>
+AN R-4808 S<br>
+AL 0<br>
+AH UNLIMITED<br>
+DP 36:46:00 N 116:26:45 W&nbsp;&nbsp;&nbsp; c27<br>
+DP 36:41:00 N 116:15:00 W&nbsp;&nbsp;&nbsp; c28<br>
+DP 36:41:00 N 116:26:45 W&nbsp;&nbsp;&nbsp; <br>
+<br>
+<br>
+AC R<br>
+AN R-4809<br>
+AL 0<br>
+AH UNLIMITED<br>
+DP 37:53:00 N 116:55:30 W&nbsp;&nbsp;&nbsp; c1<br>
+DP 37:47:00 N 116:55:30 W&nbsp;&nbsp;&nbsp; c2<br>
+DP 37:33:00 N 116:43:20 W&nbsp;&nbsp;&nbsp; c3<br>
+DP 37:33:00 N 116:26:20 W&nbsp;&nbsp;&nbsp; c4<br>
+DP 37:53:00 N 116:26:20 W&nbsp;&nbsp;&nbsp; c5<br>
+<br>
+<br>
+AC R<br>
+AN R-4810<br>
+AL 0<br>
+AH 17000ft<br>
+V X=39:10:20 N 118:37:00 W<br>
+DA 5,293,215<br>
+V X=39:09:00 N 118:42:00 W<br>
+DA 3,159,347<br>
+<br>
+AC R<br>
+AN R-4811<br>
+AL 0<br>
+AH 15000ft (Mo-Fri)<br>
+V X=38:14:40 N 118:38:40 W <br>
+DC 1.5<br>
+<br>
+AC R<br>
+AN R-4813<br>
+AL 0<br>
+AH FL180<br>
+V X=39:51:20 N 118:21:00 W<br>
+DA 13,165,255<br>
+DP 39:51:15 N 118:37:35 W<br>
+DP 40:01:20 N 118:15:00 W<br>
+DP 40:01:20 N 118:00:55 W<br>
+DP 39:58:20 N 118:00:55 W<br>
+<br>
+AC R<br>
+AN R-4816S<br>
+AL 500 ft agl<br>
+AH FL180<br>
+DP 39:17:20 N 118:20:30 W<br>
+DP 39:18:20 N 117:59:00 W<br>
+DP 39:21:00 N 117:55:00 W<br>
+DP 39:24:30 N 117:52:00 W<br>
+DP 39:26:50 N 117:51:08 W<br>
+<br>
+DP 39:30:00 N 117:49:00 W<br>
+DP 39:34:00 N 117:41:20 W<br>
+DP 39:34:00 N 118:12:30 W<br>
+DP 39:30:00 N 118:15:18 W<br>
+<br>
+<br>
+AC R<br>
+AN R-4816N<br>
+AL 1500 ft agl<br>
+AH FL180<br>
+DP 39:34:00 N 118:12:30 W<br>
+DP 39:51:20 N 117:59:55 W<br>
+DP 39:51:20 N 117:31:00 W<br>
+DP 39:34:00 N 117:40:00 W<br>
+<br>
+<br>
+<br>
+************* ALERT ************<br>
+AC R<br>
+AN A-481<br>
+AL 7000ft<br>
+AH 17000ft<br>
+AT 36:21.0 N 115:22.0 W<br>
+DP 36:14.2 N 115:02.0 W<br>
+V X=36:14.2 N 115:02.0 W<br>
+DA 30,274,307<br>
+<br>
+<br>
+<br>
+************* CLASS D ***********<br>
+<br>
+AC D<br>
+AN NAS-FALLON<br>
+AL 0<br>
+AH 6400ft<br>
+V X=39:25.0 N 118:42.0 W<br>
+DC 6<br>
+<br>
+AC D<br>
+AN LAKE TAHOE<br>
+AL 0<br>
+AH 8800ft<br>
+V X=38:53.6 N 119:59.7 W<br>
+DC 5<br>
+<br>
+<br>
+************* Wave Windows ***********<br>
+AC W<br>
+AN Minden West<br>
+AH Ask on 122.8<br>
+AL 18000 ft<br>
+DP 39:04:00 N 119:57:00 W <br>
+DP 39:04:00 N 119:41:00 W <br>
+DP 38:42:00 N 119:38:00 W <br>
+DP 38:42:00 N 119:57:00 W <br>
+<br>
+
+
+</p></big></body></html>
