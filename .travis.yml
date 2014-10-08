@@ -3,6 +3,9 @@ go:
         - tip
 before_install:
         - go get -v github.com/golang/lint/golint
+        - go get github.com/mattn/goveralls
+        - go get github.com/axw/gocov/gocov
+        - go get code.google.com/p/go.tools/cmd/cover
 script:
         - $HOME/gopath/bin/golint .
         - ./scripts/goveralls.sh
