@@ -99,15 +99,13 @@ func (r *Release) Fetch() error {
 
 // Parse fills in the Release object by parsing r.Data
 func (r *Release) Parse(content []byte) error {
-	if content == nil {
+	if content == nil || len(content) == 0 {
 		return errors.New("No data available to parse")
 	}
 
 	lines := strings.Split(string(content), "\n")
 	for i := range lines {
 		switch {
-		case len(lines[i]) < 1: // empty line
-			continue
 		case lines[i][0] == '$': // comment
 			continue
 		case lines[i][5] == '1' || lines[i][5] == '2': // airfield

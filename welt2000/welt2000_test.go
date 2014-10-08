@@ -62,6 +62,30 @@ func TestFetchMissing(t *testing.T) {
 	}
 }
 
+func TestParseNil(t *testing.T) {
+	r := Release{}
+	err := r.Parse(nil)
+	if err == nil {
+		t.Errorf("Parsing a nil value should return error")
+	}
+}
+
+func TestParseEmpty(t *testing.T) {
+	r := Release{}
+	err := r.Parse([]byte{})
+	if err == nil {
+		t.Errorf("Parsing an empty value should return an error")
+	}
+}
+
+func TestParseComment(t *testing.T) {
+	r := Release{}
+	r.Parse([]byte("$ this is a comment line"))
+	if len(r.Airfields) > 0 || len(r.Waypoints) > 0 {
+		t.Errorf("Parsing a comment line should fill up airfields or waypoints")
+	}
+}
+
 func TestParseAirfield(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIA129123012587 494N461131E0061606FRQ0"))
@@ -171,12 +195,22 @@ func TestParseGravel(t *testing.T) {
 		t.Errorf("Parse failed for gravel airstrip")
 	}
 }
+
 func TestParseDirt(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLID129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Dirt == 0 {
 		t.Errorf("Parse failed for dirt airstrip")
+	}
+}
+
+func TestParseUnknownRunwayType(t *testing.T) {
+	r := Release{}
+	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIO129123012587 494N461131E0061606FRQ0"))
+	airfield := r.Airfields[0]
+	if airfield.Flags != 0 {
+		t.Errorf("Parse failed for invalid runway type")
 	}
 }
 
