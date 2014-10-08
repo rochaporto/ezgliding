@@ -26,15 +26,49 @@
 package soaringweb
 
 import (
+	"fmt"
 	"github.com/rochaporto/ezgliding/common"
+	"io/ioutil"
+	"net/http"
 )
 
 // List returns all latest airspace info available
 func List(location string) ([]common.Airspace, error) {
+	var content []byte
+	// case http
+	resp, err := http.Get(location)
+	if err == nil {
+		defer resp.Body.Close()
+		content, err = ioutil.ReadAll(resp.Body)
+	} else { // case file
+		resp, err := ioutil.ReadFile(location)
+		if err != nil {
+			return nil, err
+		}
+		content = resp
+	}
+	// TODO: actual listing
+	fmt.Println("%v", content)
+
 	return nil, nil
 }
 
 // Fetch gets and returns the Airspace at the given location
 func Fetch(location string) (*common.Airspace, error) {
+	var content []byte
+
+	resp, err := http.Get(location)
+	// case http
+	if err == nil {
+		defer resp.Body.Close()
+		content, err = ioutil.ReadAll(resp.Body)
+	} else { // case file
+		content, err = ioutil.ReadFile(location)
+	}
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("%v", content)
+	// TODO: actual fetching
 	return nil, nil
 }
