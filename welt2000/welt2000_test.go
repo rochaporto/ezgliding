@@ -69,7 +69,7 @@ func TestListMissing(t *testing.T) {
 }
 
 func TestListBrokenFeed(t *testing.T) {
-	_, err := List("./test-brokenfeed.xml")
+	_, err := List("./test-releases-broken.xml")
 	if err == nil {
 		t.Errorf("Parsing a broken rss feed should have failed")
 	}
