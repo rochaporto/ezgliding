@@ -41,6 +41,7 @@ type Release struct {
 	Date      time.Time
 	Source    string
 	Airfields []common.Airfield
+	Waypoints []common.Waypoint
 }
 
 // List checks the welt2000 rss feed and lists the releases found
@@ -109,8 +110,10 @@ func (r *Release) Parse(content []byte) error {
 			continue
 		case lines[i][0] == '$': // comment
 			continue
-		default: // airfield
+		case lines[i][5] == '1' || lines[i][5] == '2': // airfield
 			r.parseAirfield(lines[i])
+		default: // waypoint
+			r.parseWaypoint(lines[i])
 		}
 	}
 	return nil
@@ -120,11 +123,11 @@ func (r *Release) parseAirfield(line string) error {
 	airfield := common.Airfield{}
 	if line[4] == '2' { // unclear airstrip
 		airfield.Flags |= common.UnclearAirstrip
-		airfield.ShortName = line[0:4]
+		airfield.ShortName = strings.Trim(line[0:4], " ")
 	} else { // regular airstrip
-		airfield.ShortName = line[0:5]
+		airfield.ShortName = strings.Trim(line[0:5], " ")
 	}
-	airfield.Name = line[7:20]
+	airfield.Name = strings.Trim(line[7:20], " ")
 	if line[23] == '#' && line[24] != ' ' { // ICAO available
 		airfield.ICAO = line[24:28]
 		airfield.ID = airfield.ICAO
@@ -174,4 +177,16 @@ func (r *Release) runwayType2Bit(t uint8) int {
 		return common.Dirt
 	}
 	return 0
+}
+
+func (r *Release) parseWaypoint(line string) error {
+	waypoint := common.Waypoint{
+		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
+		Description: strings.Trim(line[7:41], " "),
+		Latitude:    line[45:52], Longitude: line[52:60],
+	}
+	elevation := strings.Trim(line[41:45], " ")
+	waypoint.Elevation, _ = strconv.Atoi(elevation)
+	r.Waypoints = append(r.Waypoints, waypoint)
+	return nil
 }

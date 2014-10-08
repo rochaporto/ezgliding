@@ -27,45 +27,38 @@ import (
 func TestList(t *testing.T) {
 	releases, err := List("./updates.xml")
 	if err != nil {
-		t.Fatalf("Failed to list releases :: %v", err)
+		t.Errorf("Failed to list releases :: %v", err)
 	}
 	if len(releases) < 1 {
-		t.Fatalf("Got wrong number of releases :: %v", len(releases))
+		t.Errorf("Got wrong number of releases :: %v", len(releases))
 	}
 }
 
 func TestListEmpty(t *testing.T) {
 	_, err := List("")
 	if err == nil {
-		t.Fatalf("List empty string should give error")
+		t.Errorf("List empty string should give error")
 	}
 }
 
 func TestListMissing(t *testing.T) {
 	_, err := List("./nonexisting.file")
 	if err == nil {
-		t.Fatalf("List non existing file should give error")
-	}
-}
-
-func TestFetch(t *testing.T) {
-	_, err := Fetch("./sample-release.txt")
-	if err != nil {
-		t.Fatalf("Failed to fetch release :: %v", err)
+		t.Errorf("List non existing file should give error")
 	}
 }
 
 func TestFetchEmpty(t *testing.T) {
 	_, err := Fetch("")
 	if err == nil {
-		t.Fatalf("Fetching an empty string should return error")
+		t.Errorf("Fetching an empty string should return error")
 	}
 }
 
 func TestFetchMissing(t *testing.T) {
 	_, err := Fetch("nonexisting.release")
 	if err == nil {
-		t.Fatalf("Fetching a non existing release should return error")
+		t.Errorf("Fetching a non existing release should return error")
 	}
 }
 
@@ -75,11 +68,11 @@ func TestParseAirfield(t *testing.T) {
 	airfield := r.Airfields[0]
 
 	expected := common.Airfield{ID: "LFLI", ShortName: "ANNEM",
-		Name: "ANNEMASSE    ", ICAO: "LFLI", Flags: 0 | common.Asphalt,
+		Name: "ANNEMASSE", ICAO: "LFLI", Flags: 0 | common.Asphalt,
 		Length: 1290, Runway: "1230", Frequency: 125.87, Elevation: 494,
 		Latitude: "N461131", Longitude: "E0061606"}
 	if airfield != expected {
-		t.Fatalf("Failed to parse airfield :: %v :: %v", expected, airfield)
+		t.Errorf("Failed to parse airfield :: %v :: %v", expected, airfield)
 	}
 }
 
@@ -88,7 +81,7 @@ func TestParseUnclearAirstrip(t *testing.T) {
 	r.Parse([]byte("AMBL21 AMBLETEUSE AERO #   ?G       1      32N504901E0013658FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.UnclearAirstrip != 1 {
-		t.Fatalf("Parse failed for unclear airstrip")
+		t.Errorf("Parse failed for unclear airstrip")
 	}
 }
 
@@ -98,13 +91,13 @@ func TestParseGliderSite(t *testing.T) {
 	r.Parse([]byte("CHALA1 CHALAIS      GLD#LFIHG 83072512350  88N451605E0000058FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.GliderSite == 0 {
-		t.Fatalf("Parse failed for glider site")
+		t.Errorf("Parse failed for glider site")
 	}
 	// case GLD#GLD
 	r.Parse([]byte("HABER1 HABERE POC69 GLD#GLD!G 980119122501113N461611E0062748FRP3"))
 	airfield = r.Airfields[0]
 	if airfield.Flags&common.GliderSite == 0 {
-		t.Fatalf("Parse failed for glider site")
+		t.Errorf("Parse failed for glider site")
 	}
 }
 
@@ -113,7 +106,7 @@ func TestParseULMSite(t *testing.T) {
 	r.Parse([]byte("CERVE2 CERVENS UL      *ULM!G 28052312350 619N461713E0062638FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.ULMSite == 0 {
-		t.Fatalf("Parse failed for ulm site")
+		t.Errorf("Parse failed for ulm site")
 	}
 }
 func TestParseAsphalt(t *testing.T) {
@@ -121,7 +114,7 @@ func TestParseAsphalt(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIA129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Asphalt == 0 {
-		t.Fatalf("Parse failed for asphalt airstrip")
+		t.Errorf("Parse failed for asphalt airstrip")
 	}
 }
 
@@ -130,7 +123,7 @@ func TestParseConcrete(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIC129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Concrete == 0 {
-		t.Fatalf("Parse failed for concrete airstrip")
+		t.Errorf("Parse failed for concrete airstrip")
 	}
 }
 
@@ -139,7 +132,7 @@ func TestParseLoam(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIL129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Loam == 0 {
-		t.Fatalf("Parse failed for loam airstrip")
+		t.Errorf("Parse failed for loam airstrip")
 	}
 }
 
@@ -148,7 +141,7 @@ func TestParseSand(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIS129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Sand == 0 {
-		t.Fatalf("Parse failed for sand airstrip")
+		t.Errorf("Parse failed for sand airstrip")
 	}
 }
 
@@ -157,7 +150,7 @@ func TestParseClay(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIY129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Clay == 0 {
-		t.Fatalf("Parse failed for asphalt airstrip")
+		t.Errorf("Parse failed for asphalt airstrip")
 	}
 }
 
@@ -166,7 +159,7 @@ func TestParseGrass(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIG129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Grass == 0 {
-		t.Fatalf("Parse failed for grass airstrip")
+		t.Errorf("Parse failed for grass airstrip")
 	}
 }
 
@@ -175,7 +168,7 @@ func TestParseGravel(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIV129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Gravel == 0 {
-		t.Fatalf("Parse failed for gravel airstrip")
+		t.Errorf("Parse failed for gravel airstrip")
 	}
 }
 func TestParseDirt(t *testing.T) {
@@ -183,7 +176,7 @@ func TestParseDirt(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLID129123012587 494N461131E0061606FRQ0"))
 	airfield := r.Airfields[0]
 	if airfield.Flags&common.Dirt == 0 {
-		t.Fatalf("Parse failed for dirt airstrip")
+		t.Errorf("Parse failed for dirt airstrip")
 	}
 }
 
@@ -192,6 +185,28 @@ func TestParseCatalogNumber(t *testing.T) {
 	r.Parse([]byte("BONVI2 BONNEVILLE      *FL53S 400523      450N460441E0062310FRP0"))
 	airfield := r.Airfields[0]
 	if airfield.Catalog != 53 || airfield.Flags&common.Outlanding == 0 {
-		t.Fatalf("Parse failed for outlanding catalog number")
+		t.Errorf("Parse failed for outlanding catalog number")
+	}
+}
+
+func TestParseWaypoint(t *testing.T) {
+	r := Release{}
+	r.Parse([]byte("FURKAP FURKAPASS PASSHOEHE               2432N463422E0082455CHQ6"))
+	waypoint := r.Waypoints[0]
+	expected := common.Waypoint{
+		Name: "FURKAP", ID: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+		Latitude: "N463422", Longitude: "E0082455", Elevation: 2432,
+	}
+	if waypoint != expected {
+		t.Errorf("Parse failed for waypoint: got %v instead of %v", waypoint, expected)
+	}
+}
+
+func BenchmarkFetch(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, err := Fetch("./sample-release.txt")
+		if err != nil {
+			b.Errorf("Failed to fetch release :: %v", err)
+		}
 	}
 }
