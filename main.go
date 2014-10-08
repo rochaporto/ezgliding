@@ -23,7 +23,6 @@ import (
 	commander "code.google.com/p/go-commander"
 	"flag"
 	"fmt"
-	"github.com/rochaporto/ezgliding/soaringweb"
 	"github.com/rochaporto/ezgliding/welt2000"
 	"os"
 )
@@ -72,10 +71,6 @@ Lists all latest airspace available, for all countries along with their
 correspondent latest update time.
 `,
 	Run: func(cmd *commander.Command, args []string) {
-		airspaces, _ := soaringweb.List("./welt2000/updates.xml")
-		for i := range airspaces {
-			fmt.Printf("%v\n", airspaces[i])
-		}
 	},
 	Flag: *flag.CommandLine,
 }
