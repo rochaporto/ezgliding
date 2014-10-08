@@ -106,6 +106,8 @@ func (r *Release) Parse(content []byte) error {
 	lines := strings.Split(string(content), "\n")
 	for i := range lines {
 		switch {
+		case len(lines[i]) == 0: // empty line
+			continue
 		case lines[i][0] == '$': // comment
 			continue
 		case lines[i][5] == '1' || lines[i][5] == '2': // airfield

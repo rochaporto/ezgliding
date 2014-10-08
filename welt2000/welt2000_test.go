@@ -28,7 +28,7 @@ import (
 	"testing"
 )
 
-func TestList(t *testing.T) {
+func TestListLocal(t *testing.T) {
 	releases, err := List("./test-releases-list.xml")
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
@@ -72,6 +72,32 @@ func TestListBrokenFeed(t *testing.T) {
 	_, err := List("./test-brokenfeed.xml")
 	if err == nil {
 		t.Errorf("Parsing a broken rss feed should have failed")
+	}
+}
+
+func TestFetchLocal(t *testing.T) {
+	release, err := Fetch("./test-release-basic.txt")
+	if err != nil {
+		t.Errorf("Failed to fetch release from local :: %v", err)
+	}
+	if len(release.Airfields) < 1 || len(release.Waypoints) < 1 {
+		t.Errorf("Got wrong number of airfields (%v) or waypoints (%v)", len(release.Airfields), len(release.Waypoints))
+	}
+}
+
+func TestFetchHTTP(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp, _ := ioutil.ReadFile("./test-release-basic.txt")
+		io.WriteString(w, string(resp))
+	}))
+	defer ts.Close()
+
+	release, err := Fetch(ts.URL)
+	if err != nil {
+		t.Errorf("Failed to fetch release from http endpoint :: %v", err)
+	}
+	if len(release.Airfields) < 1 || len(release.Waypoints) < 1 {
+		t.Errorf("Got wrong number of airfields or waypoints :: %v :: %v", len(release.Airfields), len(release.Waypoints))
 	}
 }
 
