@@ -5,4 +5,4 @@ before_install:
         - go get -v github.com/golang/lint/golint
 script:
         - $HOME/gopath/bin/golint .
-        - go test -v ./...
+        - for td in . common soaringweb welt2000; do cd $td; go test -v -bench .; cd -; done
