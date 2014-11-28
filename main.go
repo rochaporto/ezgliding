@@ -27,6 +27,10 @@ import (
 	"os"
 )
 
+var commonFlags = flag.CommandLine
+var _ = commonFlags.String("after", "", "consider only items updated after this date")
+var _ = commonFlags.String("region", "", "region(s) to retrieve items for, comma separated ( default is all )")
+
 func main() {
 	c := commander.Commander{
 		Name: "ezgliding",
@@ -35,6 +39,7 @@ func main() {
 			CmdListAirspace,
 			CmdListWaypoints,
 		},
+		Flag: commonFlags,
 	}
 
 	if len(os.Args) == 1 {
@@ -45,16 +50,32 @@ func main() {
 	}
 }
 
+func helpFlags(flags *flag.FlagSet) string {
+	result := ""
+	flags.VisitAll(func(f *flag.Flag) {
+		result = result + "\t" + f.Name + "\t" + f.Usage
+		if f.DefValue != "" {
+			result = result + " ( default is " + f.DefValue + " ) "
+		}
+		result = result + "\n"
+	})
+	if result != "" {
+		result = "Options:\n" + result
+	}
+	return result
+}
+
 // A CmdListAirfields command lists all available airfields
+var listAirfieldFlags = commonFlags
 var CmdListAirfields = &commander.Command{
 	UsageLine: "airfield-ls [options]",
 	Short:     "lists all available airfields",
 	Long: `
 Lists all available releases for the different kinds of information - airfields,
 waypoints, airspace, etc. It includes all releases matching the current configuration.
-`,
+` + "\n" + helpFlags(listAirfieldFlags),
 	Run: func(cmd *commander.Command, args []string) {
-		releases, _ := welt2000.List("./welt2000/updates.xml")
+		releases, _ := welt2000.List("./welt2000/test-releases-list.xml")
 		for i := range releases {
 			fmt.Printf("%v\n", releases[i])
 		}
@@ -63,25 +84,29 @@ waypoints, airspace, etc. It includes all releases matching the current configur
 }
 
 // A CmdListAirspace command lists all available airspaces
+var listAirspaceFlags = commonFlags
 var CmdListAirspace = &commander.Command{
 	UsageLine: "airspace-ls [options]",
 	Short:     "lists all latest airspace information",
 	Long: `
 Lists all latest airspace available, for all countries along with their
 correspondent latest update time.
-`,
+` + "\n" + helpFlags(listAirspaceFlags),
 	Run: func(cmd *commander.Command, args []string) {
+		fmt.Printf("%v", args)
+		fmt.Printf("%v", listAirspaceFlags.Lookup("after").Value)
 	},
-	Flag: *flag.CommandLine,
+	Flag: *listAirspaceFlags,
 }
 
 // A CmdListWaypoints command lists all available waypoints
+var listWaypointFlags = commonFlags
 var CmdListWaypoints = &commander.Command{
 	UsageLine: "waypoint-ls [options]",
 	Short:     "lists all waypoints",
 	Long: `
 Lists all waypoints available.
-`,
+` + "\n" + helpFlags(listWaypointFlags),
 	Run: func(cmd *commander.Command, args []string) {
 	},
 	Flag: *flag.CommandLine,
