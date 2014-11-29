@@ -10,6 +10,24 @@ go install
 go test -v ./...
 ```
 
+### Code
+
+Submit all contributions as pull requests.
+
+Feel free to keep adding new commits during the discussion, but before finally
+merging squash them into a single one, with a sensible commit log and a
+reference to the issue being tackled (if any).
+
+This should work (from within the branch):
+```
+git rebase master --interactive
+pick ...
+squash ...
+squash ...
+
+git push -f
+```
+
 ### Bugs, features, code review
 
 GitHub for **everything**.
