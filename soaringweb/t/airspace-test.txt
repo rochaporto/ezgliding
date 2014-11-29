@@ -1,0 +1,149 @@
+
+********************************************************************************
+*                                                                              *
+*                               AIRSPACE OF FRANCE                             *
+*                           Courtesy of Marc SERETTI                           *
+*                        Contribuion date: 8 July 2014                         *
+*                         OPTIMIZED FOR GLIDER ACTIVITY                        *
+*                                                                              *
+*                          Special Use Airspace v1405e                         *
+*                                                                              *
+*                              -SOURCE: AIP FRANCE 1405 -                      *
+*                                                                              *
+*                 >>>>> UNOFFICIAL, USE AT YOUR OWN RISK <<<<<                 *
+*                                                                              *
+*                NOT to be used as a primary navigational aid.                 *
+*          ALWAYS refer to current charts for definitive information.          *
+*                                                                              *
+*                 Dispensatory Glider Sectors and Wave windows :               *
+*                     To be used only by authorized pilots                     *
+*             in accordance with current letters of agreement (LOA)            *
+*           between the ATC services and the appropriate gliding club          *
+*                                                                              *
+*           This file is provided free of charge with no warrantees,           *
+*             expressed or implied. USER ASSUMES ALL RISK OF USE.              *
+*                                                                              *
+*                    Courtesy of Marc SERETTI : fichier-ea@ffvv.org            *
+* 				http://fichier-ea.ffvv.org	               *
+*                                                                              *
+********************************************************************************
+*
+* (+)Ajout (-)Suppression (MOD)Modification
+*
+** (04/04/2014) CTR ALBERT BRAY MOD
+** (04/04/2014) CTR CHERBOURG MOD
+** (04/04/2014) CTR ILES ANGLO NORMANDES - JERSEY MOD
+** (04/04/2014) CTR MELUN MOD
+** (04/04/2014) CTR PARIS MOD
+** (04/04/2014) CTA ILES ANGLO-NORMANDES partie 1 et 2 MOD
+** (04/04/2014) TMA GENEVE partie  1 MOD
+** (04/04/2014) TMA GENEVE partie 1 à 7 MOD
+** (04/04/2014) TMA ILES ANGLO NORMANDES MOD
+** TMA LILLE Partie 10 (04/04/2014) ** MOD
+** TMA LILLE Partie 11 (04/04/2014) ** MOD
+** TMA ORLEANS Partie 7 (04/04/2014) ** MOD
+** (04/04/2014) TMA PARIS partie 2 MOD
+** (04/04/2014) TMA TOULOUSE partie  1.1 ++
+** (04/04/2014) TMA TOULOUSE partie  1.2 ++
+** (04/04/2014) TMA TOULOUSE partie 4-1 MOD
+** R 63 MORONVILLIERS (04/04/2014) ** ++
+** (04/04/2014) MURET LF R 81 ++
+** R95 D3 LE LUC (04/04/2014) ** MOD
+** (04/04/2014) FONSORBES LF R 112 ++
+** (04/04/2014) SISSONNE  TEMPO R 114 C
+** (05/04/2014) OBERHOFFEN LF D 526 A MOD
+** (06/04/2014) SAUCATS  TRANSIT NORD LF R 204  T5 ++
+** (07/04/2014) LTA FRANCE partie 3 Alpes 1 MOD
+** (07/04/2014) LTA FRANCE partie 3 Alpes 2 Vercors MOD
+** (07/04/2014) LTA FRANCE partie 3 Alpes 5 Vanoise ++
+** (07/04/2014) LTA FRANCE partie 3 Alpes 6 Mont Blanc ++ 
+** (07/04/2014) LTA FRANCE partie 3 Alpes 7 Aravis ++
+* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**************************
+*  Airspace COLOR-Table  *
+**************************
+*
+** Avoidance during activity (R Areas and Class A) **
+AC A
+SP 0,2,255,0,0
+SB -1,-1,-1
+V X=51:30:00 N 3:00:00 E
+DC 0.05
+*
+** Clearance requested (Class C and D) **
+AC C
+SP 0,2,0,0,255
+SB -1,-1,-1
+DC 0.05
+*
+AC D
+SP 0,2,0,0,255
+SB -1,-1,-1
+DC 0.05
+*
+** No Clearance requested when VMC (Class E) **
+AC E
+SP 0,2,200,200,255
+SB -1,-1,-1
+DC 0.05
+*
+** Comply with Restrictions (Restricted Areas)
+AC R
+SP 0,2,0,0,0
+SB -1,-1,-1
+DC 0.05
+*
+** Danger Areas **
+AC Q
+SP 0,1,255,0,0
+SB -1,-1,-1
+DC 0.05
+*
+** Permanent Avoidance (Prohibited or Restricted Areas) **
+AC P
+SP 0,1,255,0,0
+SB 255,0,0
+DC 0.05
+*
+** Dispensatory Glider Activity **
+AC W
+SP 0,2,0,255,0
+SB -1,-1,-1
+DC 0.05
+*
+** Natural Parcs and Reserves, Parachute Activity **
+AC GP
+SP 1,1,255,0,0
+SB -1,-1,-1
+DC 0.05
+*
+*********************************
+*   CONTROL TRAFFIC AREAS (CTR) *
+*      AIP France - AD 1.7      *
+*********************************
+*
+** CTR ANNECY (08 APR 2010) **
+AC CTR
+AN CTR Annecy 118.2
+AH 3500FT AMSL
+AL SFC
+DP 46:02:56 N 006:09:33 E
+DP 45:59:06 N 006:14:32 E
+DP 45:48:36 N 006:02:30 E
+V X=45:55:40 N 006:05:41 E
+DB 45:48:36 N 006:02:30 E,45:55:57 N 005:55:05 E
+DP 45:55:57 N 005:55:05 E
+*
+*
+********************************
+* TERMINAL CONTROL AREAS (TMA) *
+*     AIP France - ENR 2.3     *
+********************************
+*
+** TMA GENEVE Partie 9 (13 MAR 2008) **
+AC C
+AN Geneve9 C 126.35
+AH FL195
+AL FL115
+DP 45:52:25 N 006:07:45 E
+DP 45:50:38 N 006:06:05 E

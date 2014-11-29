@@ -163,9 +163,6 @@ DP 46:22:03 N 006:33:04 E
 `,
 		[]common.Airspace{
 			common.Airspace{
-				Class: 'C',
-			},
-			common.Airspace{
 				Class: 'C', Name: "TMA GENEVE partie  1",
 				Floor: "3500FT AMSL", Ceiling: "FL 195",
 				Segments: []common.AirspaceSegment{

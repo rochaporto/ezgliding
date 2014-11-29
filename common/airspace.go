@@ -24,6 +24,15 @@ import (
 	"time"
 )
 
+// Airspacer is implemented by any data source which can manage
+// airspace information. Only one of Get() or Put() or both can be implemented
+// by the source.
+// FIXME: add boundbox filter to Get
+type Airspacer interface {
+	GetAirspace(regions []string, updatedSince time.Time) ([]Airspace, error)
+	PutAirspace(airspaces []Airspace) error
+}
+
 // Airspace keeps details about a specific airspace area
 //
 // Date is of airspace definition or update.
@@ -42,7 +51,7 @@ type Airspace struct {
 	Pen      Pen
 }
 
-// Airspace segment (polygon, arc, circle, ...)
+// AirspaceSegment is one of polygon, arc, circle.
 //
 // Clockwise indicates direction for building arcs.
 //
@@ -65,7 +74,7 @@ type AirspaceSegment struct {
 	Coordinate2 string
 }
 
-// Airspace record types (polygon, arc, circle)
+// AirspaceSegmentType is an int for an AirspaceSegment.
 type AirspaceSegmentType int
 
 // Constants for airspace record types
@@ -75,6 +84,7 @@ const (
 	Circle
 )
 
+// Pen has drawing info for an Airspace.
 type Pen struct {
 	Style       PenStyle
 	Width       int
@@ -82,10 +92,14 @@ type Pen struct {
 	InsideColor color.Color
 }
 
+// PenStyle is one of Solid, Dash, None.
 type PenStyle int
 
 const (
+	// Solid PenStyle.
 	Solid PenStyle = iota
+	// Dash (ed) PenStyle.
 	Dash
+	// None is no PenStyle
 	None
 )

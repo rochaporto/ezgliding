@@ -17,8 +17,10 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// openair provides functionality for parsing airspace information defined
-// in the OpenAir format, as defined in:
+// Package openair provides functionality for parsing airspace information defined
+// in the OpenAir format.
+//
+// The format specification is available at:
 // http://www.winpilot.com/UsersGuide/UserAirspace.asp
 //
 package openair
@@ -49,9 +51,9 @@ func Fetch(location string) ([]common.Airspace, error) {
 		content, err = ioutil.ReadAll(resp.Body)
 	} else { // case file
 		content, err = ioutil.ReadFile(location)
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 	return Parse(content)
 }
@@ -60,13 +62,15 @@ func Fetch(location string) ([]common.Airspace, error) {
 // of Airspace objects.
 func Parse(content []byte) ([]common.Airspace, error) {
 	items := strings.Split(string(content), "*\n")
-	result := make([]common.Airspace, len(items))
+	result := []common.Airspace{}
 	for i := range items {
-		airspace, err := parseSingle([]byte(items[i]))
+		airspace, found, err := parseSingle([]byte(items[i]))
 		if err != nil {
 			return nil, err
 		}
-		result[i] = airspace
+		if found {
+			result = append(result, airspace)
+		}
 	}
 	return result, nil
 }
@@ -89,10 +93,11 @@ func styleToAirspace(value int) common.PenStyle {
 // parseSingle expects a single airspace definition in the content object,
 // returning the corresponding Airspace object.
 // It is usually called by Parse.
-func parseSingle(content []byte) (common.Airspace, error) {
-	airspace := common.Airspace{}
+func parseSingle(content []byte) (common.Airspace, bool, error) {
+	var airspace common.Airspace
 	var x string
 	var clockwise bool
+	found := false
 
 	lines := strings.Split(string(content), "\n")
 	for i := range lines {
@@ -107,6 +112,7 @@ func parseSingle(content []byte) (common.Airspace, error) {
 			airspace.Class = value[0]
 			airspace.Pen = airspacePens[airspace.Class]
 		case "AN":
+			found = true
 			airspace.Name = strings.Trim(value, " ")
 		case "AL":
 			airspace.Floor = value
@@ -161,9 +167,9 @@ func parseSingle(content []byte) (common.Airspace, error) {
 			//b, _ := strconv.Atoi(split[2])
 			//airspacePens[airspace.Class].InsideColor = color.RGBA64{}
 		default:
-			return common.Airspace{}, fmt.Errorf("Unrecognized key '%v' in '%v'", key, line)
+			return common.Airspace{}, false, fmt.Errorf("Unrecognized key '%v' in '%v'", key, line)
 		}
 	}
 
-	return airspace, nil
+	return airspace, found, nil
 }

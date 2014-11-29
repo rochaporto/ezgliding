@@ -20,10 +20,12 @@
 package soaringweb
 
 import (
+	"github.com/rochaporto/ezgliding/common"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -99,7 +101,8 @@ var parseTests = []ParseTest{
 }
 
 func TestListLocal(t *testing.T) {
-	releases, err := List(".", []string{"FR"})
+	plugin := SoaringWeb{}
+	releases, err := plugin.list("./t", []string{"FR"})
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
 	}
@@ -110,12 +113,13 @@ func TestListLocal(t *testing.T) {
 
 func TestListHTTP(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp, _ := ioutil.ReadFile("./FR")
+		resp, _ := ioutil.ReadFile("./t/FR")
 		io.WriteString(w, string(resp))
 	}))
 	defer ts.Close()
 
-	releases, err := List(ts.URL, []string{"FR"})
+	plugin := SoaringWeb{}
+	releases, err := plugin.list(ts.URL, []string{"FR"})
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
 	}
@@ -125,14 +129,16 @@ func TestListHTTP(t *testing.T) {
 }
 
 func TestListEmpty(t *testing.T) {
-	_, err := List("", nil)
+	plugin := SoaringWeb{}
+	_, err := plugin.list("", nil)
 	if err == nil {
 		t.Errorf("List empty string should give error")
 	}
 }
 
 func TestListMissing(t *testing.T) {
-	_, err := List("./nonexisting.file", nil)
+	plugin := SoaringWeb{}
+	_, err := plugin.list("./nonexisting.file", nil)
 	if err == nil {
 		t.Errorf("List non existing should give error")
 	}
@@ -142,7 +148,8 @@ func TestParse(t *testing.T) {
 	for i := range parseTests {
 		test := parseTests[i]
 
-		releases, err := parse(test.rg, []byte(test.c))
+		plugin := SoaringWeb{}
+		releases, err := plugin.parse("./", test.rg, []byte(test.c))
 		if err != nil {
 			t.Errorf("Failed to parse '%v' :: %v", test.t, err)
 		}
@@ -163,5 +170,226 @@ func TestParse(t *testing.T) {
 				t.Errorf("Wrong region in release :: got %v expected %v", release, expected)
 			}
 		}
+	}
+}
+
+func TestInit(t *testing.T) {
+	baseurl := "some.random/location"
+
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": baseurl})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	if plugin.BaseURL != baseurl {
+		t.Errorf("Expected baseurl '%v' but got '%v'", baseurl, plugin.BaseURL)
+	}
+}
+
+func TestInitDefault(t *testing.T) {
+
+	plugin := SoaringWeb{}
+	err := plugin.Init(nil)
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	if plugin.BaseURL != baseURL {
+		t.Errorf("Expected baseurl '%v' but got '%v'", baseURL, plugin.BaseURL)
+	}
+}
+
+type GetAirspaceTest struct {
+	t  string
+	b  string
+	rg string
+	d  time.Time
+	r  []common.Airspace
+}
+
+var getAirspaceTests = []GetAirspaceTest{
+	{"basic get airspace",
+		"./t",
+		"FR",
+		time.Time{},
+		[]common.Airspace{
+			common.Airspace{
+				Class: 'C', Name: "CTR Annecy 118.2",
+				Floor: "SFC", Ceiling: "3500FT AMSL",
+				Segments: []common.AirspaceSegment{
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "46:02:56 N 006:09:33 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:59:06 N 006:14:32 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:48:36 N 006:02:30 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Arc, X: "45:55:40 N 006:05:41 E", Clockwise: false,
+						Coordinate1: "45:48:36 N 006:02:30 E", Coordinate2: "45:55:57 N 005:55:05 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, X: "45:55:40 N 006:05:41 E",
+						Coordinate1: "45:55:57 N 005:55:05 E",
+					},
+				},
+			},
+			common.Airspace{
+				Class: 'C', Name: "Geneve9 C 126.35",
+				Floor: "FL115", Ceiling: "FL195",
+				Segments: []common.AirspaceSegment{
+					common.AirspaceSegment{
+						Type: common.Polygon, Clockwise: false,
+						Coordinate1: "45:52:25 N 006:07:45 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, Clockwise: false,
+						Coordinate1: "45:50:38 N 006:06:05 E",
+					},
+				},
+			},
+		},
+	},
+	{"multiple airspaces with updated since",
+		"./t",
+		"MP",
+		time.Date(2014, time.August, 25, 0, 0, 0, 0, time.UTC),
+		[]common.Airspace{
+			common.Airspace{
+				Class: 'C', Name: "CTR Chambery2 118.3",
+				Floor: "1160FT AMSL", Ceiling: "3500FT AMSL",
+				Segments: []common.AirspaceSegment{
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
+					},
+				},
+			},
+		},
+	},
+	{"with base url dependent location",
+		"./t/wb",
+		"PT",
+		time.Time{},
+		[]common.Airspace{
+			common.Airspace{
+				Class: 'C', Name: "CTR Chambery2 118.3",
+				Floor: "1160FT AMSL", Ceiling: "3500FT AMSL",
+				Segments: []common.AirspaceSegment{
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
+					},
+					common.AirspaceSegment{
+						Type: common.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
+					},
+				},
+			},
+		},
+	},
+}
+
+func TestGetAirspace(t *testing.T) {
+	for i := range getAirspaceTests {
+		test := getAirspaceTests[i]
+
+		plugin := SoaringWeb{}
+		err := plugin.Init(map[string]string{"BaseURL": test.b})
+		if err != nil {
+			t.Errorf("Failed to initialize plugin :: %v", err)
+		}
+
+		var airspaces []common.Airspace
+		airspaces, err = plugin.GetAirspace([]string{test.rg}, test.d)
+		if err != nil {
+			t.Errorf("Failed to get airspace :: %v", err)
+		}
+
+		if len(airspaces) != len(test.r) {
+			t.Errorf("Got %v airspaces but expected %v in test '%v'", len(airspaces), len(test.r), test.t)
+		}
+
+		for i := range airspaces {
+			var airspace = airspaces[i]
+			var expected = test.r[i]
+			airspace.Pen = common.Pen{}
+			if !reflect.DeepEqual(airspace, expected) {
+				t.Errorf("Got wrong airspace. %v instead of %v", airspace, expected)
+			}
+		}
+	}
+}
+
+func TestGetAirspaceEmptyRegion(t *testing.T) {
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": "./t"})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	var airspaces []common.Airspace
+	airspaces, err = plugin.GetAirspace([]string{}, time.Time{})
+	if err != nil {
+		t.Errorf("Got error when retrieving airspace with empty regions :: %v", err)
+	}
+
+	if len(airspaces) != 0 {
+		t.Errorf("Passing empty regions should return 0 airspaces, got %v", len(airspaces))
+	}
+}
+
+func TestGetAirspaceMissingRegion(t *testing.T) {
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": "./t"})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	_, err = plugin.GetAirspace([]string{"II"}, time.Time{})
+	if err == nil {
+		t.Errorf("Get airspace with missing region did not return error")
+	}
+}
+
+func TestGetAirspaceMissingLocation(t *testing.T) {
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": "./t"})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	_, err = plugin.GetAirspace([]string{"MS"}, time.Time{})
+	if err == nil {
+		t.Errorf("Get airspace with missing/bad location did not return error")
+	}
+}
+
+func TestGetAirspaceMissingLocationWithBaseURL(t *testing.T) {
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": "./t/wb"})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	_, err = plugin.GetAirspace([]string{"MS"}, time.Time{})
+	if err == nil {
+		t.Errorf("Get airspace with missing/bad location and base url did not return error")
+	}
+}
+
+func TestPutAirspace(t *testing.T) {
+	plugin := SoaringWeb{}
+	err := plugin.Init(map[string]string{"BaseURL": "./t"})
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	err = plugin.PutAirspace(nil) // FIXME: implement
+	if err != nil {
+		t.Errorf("Failed to put airspace")
 	}
 }

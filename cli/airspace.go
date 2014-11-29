@@ -17,42 +17,40 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package main
+package cli
 
 import (
 	commander "code.google.com/p/go-commander"
 	"fmt"
-	"github.com/rochaporto/ezgliding/cli"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/plugin"
-	"os"
+	"time"
 )
 
-func main() {
-	// FIXME(rocha): use config to load the info below
-	airspace, _ := plugin.NewPlugin(plugin.ID("soaringweb"))
-	airspace.Init(map[string]string{"BaseURL": "./soaringweb/t"})
-	ctx, err := config.NewContext(airspace.(common.Airspacer))
+var airspaceGetFlags = commonFlags
+
+// CmdGetAirspace command gets airspace information.
+var CmdAirspaceGet = &commander.Command{
+	UsageLine: "airspace-get [options]",
+	Short:     "gets airspace information",
+	Long: `
+Gets latest airspace data corresponding to the given parameters.
+` + "\n" + helpFlags(airspaceGetFlags),
+	Run:  runAirspaceGet,
+	Flag: *airspaceGetFlags,
+}
+
+// runAirspaceGet invokes the configured plugin and outputs airspace data.
+func runAirspaceGet(cmd *commander.Command, args []string) {
+	var err error
+	ctx := config.Ctx
+	airspace := ctx.Airspace
+	airspaces, err := airspace.(common.Airspacer).GetAirspace([]string{"FR"}, time.Time{})
 	if err != nil {
-		fmt.Printf("Failed to create context object :: %v", err)
-		os.Exit(-1)
+		fmt.Printf("Failed to get airspace :: %v\n", err)
 	}
-	config.Ctx = ctx
-	c := commander.Commander{
-		Name: "ezgliding",
-		Commands: []*commander.Command{
-			cli.CmdAirfieldGet,
-			cli.CmdAirspaceGet,
-			cli.CmdWaypointGet,
-		},
+	for i := range airspaces {
+		fmt.Printf("\n%v\n", airspaces[i])
 	}
 
-	if len(os.Args) == 1 {
-		os.Args = append(os.Args, "help")
-	}
-	if err := c.Run(os.Args[1:]); err != nil {
-		fmt.Printf("Failed running command %q: %v\n", os.Args[1:], err)
-		os.Exit(-1)
-	}
 }

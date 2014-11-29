@@ -17,17 +17,19 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// soaringweb provides functionality to fetch and parse airspace
+// Package soaringweb provides functionality to fetch and parse airspace
 // information, taking the international soaringweb db as input.
 //
 // Check the soaringweb website for more information on the data:
 // http://soaringweb.org/Airspace/HomePage.html
 //
-// Airspace data is in OpenAir format.
+// Airspace data is handled in OpenAir format.
 //
 package soaringweb
 
 import (
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/openair"
 	"golang.org/x/net/html"
 	"io/ioutil"
 	"net/http"
@@ -36,13 +38,18 @@ import (
 	"time"
 )
 
-// Regions support for queries
+// ID for this plugin implementation.
+const (
+	ID string = "soaringweb"
+)
+
+// Regions supported for queries.
 // FIXME: Missing finland and portugal (non standard page references)
 var Regions = []string{"AF", "AU", "AT", "BE", "HR", "CZ", "DK", "FR",
 	"DE", "HU", "EI", "IT", "LV", "LT", "MK", "NL", "NO", "PL", "SE",
 	"SI", "SK", "ES", "CH", "UK", "CO", "BR"}
 
-// Release contains information regarding a soaringweb airspace release
+// Release contains information regarding a soaringweb airspace release.
 // Location is the URL of the file containing the data,
 // Region is one of 'Regions', Date is the date of the release.
 type Release struct {
@@ -51,27 +58,78 @@ type Release struct {
 	Date     time.Time
 }
 
-// timeFormats are the supported formats for dates in soaringweb pages
+// baseURL is the default base URL to parse airspace releases from.
+var baseURL = "http://soaringweb.org/Airspace"
+
+// timeFormats are the supported formats for dates in soaringweb page.
 var timeFormats = []string{"02 January 2006", "02 January, 2006"}
 
-// reDate is a regexp to detect date values in soaringweb pages
+// reDate is a regexp to detect date values in soaringweb pages.
 var reDate = regexp.MustCompile(`.*\[\s*\w*\s*(\d\d\s\w+,?\s\d\d\d\d)\s*].*`)
 
-// reLocation is a regexp to detect OpenAir file URLs in soaringweb pages
+// reLocation is a regexp to detect OpenAir file URLs in soaringweb pages.
 var reLocation = regexp.MustCompile(`.*txt.*`)
 
-// testDate is a global value used in parseNode to detect update dates
+// testDate is a global value used in parseNode to detect update dates.
 // FIXME: we should not need this, it's mainly a replacement for nil compare
 var testDate time.Time
 
-// List returns latest available airspace information (releases) for the
-// given regions.
+// SoaringWeb is the plugin implementation to collect soaringweb.org info.
 //
-// basepath is the base for the url.
-//   ex: soaringweb.org/Airspace
-// regions are the regions to be retrieved.
-//   ex: ['AT', 'FR']
-func List(basepath string, regions []string) ([]Release, error) {
+// BaseURL is the prefix to add 'region' to get the URL of the releases page
+// ( eg. soaringweb.org/Airspace, which is the default ).
+type SoaringWeb struct {
+	BaseURL string
+}
+
+// Init follows the plugin.Plugin interface (see plugin.Pluginer).
+func (sw *SoaringWeb) Init(Params map[string]string) error {
+	if Params["BaseURL"] != "" {
+		sw.BaseURL = Params["BaseURL"]
+	} else {
+		sw.BaseURL = baseURL
+	}
+
+	return nil
+}
+
+// GetAirspace follows Airspace.GetAirspace().
+func (sw *SoaringWeb) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+	var result []common.Airspace
+
+	releases, err := sw.list(sw.BaseURL, regions)
+	if err != nil {
+		return nil, err
+	}
+	for r := range releases {
+		release := releases[r]
+		if release.Date.After(updatedSince) {
+			var airspaces []common.Airspace
+			airspaces, err = openair.Fetch(release.Location)
+			if err != nil {
+				// retry by prefixing the base url
+				airspaces, err = openair.Fetch(sw.BaseURL + "/" + release.Location)
+				if err != nil {
+					return nil, err
+				}
+			}
+			result = append(result, airspaces...)
+		}
+	}
+
+	return result, nil
+}
+
+// PutAirspace follows Airspacer.PutAirspace().
+func (sw *SoaringWeb) PutAirspace(airspace []common.Airspace) error {
+	return nil
+}
+
+// list returns latest available airspace information (releases) for the given regions.
+//
+// basepath is the base for the url ( eg. soaringweb.org/Airspace ), regions are the
+// regions to be retrieved ( eg. ['AT', 'FR'] ).
+func (sw *SoaringWeb) list(basepath string, regions []string) ([]Release, error) {
 	var releases []Release
 
 	if regions == nil {
@@ -93,7 +151,7 @@ func List(basepath string, regions []string) ([]Release, error) {
 			content = resp
 		}
 		var items []Release
-		items, _ = parse(regions[i], content)
+		items, _ = sw.parse(basepath, regions[i], content)
 		releases = append(releases, items...)
 	}
 	return releases, nil
@@ -105,13 +163,13 @@ func List(basepath string, regions []string) ([]Release, error) {
 // content is the html content of the soaringweb region page.
 //
 // Returns an array of Release objects correspoding to the given region.
-func parse(region string, content []byte) ([]Release, error) {
+func (sw *SoaringWeb) parse(basepath string, region string, content []byte) ([]Release, error) {
 	var releases []Release
 	var location = ""
 	date := testDate
 	// No check for err as html.Parse does a very good job parsing broken docs
 	z, _ := html.Parse(strings.NewReader(string(content)))
-	parseNode(z, &releases, region, &location, &date)
+	sw.parseNode(z, &releases, basepath, region, &location, &date)
 
 	return releases, nil
 }
@@ -122,7 +180,7 @@ func parse(region string, content []byte) ([]Release, error) {
 // depth-first and picks dates and locations as it founds them. every time a
 // location is found and there is a date already picked a new release object
 // is added to the list.
-func parseNode(n *html.Node, releases *[]Release, region string, location *string, date *time.Time) {
+func (sw *SoaringWeb) parseNode(n *html.Node, releases *[]Release, basepath string, region string, location *string, date *time.Time) {
 	var err error
 	if n.Type == html.ElementNode && n.Data == "a" {
 		for attr := range n.Attr {
@@ -147,6 +205,6 @@ func parseNode(n *html.Node, releases *[]Release, region string, location *strin
 		*location = "" // so that we don't keep adding releases in the next child
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		parseNode(c, releases, region, location, date)
+		sw.parseNode(c, releases, basepath, region, location, date)
 	}
 }
