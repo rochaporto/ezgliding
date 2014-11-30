@@ -35,9 +35,9 @@ func main() {
 	c := commander.Commander{
 		Name: "ezgliding",
 		Commands: []*commander.Command{
-			CmdListAirfields,
-			CmdListAirspace,
-			CmdListWaypoints,
+			cmdListAirfields,
+			cmdListAirspace,
+			cmdListWaypoints,
 		},
 		Flag: commonFlags,
 	}
@@ -65,9 +65,9 @@ func helpFlags(flags *flag.FlagSet) string {
 	return result
 }
 
-// A CmdListAirfields command lists all available airfields
+// A cmdListAirfields command lists all available airfields
 var listAirfieldFlags = commonFlags
-var CmdListAirfields = &commander.Command{
+var cmdListAirfields = &commander.Command{
 	UsageLine: "airfield-ls [options]",
 	Short:     "lists all available airfields",
 	Long: `
@@ -83,9 +83,9 @@ waypoints, airspace, etc. It includes all releases matching the current configur
 	Flag: *flag.CommandLine,
 }
 
-// A CmdListAirspace command lists all available airspaces
+// A cmdListAirspace command lists all available airspaces
 var listAirspaceFlags = commonFlags
-var CmdListAirspace = &commander.Command{
+var cmdListAirspace = &commander.Command{
 	UsageLine: "airspace-ls [options]",
 	Short:     "lists all latest airspace information",
 	Long: `
@@ -99,9 +99,9 @@ correspondent latest update time.
 	Flag: *listAirspaceFlags,
 }
 
-// A CmdListWaypoints command lists all available waypoints
+// A cmdListWaypoints command lists all available waypoints
 var listWaypointFlags = commonFlags
-var CmdListWaypoints = &commander.Command{
+var cmdListWaypoints = &commander.Command{
 	UsageLine: "waypoint-ls [options]",
 	Short:     "lists all waypoints",
 	Long: `
