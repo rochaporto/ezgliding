@@ -38,6 +38,7 @@ func main() {
 			CmdListAirfields,
 			CmdListAirspace,
 			CmdListWaypoints,
+			CmdWeb,
 		},
 		Flag: commonFlags,
 	}
@@ -108,6 +109,20 @@ var CmdListWaypoints = &commander.Command{
 Lists all waypoints available.
 ` + "\n" + helpFlags(listWaypointFlags),
 	Run: func(cmd *commander.Command, args []string) {
+	},
+	Flag: *flag.CommandLine,
+}
+
+// A CmdWeb runs the ezgliding web server.
+var webFlags = flag.CommandLine
+var CmdWeb = &commander.Command{
+	UsageLine: "web [options]",
+	Short:     "runs the ezgliding web server",
+	Long: `
+Runs the ezgliding web server.
+` + "\n" + helpFlags(webFlags),
+	Run: func(cmd *commander.Command, args []string) {
+		fmt.Printf("web server\n")
 	},
 	Flag: *flag.CommandLine,
 }
