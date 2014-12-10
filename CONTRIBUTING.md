@@ -28,6 +28,16 @@ squash ...
 git push -f
 ```
 
+### Merging a pull request
+
+To try to keep the git history clean, after rebasing the branch with master as
+above, merge into master as in:
+```
+git checkout master
+git merge <branch-name>
+git push
+```
+
 ### Bugs, features, code review
 
 GitHub for **everything**.
