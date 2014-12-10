@@ -9,10 +9,10 @@ Applications, Tools and Libraries for Glider Pilots
 
 Ongoing work on the first set of tools and libraries:
 
-* WELT2000 data collection (airfields, waypoints)
-* Online flight crawling
-* Flight parsing and analysis
-* Flight storage
+* welt2000 data collection (airfields, waypoints)
+* soaringweb data collection (airspace)
+* netcoupe flight crawling and collection
+* flight parsing and analysis
 
 ## What
 
