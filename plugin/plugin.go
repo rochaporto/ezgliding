@@ -24,12 +24,13 @@ package plugin
 
 import (
 	"errors"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/soaringweb"
 )
 
 // Pluginer is to be implemented by every plugin implementation
 type Pluginer interface {
-	Init(params map[string]string) error
+	Init(cfg config.Config) error
 }
 
 // pluginRegistry holds instances of available pluginRegistry mapped by IDs (for discovery).

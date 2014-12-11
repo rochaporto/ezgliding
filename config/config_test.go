@@ -24,13 +24,36 @@ import (
 )
 
 func TestNewConfig(t *testing.T) {
-	_, err := NewConfig("")
+	e := Config{}
+	e.Global.Airspacer = "airspacer"
+	e.Global.Airfielder = "airfielder"
+	e.Global.Waypointer = "waypointer"
+	cfg, err := NewConfig("ezgliding-simpleconfig")
 	if err != nil {
 		t.Errorf("Failed to get new config :: %v", err)
 	}
-	//FIXME(rocha): implement
+	if cfg != e {
+		t.Errorf("Expected %v but got %v", e, cfg)
+	}
+}
+
+func TestNewConfigDefault(t *testing.T) {
+	e := Config{}
+	e.Global.Airspacer = "airspacerdefault"
+	e.Global.Airfielder = "airfielderdefault"
+	e.Global.Waypointer = "waypointerdefault"
+	cfg, err := NewConfig("")
+	if err != nil {
+		t.Errorf("Failed to get new config :: %v", err)
+	}
+	if cfg != e {
+		t.Errorf("Expected %v but got %v", e, cfg)
+	}
 }
 
 func TestNewConfigMissing(t *testing.T) {
-	//FIXME(rocha): implement
+	_, err := NewConfig("nonexistingconfig")
+	if err == nil {
+		t.Errorf("Got no error when loading non existing config file")
+	}
 }

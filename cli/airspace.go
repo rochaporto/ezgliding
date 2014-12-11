@@ -23,7 +23,7 @@ import (
 	commander "code.google.com/p/go-commander"
 	"fmt"
 	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/context"
 	"time"
 )
 
@@ -43,7 +43,7 @@ Gets latest airspace data corresponding to the given parameters.
 // runAirspaceGet invokes the configured plugin and outputs airspace data.
 func runAirspaceGet(cmd *commander.Command, args []string) {
 	var err error
-	ctx := config.Ctx
+	ctx := context.Ctx
 	airspace := ctx.Airspace
 	airspaces, err := airspace.(common.Airspacer).GetAirspace([]string{"FR"}, time.Time{})
 	if err != nil {

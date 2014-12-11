@@ -22,22 +22,22 @@ package cli
 import (
 	"errors"
 	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"time"
 )
 
 // FIXME: should go away when we start passing the context explicitly
 // to the runAirspace* functions.
-func setupContext(ctx config.Context) {
-	config.Ctx = ctx
+func setupContext(ctx context.Context) {
+	context.Ctx = ctx
 }
 
 // ExampleAirspaceGet uses the mock airspace implementation to query data and
 // verify airspace-get works. First, no region is passed. Second, a region but
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
 func ExampleAirspaceGet() {
-	ctx := config.Context{
+	ctx := context.Context{
 		Airspace: &mock.Airspace{
 			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 				return []common.Airspace{
@@ -53,7 +53,7 @@ func ExampleAirspaceGet() {
 }
 
 func ExampleAirspaceGetFailed() {
-	ctx := config.Context{
+	ctx := context.Context{
 		Airspace: &mock.Airspace{
 			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 				return nil, errors.New("mock testing get airspace failed")

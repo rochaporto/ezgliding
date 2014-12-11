@@ -21,6 +21,7 @@ package mock
 
 import (
 	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/plugin"
 	"testing"
 	"time"
@@ -28,12 +29,12 @@ import (
 
 func TestInit(t *testing.T) {
 	mockI := &Airspace{
-		InitF: func(params map[string]string) error {
+		InitF: func(cfg config.Config) error {
 			return nil
 		},
 	}
 	x := plugin.Pluginer(mockI)
-	err := x.Init(nil)
+	err := x.Init(config.Config{})
 	if err != nil {
 		t.Errorf("Failed to call init on mock airspace")
 	}

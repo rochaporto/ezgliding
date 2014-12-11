@@ -25,20 +25,29 @@ import (
 	"github.com/rochaporto/ezgliding/cli"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/plugin"
 	"os"
 )
 
 func main() {
-	// FIXME(rocha): use config to load the info below
-	airspace, _ := plugin.NewPlugin(plugin.ID("soaringweb"))
-	airspace.Init(map[string]string{"BaseURL": "./soaringweb/t"})
-	ctx, err := config.NewContext(airspace.(common.Airspacer))
+	cfg, err := config.NewConfig("")
 	if err != nil {
-		fmt.Printf("Failed to create context object :: %v", err)
+		fmt.Printf("Failed to load config :: %v\n", err)
 		os.Exit(-1)
 	}
-	config.Ctx = ctx
+	if err != nil {
+		fmt.Printf("Failed to find airspacer plugin :: %v\n", err)
+		os.Exit(-1)
+	}
+	airspace, _ := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
+	airspace.Init(cfg)
+	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer))
+	if err != nil {
+		fmt.Printf("Failed to create context object :: %v\n", err)
+		os.Exit(-1)
+	}
+	context.Ctx = ctx
 	c := commander.Commander{
 		Name: "ezgliding",
 		Commands: []*commander.Command{

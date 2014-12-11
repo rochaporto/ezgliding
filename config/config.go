@@ -17,17 +17,65 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
+// Package config provides parsing and loading of configuration values.
+//
+// Includes definitions of plugins and formats to use, as well as the
+// ability to provide any additional plugin specific configuration.
+//
+// Sample configuration:
+//
+// 	[global]
+// 	airspacer=soaringweb
+// 	airfielder=welt2000
+// 	waypointer=welt2000
+//
+// 	[soaringweb]
+// 	baseurl=http://soaringweb.org/Airspace
+//
 package config
 
-import ()
+import (
+	"github.com/scalingdata/gcfg"
+	"os"
+	"os/user"
+)
 
-// Config holds all the configuration information for running ezgliding tools.
-// This includes plugins to use, any additional metadata they required, etc.
-type Config struct {
+// SoaringWeb holds all config information for the soaringweb plugin.
+type SoaringWeb struct {
+	Baseurl string
 }
 
-// NewConfig returns a new Config object based on the config at the given location.
+// Global holds all common information for all ezgliding plugins and apps.
+type Global struct {
+	Airspacer  string
+	Airfielder string
+	Waypointer string
+}
+
+// Config holds all the config information for ezgliding plugins and apps.
+type Config struct {
+	Global
+	SoaringWeb
+}
+
+// NewConfig returns a new Config based on given location (or default).
+//
+// If zero value ("") location is given, then the default locations are tried:
+// 	./ezgliding.cfg, ~/.ezgliding.cfg, ~/.ezgliding
 func NewConfig(location string) (Config, error) {
-	// FIXME: actually load config
-	return Config{}, nil
+	cfg := Config{}
+	var err error
+	locations := []string{location}
+	if location == "" {
+		usr, _ := user.Current()
+		locations = append(locations, "./ezgliding.cfg", usr.HomeDir+"/.ezgliding.cfg", usr.HomeDir+"/.ezgliding")
+	}
+	for _, l := range locations {
+		_, err = os.Stat(l)
+		if err == nil {
+			err = gcfg.ReadFileInto(&cfg, l)
+			break
+		}
+	}
+	return cfg, err
 }

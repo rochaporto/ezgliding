@@ -29,6 +29,7 @@ package soaringweb
 
 import (
 	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/openair"
 	"golang.org/x/net/html"
 	"io/ioutil"
@@ -83,9 +84,9 @@ type SoaringWeb struct {
 }
 
 // Init follows the plugin.Plugin interface (see plugin.Pluginer).
-func (sw *SoaringWeb) Init(Params map[string]string) error {
-	if Params["BaseURL"] != "" {
-		sw.BaseURL = Params["BaseURL"]
+func (sw *SoaringWeb) Init(cfg config.Config) error {
+	if cfg.SoaringWeb.Baseurl != "" {
+		sw.BaseURL = cfg.SoaringWeb.Baseurl
 	} else {
 		sw.BaseURL = baseURL
 	}

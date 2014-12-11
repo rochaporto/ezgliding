@@ -23,6 +23,7 @@ package mock
 
 import (
 	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 	"time"
 )
 
@@ -32,12 +33,12 @@ import (
 type Airspace struct {
 	GetF  func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
 	PutF  func(airspace []common.Airspace) error
-	InitF func(params map[string]string) error
+	InitF func(cfg config.Config) error
 }
 
 // Init is the mock implementation of common.Pluginer.Init.
-func (ma *Airspace) Init(params map[string]string) error {
-	return ma.InitF(params)
+func (ma *Airspace) Init(cfg config.Config) error {
+	return ma.InitF(cfg)
 }
 
 // GetAirspace is the mock implementation of common.Airspacer.GetAirspace.

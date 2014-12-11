@@ -17,19 +17,27 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package config
+package context
 
 import (
 	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/mock"
-	"testing"
+	"github.com/rochaporto/ezgliding/config"
 )
 
-func TestNewContext(t *testing.T) {
-	airspace := mock.Airspace{}
-	_, err := NewContext(common.Airspacer(&airspace))
-	if err != nil {
-		t.Errorf("Failed to get new context :: %v", err)
-	}
-	// FIXME(rocha): test for valid type returned for Airspacer interface
+// FIXME(rocha): This should really go away.
+// Only required right now for the CLI, as couldn't get to extend
+// commander.Command to pass a context in addition. Once that's achieved
+// we should pass the context obj explicitly to the Command objects or
+// to the Run function.
+var Ctx Context
+
+// Context holds all information required between multiple calls.
+type Context struct {
+	Config   config.Config
+	Airspace common.Airspacer
+}
+
+// NewContext returns a new Context object.
+func NewContext(cfg config.Config, airspace common.Airspacer) (Context, error) {
+	return Context{Config: cfg, Airspace: airspace}, nil
 }
