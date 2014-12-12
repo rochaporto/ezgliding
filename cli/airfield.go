@@ -20,10 +20,10 @@
 package cli
 
 import (
+	"flag"
+
 	commander "code.google.com/p/go-commander"
 )
-
-var airfieldGetFlags = commonFlags
 
 // CmdAirfieldGet command gets airfield information and outputs the result.
 var CmdAirfieldGet = &commander.Command{
@@ -31,8 +31,8 @@ var CmdAirfieldGet = &commander.Command{
 	Short:     "gets airfield information",
 	Long: `
 Gets available airspace information according to the given parameters
-` + "\n" + helpFlags(airfieldGetFlags),
+` + "\n" + helpFlags(flag.CommandLine),
 	Run: func(cmd *commander.Command, args []string) {
 	},
-	Flag: *airfieldGetFlags,
+	Flag: *flag.CommandLine,
 }

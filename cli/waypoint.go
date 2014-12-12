@@ -20,10 +20,10 @@
 package cli
 
 import (
+	"flag"
+
 	commander "code.google.com/p/go-commander"
 )
-
-var waypointGetFlags = commonFlags
 
 // CmdWaypointGet command gets waypoint information and outputs the result.
 var CmdWaypointGet = &commander.Command{
@@ -31,8 +31,8 @@ var CmdWaypointGet = &commander.Command{
 	Short:     "gets waypoint information",
 	Long: `
 Gets waypoint information according to the given parameters.
-` + "\n" + helpFlags(waypointGetFlags),
+` + "\n" + helpFlags(flag.CommandLine),
 	Run: func(cmd *commander.Command, args []string) {
 	},
-	Flag: *waypointGetFlags,
+	Flag: *flag.CommandLine,
 }

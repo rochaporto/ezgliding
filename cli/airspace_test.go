@@ -21,10 +21,12 @@ package cli
 
 import (
 	"errors"
+	"testing"
+	"time"
+
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
-	"time"
 )
 
 // FIXME: should go away when we start passing the context explicitly
@@ -49,10 +51,10 @@ func ExampleAirspaceGet() {
 	}
 	setupContext(ctx)
 	runAirspaceGet(CmdAirspaceGet, []string{})
-	// Output: {MockID 0001-01-01 00:00:00 +0000 UTC 67 MockName 1000FT AMSL 500FT AMSL [] [] {0 0 <nil> <nil>}}
+	// Output: {ID:MockID Date:0001-01-01 00:00:00 +0000 UTC Class:67 Name:MockName Ceiling:1000FT AMSL Floor:500FT AMSL Label:[] Segments:[] Pen:{Style:0 Width:0 Color:<nil> InsideColor:<nil>}}
 }
 
-func ExampleAirspaceGetFailed() {
+func TestAirspaceGetFailed(t *testing.T) {
 	ctx := context.Context{
 		Airspace: &mock.Airspace{
 			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
@@ -62,5 +64,4 @@ func ExampleAirspaceGetFailed() {
 	}
 	setupContext(ctx)
 	runAirspaceGet(CmdAirspaceGet, []string{})
-	// Output: Failed to get airspace :: mock testing get airspace failed
 }

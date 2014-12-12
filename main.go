@@ -20,32 +20,40 @@
 package main
 
 import (
+	"os"
+
 	commander "code.google.com/p/go-commander"
-	"fmt"
+	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/cli"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/plugin"
-	"os"
 )
 
+func exit(c int) {
+	glog.Flush()
+	os.Exit(c)
+}
+
 func main() {
+	defer glog.Flush()
+
 	cfg, err := config.NewConfig("")
 	if err != nil {
-		fmt.Printf("Failed to load config :: %v\n", err)
-		os.Exit(-1)
+		glog.Errorf("Failed to load config :: %v", err)
+		exit(-1)
 	}
+	airspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
 	if err != nil {
-		fmt.Printf("Failed to find airspacer plugin :: %v\n", err)
-		os.Exit(-1)
+		glog.Errorf("Failed to find airspacer plugin :: %v", err)
+		exit(-1)
 	}
-	airspace, _ := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
 	airspace.Init(cfg)
 	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer))
 	if err != nil {
-		fmt.Printf("Failed to create context object :: %v\n", err)
-		os.Exit(-1)
+		glog.Errorf("Failed to create context object :: %v", err)
+		exit(-1)
 	}
 	context.Ctx = ctx
 	c := commander.Commander{
@@ -61,7 +69,7 @@ func main() {
 		os.Args = append(os.Args, "help")
 	}
 	if err := c.Run(os.Args[1:]); err != nil {
-		fmt.Printf("Failed running command %q: %v\n", os.Args[1:], err)
-		os.Exit(-1)
+		glog.Errorf("Failed running command %q: %v", os.Args[1:], err)
+		exit(-1)
 	}
 }

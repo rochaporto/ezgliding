@@ -26,7 +26,7 @@ import (
 )
 
 func TestHelpFlags(t *testing.T) {
-	e := "\tparam\tmessage ( default is defaultvalue )"
+	e := "param=defaultvalue"
 
 	var tf = flag.CommandLine
 	var _ = tf.String("param", "defaultvalue", "message")

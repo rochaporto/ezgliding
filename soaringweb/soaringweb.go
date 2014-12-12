@@ -90,7 +90,6 @@ func (sw *SoaringWeb) Init(cfg config.Config) error {
 	} else {
 		sw.BaseURL = baseURL
 	}
-
 	return nil
 }
 

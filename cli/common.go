@@ -28,23 +28,19 @@ import (
 	"flag"
 )
 
-// commonFlags are to be shared by all (or most) commands.
-var commonFlags = flag.CommandLine
-var _ = commonFlags.String("after", "", "consider only items updated after this date")
-var _ = commonFlags.String("region", "", "region(s) to retrieve items for, comma separated ( default is all )")
-
 // helpFlags builds the text in 'help' regarding available command flags.
 func helpFlags(fp *flag.FlagSet) string {
 	result := ""
 	fp.VisitAll(func(f *flag.Flag) {
-		result = result + "\t" + f.Name + "\t" + f.Usage
 		if f.DefValue != "" {
-			result = result + " ( default is " + f.DefValue + " ) "
+			result = result + "  -" + f.Name + "=" + f.DefValue + "\n    " + f.Usage
+		} else {
+			result = result + "  -" + f.Name + "\n    " + f.Usage
 		}
 		result = result + "\n"
 	})
 	if result != "" {
-		result = "Options:\n" + result
+		result = "Full Options:\n" + result
 	}
 	return result
 }

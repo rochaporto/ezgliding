@@ -20,14 +20,22 @@
 package cli
 
 import (
-	commander "code.google.com/p/go-commander"
+	"flag"
 	"fmt"
+	"os"
+	"strings"
+	"time"
+
+	commander "code.google.com/p/go-commander"
+	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
-	"time"
 )
 
-var airspaceGetFlags = commonFlags
+var (
+	after  = flag.String("after", "", "consider only items updated after this date")
+	region = flag.String("region", "", "return only items for this comma separated list of regions")
+)
 
 // CmdGetAirspace command gets airspace information.
 var CmdAirspaceGet = &commander.Command{
@@ -35,9 +43,12 @@ var CmdAirspaceGet = &commander.Command{
 	Short:     "gets airspace information",
 	Long: `
 Gets latest airspace data corresponding to the given parameters.
-` + "\n" + helpFlags(airspaceGetFlags),
+
+Example:
+  ezgliding airspace-get --region=FR
+` + "\n" + helpFlags(flag.CommandLine),
 	Run:  runAirspaceGet,
-	Flag: *airspaceGetFlags,
+	Flag: *flag.CommandLine,
 }
 
 // runAirspaceGet invokes the configured plugin and outputs airspace data.
@@ -45,12 +56,14 @@ func runAirspaceGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
 	airspace := ctx.Airspace
-	airspaces, err := airspace.(common.Airspacer).GetAirspace([]string{"FR"}, time.Time{})
+	airspaces, err := airspace.(common.Airspacer).GetAirspace(strings.Split(*region, ","), time.Time{})
 	if err != nil {
-		fmt.Printf("Failed to get airspace :: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to get airspace :: %v", err)
+		// FIXME: must return -1, but no way now to check this in test
 	}
+	glog.V(5).Infof("airspace get with args '%v' got %d results", args, len(airspaces))
+	glog.V(20).Infof("%+v", airspaces)
 	for i := range airspaces {
-		fmt.Printf("\n%v\n", airspaces[i])
+		fmt.Printf("%+v\n", airspaces[i])
 	}
-
 }
