@@ -16,14 +16,30 @@
 // along with ezgliding.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
-//
+
 // Package plugin holds plugin registry functionality.
 //
-
+// All plugins must be statically defined here as there is no dynamic
+// loading functionality available.
+//
+// Plugins should all implement Pluginer, and should then implement one
+// or several of the interfaces defined in package common. They should
+// also set their ID, which must be unique and should look like:
+// 	const (
+//		ID string = "welt2000"
+//	)
+//
+// Once written plugins should be added to the the pluginRegistry,
+// along with a zero value wrapped in Pluginer.
+//
+// In the future there might be a Plugin implementation which would allow
+// running plugins as external processes, with rpc calls.
+//
 package plugin
 
 import (
 	"errors"
+
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/soaringweb"
 	"github.com/rochaporto/ezgliding/welt2000"

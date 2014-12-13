@@ -19,7 +19,7 @@
 
 // Package common provides common functionality and interfaces.
 //
-// This includes get/put methods to manage airfield, airspace and waypoint
+// It includes methods to manage airfield, airspace and waypoint
 // data, as well as other utility libraries.
 package common
 

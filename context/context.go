@@ -17,6 +17,12 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
+// Package context provides request context info management.
+//
+// It includes a common structure to be shared among the different plugin
+// implementations, and which allows injecting information regarding
+// configuration, global parameters or any kind of more stateful resource
+// pointers (db pools, etc).
 package context
 
 import (
