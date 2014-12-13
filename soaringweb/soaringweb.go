@@ -21,22 +21,23 @@
 // information, taking the international soaringweb db as input.
 //
 // Check the soaringweb website for more information on the data:
-// http://soaringweb.org/Airspace/HomePage.html
+// 	http://soaringweb.org/Airspace/HomePage.html
 //
 // Airspace data is handled in OpenAir format.
 //
 package soaringweb
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/openair"
-	"golang.org/x/net/html"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/openair"
+	"golang.org/x/net/html"
 )
 
 // ID for this plugin implementation.
