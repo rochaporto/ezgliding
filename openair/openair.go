@@ -21,18 +21,19 @@
 // in the OpenAir format.
 //
 // The format specification is available at:
-// http://www.winpilot.com/UsersGuide/UserAirspace.asp
+// 	http://www.winpilot.com/UsersGuide/UserAirspace.asp
 //
 package openair
 
 import (
 	"fmt"
-	"github.com/rochaporto/ezgliding/common"
 	"image/color"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/rochaporto/ezgliding/common"
 )
 
 // Local temporary storage for airspace pen/brush types
