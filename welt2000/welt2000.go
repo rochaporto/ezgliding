@@ -95,6 +95,19 @@ func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]com
 	// summary page, not the actually release source.
 	release.Source = wt.releaseURL
 	err = release.Fetch()
+	// Filter out entries not in the regions.
+	// This could be done more efficiently, but for now we go with post-filter.
+	m := make(map[string]bool) // Use a map as there's no slice.contains(str)
+	for _, v := range regions {
+		m[v] = true
+	}
+	var filtered []common.Airfield
+	for _, a := range release.Airfields {
+		if _, ok := m[a.Region]; ok {
+			filtered = append(filtered, a)
+		}
+	}
+	release.Airfields = filtered
 	glog.V(10).Infof("GetAirfield for regions %v and updatedsince %v retrieved %d results",
 		regions, updatedSince, len(release.Airfields))
 	glog.V(20).Infof("%v", release.Airfields)
@@ -109,6 +122,7 @@ func (wt *Welt2000) PutAirfield(airfields []common.Airfield) error {
 // GetWaypoint follows common.GetWaypoint().
 // FIXME: use region
 func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+	glog.V(10).Infof("GetWaypoint with regions %v and updatedSince %v", regions, updatedSince)
 	releases, err := List(wt.rssURL)
 	if err != nil {
 		return nil, err
@@ -122,6 +136,22 @@ func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]com
 	// summary page, not the actually release source.
 	release.Source = wt.releaseURL
 	err = release.Fetch()
+	// Filter out entries not in the regions.
+	// This could be done more efficiently, but for now we go with post-filter.
+	m := make(map[string]bool) // Use a map as there's no slice.contains(str)
+	for _, v := range regions {
+		m[v] = true
+	}
+	var filtered []common.Waypoint
+	for _, a := range release.Waypoints {
+		if _, ok := m[a.Region]; ok {
+			filtered = append(filtered, a)
+		}
+	}
+	release.Waypoints = filtered
+	glog.V(10).Infof("GetWaypoint for regions %v and updatedsince %v retrieved %d results",
+		regions, updatedSince, len(release.Waypoints))
+	glog.V(20).Infof("%v", release.Waypoints)
 	return release.Waypoints, err
 }
 

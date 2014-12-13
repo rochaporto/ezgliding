@@ -66,7 +66,7 @@ var getAirfieldTests = []GetAirfieldTest{
 	{"get airfield missing rss",
 		"./t/test-release-basic.txt",
 		"./t/missing-release-list.xml",
-		"CH",
+		"FR",
 		time.Time{},
 		[]common.Airfield{},
 		true,
@@ -74,24 +74,23 @@ var getAirfieldTests = []GetAirfieldTest{
 	{"get airfield missing release",
 		"./t/missing-release.txt",
 		"./t/test-releases-list.xml",
-		"CH",
+		"FR",
 		time.Time{},
 		[]common.Airfield{},
 		true,
 	},
-	//FIXME:
-	/*{"get airfield with missing region",
+	{"get airfield with 0 values for region",
 		"./t/test-release-basic.txt",
 		"./t/test-releases-list.xml",
 		"ZZ",
 		time.Time{},
 		[]common.Airfield{},
-	}*/
+		false,
+	},
 }
 
 func TestGetAirfield(t *testing.T) {
-	for i := range getAirfieldTests {
-		test := getAirfieldTests[i]
+	for _, test := range getAirfieldTests {
 
 		plugin := Welt2000{}
 		cfg := config.Config{}
@@ -100,18 +99,21 @@ func TestGetAirfield(t *testing.T) {
 		err := plugin.Init(cfg)
 		if err != nil {
 			t.Errorf("Failed to initialize plugin :: %v", err)
+			continue
 		}
 
 		var airfields []common.Airfield
 		airfields, err = plugin.GetAirfield([]string{test.rg}, test.d)
 		if err != nil && test.err {
-			return
+			continue
 		} else if err != nil {
 			t.Errorf("Failed to get airfield :: %v", err)
+			continue
 		}
 
 		if len(airfields) != len(test.rs) {
 			t.Errorf("Got %v airfields but expected %v in test '%v'", len(airfields), len(test.rs), test.t)
+			continue
 		}
 
 		for i := range airfields {
@@ -119,6 +121,7 @@ func TestGetAirfield(t *testing.T) {
 			var expected = test.rs[i]
 			if !reflect.DeepEqual(airfield, expected) {
 				t.Errorf("Got wrong airfield. %+v instead of %+v", airfield, expected)
+				continue
 			}
 		}
 	}
@@ -186,14 +189,14 @@ var getWaypointTests = []GetWaypointTest{
 		[]common.Waypoint{},
 		true,
 	},
-	//FIXME:
-	/*{"get waypoint with missing region",
+	{"get waypoint with 0 values for region",
 		"./t/test-release-basic.txt",
 		"./t/test-releases-list.xml",
 		"ZZ",
 		time.Time{},
 		[]common.Waypoint{},
-	},*/
+		false,
+	},
 }
 
 func TestGetWaypoint(t *testing.T) {
@@ -212,13 +215,15 @@ func TestGetWaypoint(t *testing.T) {
 		var waypoints []common.Waypoint
 		waypoints, err = plugin.GetWaypoint([]string{test.rg}, test.d)
 		if err != nil && test.err {
-			return
+			continue
 		} else if err != nil {
 			t.Errorf("Failed to get waypoint :: %v", err)
+			continue
 		}
 
 		if len(waypoints) != len(test.rs) {
 			t.Errorf("Got %v waypoints but expected %v in test '%v'", len(waypoints), len(test.rs), test.t)
+			continue
 		}
 
 		for i := range waypoints {
@@ -226,6 +231,7 @@ func TestGetWaypoint(t *testing.T) {
 			var expected = test.rs[i]
 			if !reflect.DeepEqual(waypoint, expected) {
 				t.Errorf("Got wrong waypoint. %+v instead of %+v", waypoint, expected)
+				continue
 			}
 		}
 	}
