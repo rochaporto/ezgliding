@@ -28,7 +28,10 @@ import (
 
 func TestNewContext(t *testing.T) {
 	airspace := mock.Airspace{}
-	_, err := NewContext(config.Config{}, common.Airspacer(&airspace))
+	airfield := mock.Airfield{}
+	waypoint := mock.Waypoint{}
+	_, err := NewContext(config.Config{}, common.Airspacer(&airspace),
+		common.Airfielder(&airfield), common.Waypointer(&waypoint))
 	if err != nil {
 		t.Errorf("Failed to get new context :: %v", err)
 	}

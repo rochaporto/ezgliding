@@ -17,7 +17,6 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// Package mock provides mock implementations of all interfaces.
 package mock
 
 import (
@@ -26,26 +25,26 @@ import (
 	"time"
 )
 
-// Airspace is the mock implementation of Airspace.
+// Airfield is the mock implementation of Airfield.
 // It provides a variation where you can pass the actual function implementation.
 // Especially useful for testing.
-type Airspace struct {
-	GetF  func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
-	PutF  func(airspace []common.Airspace) error
+type Airfield struct {
+	GetF  func(regions []string, updatedSince time.Time) ([]common.Airfield, error)
+	PutF  func(airfield []common.Airfield) error
 	InitF func(cfg config.Config) error
 }
 
 // Init is the mock implementation of common.Pluginer.Init.
-func (ma *Airspace) Init(cfg config.Config) error {
+func (ma *Airfield) Init(cfg config.Config) error {
 	return ma.InitF(cfg)
 }
 
-// GetAirspace is the mock implementation of common.Airspacer.GetAirspace.
-func (ma *Airspace) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+// GetAirfield is the mock implementation of common.Airfielder.GetAirfield.
+func (ma *Airfield) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
 	return ma.GetF(regions, updatedSince)
 }
 
-// PutAirspace is the mock implementation of common.Airspacer.PutAirspace.
-func (ma *Airspace) PutAirspace(airspace []common.Airspace) error {
-	return ma.PutF(airspace)
+// PutAirfield is the mock implementation of common.Airfielder.PutAirfield.
+func (ma *Airfield) PutAirfield(airfield []common.Airfield) error {
+	return ma.PutF(airfield)
 }

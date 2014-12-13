@@ -22,7 +22,6 @@ package cli
 import (
 	"flag"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -30,11 +29,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
-)
-
-var (
-	after  = flag.String("after", "", "consider only items updated after this date")
-	region = flag.String("region", "", "return only items for this comma separated list of regions")
 )
 
 // CmdGetAirspace command gets airspace information.
@@ -58,7 +52,7 @@ func runAirspaceGet(cmd *commander.Command, args []string) {
 	airspace := ctx.Airspace
 	airspaces, err := airspace.(common.Airspacer).GetAirspace(strings.Split(*region, ","), time.Time{})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get airspace :: %v", err)
+		glog.Errorf("Failed to get airspace :: %v", err)
 		// FIXME: must return -1, but no way now to check this in test
 	}
 	glog.V(5).Infof("airspace get with args '%v' got %d results", args, len(airspaces))

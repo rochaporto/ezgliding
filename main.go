@@ -45,12 +45,13 @@ func main() {
 		exit(-1)
 	}
 	airspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
-	if err != nil {
-		glog.Errorf("Failed to find airspacer plugin :: %v", err)
-		exit(-1)
-	}
+	airfield, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airfielder))
+	waypoint, err := plugin.NewPlugin(plugin.ID(cfg.Global.Waypointer))
 	airspace.Init(cfg)
-	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer))
+	airfield.Init(cfg)
+	waypoint.Init(cfg)
+	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer),
+		airfield.(common.Airfielder), waypoint.(common.Waypointer))
 	if err != nil {
 		glog.Errorf("Failed to create context object :: %v", err)
 		exit(-1)

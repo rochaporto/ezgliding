@@ -19,15 +19,27 @@
 
 package common
 
+import (
+	"time"
+)
+
 // Waypoint keeps details about a specific waypoint
 type Waypoint struct {
 	ID          string
 	Name        string
 	Description string
+	Region      string
 	Flags       int
 	Elevation   int
 	Latitude    string
 	Longitude   string
+}
+
+// Waypointer is implemented in any data source which can provide or
+// receive waypoint information.
+type Waypointer interface {
+	GetWaypoint(regions []string, updatedSince time.Time) ([]Waypoint, error)
+	PutWaypoint(waypoints []Waypoint) error
 }
 
 // Enum for Waypoint flags

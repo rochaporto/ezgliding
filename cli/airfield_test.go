@@ -29,33 +29,34 @@ import (
 	"github.com/rochaporto/ezgliding/mock"
 )
 
-// ExampleAirspaceGet uses the mock airspace implementation to query data and
-// verify airspace-get works. First, no region is passed. Second, a region but
+// ExampleAirfieldGet uses the mock airfield implementation to query data and
+// verify airfield-get works. First, no region is passed. Second, a region but
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
-func ExampleAirspaceGet() {
+func ExampleAirfieldGet() {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-				return []common.Airspace{
-					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName", Ceiling: "1000FT AMSL",
-						Floor: "500FT AMSL"},
+		Airfield: &mock.Airfield{
+			GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return []common.Airfield{
+					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
+						Runway: "32R", Frequency: 123.45, Latitude: "N323200", Longitude: "E1002233"},
 				}, nil
 			},
 		},
 	}
 	setupContext(ctx)
-	runAirspaceGet(CmdAirspaceGet, []string{})
-	// Output: {ID:MockID Date:0001-01-01 00:00:00 +0000 UTC Class:67 Name:MockName Ceiling:1000FT AMSL Floor:500FT AMSL Label:[] Segments:[] Pen:{Style:0 Width:0 Color:<nil> InsideColor:<nil>}}
+	runAirfieldGet(CmdAirfieldGet, []string{})
+	// Output: {ID:MockID ShortName:MockShortName Name:MockName Region:FR ICAO:AAAA Flags:0 Catalog:11 Length:1000 Elevation:2000 Runway:32R Frequency:123.45 Latitude:N323200 Longitude:E1002233}
 }
 
-func TestAirspaceGetFailed(t *testing.T) {
+func TestAirfieldGetFailed(t *testing.T) {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-				return nil, errors.New("mock testing get airspace failed")
+		Airfield: &mock.Airfield{
+			GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return nil, errors.New("mock testing get airfield failed")
 			},
 		},
 	}
 	setupContext(ctx)
-	runAirspaceGet(CmdAirspaceGet, []string{})
+	runAirfieldGet(CmdAirfieldGet, []string{})
 }

@@ -29,33 +29,33 @@ import (
 	"github.com/rochaporto/ezgliding/mock"
 )
 
-// ExampleAirspaceGet uses the mock airspace implementation to query data and
-// verify airspace-get works. First, no region is passed. Second, a region but
+// ExampleWaypointGet uses the mock waypoint implementation to query data and
+// verify waypoint-get works. First, no region is passed. Second, a region but
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
-func ExampleAirspaceGet() {
+func ExampleWaypointGet() {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-				return []common.Airspace{
-					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName", Ceiling: "1000FT AMSL",
-						Floor: "500FT AMSL"},
+		Waypoint: &mock.Waypoint{
+			GetF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+				return []common.Waypoint{
+					common.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
+						Region: "FR", Flags: 0, Elevation: 2000, Latitude: "N323200", Longitude: "E1002233"},
 				}, nil
 			},
 		},
 	}
 	setupContext(ctx)
-	runAirspaceGet(CmdAirspaceGet, []string{})
-	// Output: {ID:MockID Date:0001-01-01 00:00:00 +0000 UTC Class:67 Name:MockName Ceiling:1000FT AMSL Floor:500FT AMSL Label:[] Segments:[] Pen:{Style:0 Width:0 Color:<nil> InsideColor:<nil>}}
+	runWaypointGet(CmdWaypointGet, []string{})
+	// Output: {ID:MockID Name:MockName Description:MockDescription Region:FR Flags:0 Elevation:2000 Latitude:N323200 Longitude:E1002233}
 }
 
-func TestAirspaceGetFailed(t *testing.T) {
+func TestWaypointGetFailed(t *testing.T) {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-				return nil, errors.New("mock testing get airspace failed")
+		Waypoint: &mock.Waypoint{
+			GetF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+				return nil, errors.New("mock testing get waypoint failed")
 			},
 		},
 	}
 	setupContext(ctx)
-	runAirspaceGet(CmdAirspaceGet, []string{})
+	runWaypointGet(CmdWaypointGet, []string{})
 }

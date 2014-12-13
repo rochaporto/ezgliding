@@ -35,9 +35,12 @@ var Ctx Context
 type Context struct {
 	Config   config.Config
 	Airspace common.Airspacer
+	Airfield common.Airfielder
+	Waypoint common.Waypointer
 }
 
 // NewContext returns a new Context object.
-func NewContext(cfg config.Config, airspace common.Airspacer) (Context, error) {
-	return Context{Config: cfg, Airspace: airspace}, nil
+func NewContext(cfg config.Config, airspace common.Airspacer, airfield common.Airfielder,
+	waypoint common.Waypointer) (Context, error) {
+	return Context{Config: cfg, Airspace: airspace, Airfield: airfield, Waypoint: waypoint}, nil
 }

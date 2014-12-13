@@ -27,8 +27,8 @@ import (
 	"time"
 )
 
-func TestAirspaceInit(t *testing.T) {
-	mockI := &Airspace{
+func TestWaypointInit(t *testing.T) {
+	mockI := &Waypoint{
 		InitF: func(cfg config.Config) error {
 			return nil
 		},
@@ -36,37 +36,37 @@ func TestAirspaceInit(t *testing.T) {
 	x := plugin.Pluginer(mockI)
 	err := x.Init(config.Config{})
 	if err != nil {
-		t.Errorf("Failed to call init on mock airspace")
+		t.Errorf("Failed to call init on mock waypoint")
 	}
 }
 
-func TestGetAirspace(t *testing.T) {
-	airspaces := []common.Airspace{
-		common.Airspace{Name: "TestMockAirspace"},
+func TestGetWaypoint(t *testing.T) {
+	waypoints := []common.Waypoint{
+		common.Waypoint{Name: "TestMockWaypoint"},
 	}
-	mockI := &Airspace{
-		GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-			return airspaces, nil
+	mockI := &Waypoint{
+		GetF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+			return waypoints, nil
 		},
 	}
-	x := common.Airspacer(mockI)
-	result, err := x.GetAirspace(nil, time.Time{})
+	x := common.Waypointer(mockI)
+	result, err := x.GetWaypoint(nil, time.Time{})
 	if err != nil {
-		t.Errorf("Failed to query mock airspaces")
+		t.Errorf("Failed to query mock waypoints")
 	}
-	if len(result) != len(airspaces) {
-		t.Errorf("Got %v airspaces but expected %v", len(result), len(airspaces))
+	if len(result) != len(waypoints) {
+		t.Errorf("Got %v waypoints but expected %v", len(result), len(waypoints))
 	}
 }
-func TestPutAirspace(t *testing.T) {
-	mockI := &Airspace{
-		PutF: func([]common.Airspace) error {
+func TestPutWaypoint(t *testing.T) {
+	mockI := &Waypoint{
+		PutF: func([]common.Waypoint) error {
 			return nil // FIXME: implement
 		},
 	}
-	x := common.Airspacer(mockI)
-	err := x.PutAirspace(nil) // FIXME: implement
+	x := common.Waypointer(mockI)
+	err := x.PutWaypoint(nil) // FIXME: implement
 	if err != nil {
-		t.Errorf("Failed to put mock airspaces")
+		t.Errorf("Failed to put mock waypoints")
 	}
 }

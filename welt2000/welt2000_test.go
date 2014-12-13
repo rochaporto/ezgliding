@@ -20,16 +20,233 @@
 package welt2000
 
 import (
-	"github.com/rochaporto/ezgliding/common"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
+	"time"
+
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 )
 
+type GetAirfieldTest struct {
+	t   string
+	r   string
+	rss string
+	rg  string
+	d   time.Time
+	rs  []common.Airfield
+	err bool
+}
+
+var getAirfieldTests = []GetAirfieldTest{
+	{"basic get airfield",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"FR",
+		time.Time{},
+		[]common.Airfield{
+			common.Airfield{
+				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR", ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0, Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5, Latitude: "N461611", Longitude: "E0062748",
+			},
+		},
+		false,
+	},
+	{"get airfield with updated since",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"FR",
+		time.Date(2014, time.February, 25, 0, 0, 0, 0, time.UTC),
+		[]common.Airfield{},
+		false,
+	},
+	{"get airfield missing rss",
+		"./t/test-release-basic.txt",
+		"./t/missing-release-list.xml",
+		"CH",
+		time.Time{},
+		[]common.Airfield{},
+		true,
+	},
+	{"get airfield missing release",
+		"./t/missing-release.txt",
+		"./t/test-releases-list.xml",
+		"CH",
+		time.Time{},
+		[]common.Airfield{},
+		true,
+	},
+	//FIXME:
+	/*{"get airfield with missing region",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"ZZ",
+		time.Time{},
+		[]common.Airfield{},
+	}*/
+}
+
+func TestGetAirfield(t *testing.T) {
+	for i := range getAirfieldTests {
+		test := getAirfieldTests[i]
+
+		plugin := Welt2000{}
+		cfg := config.Config{}
+		cfg.Welt2000.Rssurl = test.rss
+		cfg.Welt2000.Releaseurl = test.r
+		err := plugin.Init(cfg)
+		if err != nil {
+			t.Errorf("Failed to initialize plugin :: %v", err)
+		}
+
+		var airfields []common.Airfield
+		airfields, err = plugin.GetAirfield([]string{test.rg}, test.d)
+		if err != nil && test.err {
+			return
+		} else if err != nil {
+			t.Errorf("Failed to get airfield :: %v", err)
+		}
+
+		if len(airfields) != len(test.rs) {
+			t.Errorf("Got %v airfields but expected %v in test '%v'", len(airfields), len(test.rs), test.t)
+		}
+
+		for i := range airfields {
+			var airfield = airfields[i]
+			var expected = test.rs[i]
+			if !reflect.DeepEqual(airfield, expected) {
+				t.Errorf("Got wrong airfield. %+v instead of %+v", airfield, expected)
+			}
+		}
+	}
+}
+
+func TestPutAirfield(t *testing.T) {
+	plugin := Welt2000{}
+	cfg := config.Config{}
+	err := plugin.Init(cfg)
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	err = plugin.PutAirfield(nil)
+	if err == nil {
+		t.Errorf("PutAirfield should return error for welt2000")
+	}
+}
+
+type GetWaypointTest struct {
+	t   string
+	r   string
+	rss string
+	rg  string
+	d   time.Time
+	rs  []common.Waypoint
+	err bool
+}
+
+var getWaypointTests = []GetWaypointTest{
+	{"basic get waypoint",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"CH",
+		time.Time{},
+		[]common.Waypoint{
+			common.Waypoint{
+				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
+				Latitude: "N463422", Longitude: "E0082455", Region: "CH",
+			},
+		},
+		false,
+	},
+	{"get waypoint with updated since",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"CH",
+		time.Date(2014, time.February, 25, 0, 0, 0, 0, time.UTC),
+		[]common.Waypoint{},
+		false,
+	},
+	{"get waypoint missing rss",
+		"./t/test-release-basic.txt",
+		"./t/missing-release-list.xml",
+		"CH",
+		time.Time{},
+		[]common.Waypoint{},
+		true,
+	},
+	{"get waypoint missing release",
+		"./t/missing-release.txt",
+		"./t/test-releases-list.xml",
+		"CH",
+		time.Time{},
+		[]common.Waypoint{},
+		true,
+	},
+	//FIXME:
+	/*{"get waypoint with missing region",
+		"./t/test-release-basic.txt",
+		"./t/test-releases-list.xml",
+		"ZZ",
+		time.Time{},
+		[]common.Waypoint{},
+	},*/
+}
+
+func TestGetWaypoint(t *testing.T) {
+	for i := range getWaypointTests {
+		test := getWaypointTests[i]
+
+		plugin := Welt2000{}
+		cfg := config.Config{}
+		cfg.Welt2000.Rssurl = test.rss
+		cfg.Welt2000.Releaseurl = test.r
+		err := plugin.Init(cfg)
+		if err != nil {
+			t.Errorf("Failed to initialize plugin :: %v", err)
+		}
+
+		var waypoints []common.Waypoint
+		waypoints, err = plugin.GetWaypoint([]string{test.rg}, test.d)
+		if err != nil && test.err {
+			return
+		} else if err != nil {
+			t.Errorf("Failed to get waypoint :: %v", err)
+		}
+
+		if len(waypoints) != len(test.rs) {
+			t.Errorf("Got %v waypoints but expected %v in test '%v'", len(waypoints), len(test.rs), test.t)
+		}
+
+		for i := range waypoints {
+			var waypoint = waypoints[i]
+			var expected = test.rs[i]
+			if !reflect.DeepEqual(waypoint, expected) {
+				t.Errorf("Got wrong waypoint. %+v instead of %+v", waypoint, expected)
+			}
+		}
+	}
+}
+
+func TestPutWaypoint(t *testing.T) {
+	plugin := Welt2000{}
+	cfg := config.Config{}
+	err := plugin.Init(cfg)
+	if err != nil {
+		t.Errorf("Failed to initialize plugin :: %v", err)
+	}
+
+	err = plugin.PutWaypoint(nil)
+	if err == nil {
+		t.Errorf("Put waypoint should returned error for welt2000")
+	}
+}
+
 func TestListLocal(t *testing.T) {
-	releases, err := List("./test-releases-list.xml")
+	releases, err := List("./t/test-releases-list.xml")
 	if err != nil {
 		t.Errorf("Failed to list releases :: %v", err)
 	}
@@ -40,7 +257,7 @@ func TestListLocal(t *testing.T) {
 
 func TestListHTTP(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp, _ := ioutil.ReadFile("./test-releases-list.xml")
+		resp, _ := ioutil.ReadFile("./t/test-releases-list.xml")
 		io.WriteString(w, string(resp))
 	}))
 	defer ts.Close()
@@ -69,14 +286,14 @@ func TestListMissing(t *testing.T) {
 }
 
 func TestListBrokenFeed(t *testing.T) {
-	_, err := List("./test-releases-broken.xml")
+	_, err := List("./t/test-releases-broken.xml")
 	if err == nil {
 		t.Errorf("Parsing a broken rss feed should have failed")
 	}
 }
 
 func TestFetchLocal(t *testing.T) {
-	release, err := Fetch("./test-release-basic.txt")
+	release, err := Fetch("./t/test-release-basic.txt")
 	if err != nil {
 		t.Errorf("Failed to fetch release from local :: %v", err)
 	}
@@ -87,7 +304,7 @@ func TestFetchLocal(t *testing.T) {
 
 func TestFetchHTTP(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp, _ := ioutil.ReadFile("./test-release-basic.txt")
+		resp, _ := ioutil.ReadFile("./t/test-release-basic.txt")
 		io.WriteString(w, string(resp))
 	}))
 	defer ts.Close()
@@ -147,7 +364,7 @@ func TestParseAirfield(t *testing.T) {
 	expected := common.Airfield{ID: "LFLI", ShortName: "ANNEM",
 		Name: "ANNEMASSE", ICAO: "LFLI", Flags: 0 | common.Asphalt,
 		Length: 1290, Runway: "1230", Frequency: 125.87, Elevation: 494,
-		Latitude: "N461131", Longitude: "E0061606"}
+		Latitude: "N461131", Longitude: "E0061606", Region: "FR"}
 	if airfield != expected {
 		t.Errorf("Failed to parse airfield :: %v :: %v", expected, airfield)
 	}
@@ -282,7 +499,7 @@ func TestParseWaypoint(t *testing.T) {
 	waypoint := r.Waypoints[0]
 	expected := common.Waypoint{
 		Name: "FURKAP", ID: "FURKAP", Description: "FURKAPASS PASSHOEHE",
-		Latitude: "N463422", Longitude: "E0082455", Elevation: 2432,
+		Latitude: "N463422", Longitude: "E0082455", Elevation: 2432, Region: "CH",
 	}
 	if waypoint != expected {
 		t.Errorf("Parse failed for waypoint: got %v instead of %v", waypoint, expected)
@@ -291,7 +508,7 @@ func TestParseWaypoint(t *testing.T) {
 
 func BenchmarkFetch(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_, err := Fetch("./test-release-bench.txt")
+		_, err := Fetch("./t/test-release-bench.txt")
 		if err != nil {
 			b.Errorf("Failed to fetch release :: %v", err)
 		}

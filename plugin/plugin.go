@@ -26,6 +26,7 @@ import (
 	"errors"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/soaringweb"
+	"github.com/rochaporto/ezgliding/welt2000"
 )
 
 // Pluginer is to be implemented by every plugin implementation
@@ -36,6 +37,7 @@ type Pluginer interface {
 // pluginRegistry holds instances of available pluginRegistry mapped by IDs (for discovery).
 var pluginRegistry = map[ID]Pluginer{
 	ID(soaringweb.ID): Pluginer(&soaringweb.SoaringWeb{}),
+	ID(welt2000.ID):   Pluginer(&welt2000.Welt2000{}),
 }
 
 // ID is the specific id of a given plugin.

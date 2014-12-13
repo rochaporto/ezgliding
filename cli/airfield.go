@@ -21,8 +21,15 @@ package cli
 
 import (
 	"flag"
+	"fmt"
+	"os"
+	"strings"
+	"time"
 
 	commander "code.google.com/p/go-commander"
+	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/context"
 )
 
 // CmdAirfieldGet command gets airfield information and outputs the result.
@@ -30,9 +37,25 @@ var CmdAirfieldGet = &commander.Command{
 	UsageLine: "airfield-get [options]",
 	Short:     "gets airfield information",
 	Long: `
-Gets available airspace information according to the given parameters
+Gets available airfield information according to the given parameters
 ` + "\n" + helpFlags(flag.CommandLine),
-	Run: func(cmd *commander.Command, args []string) {
-	},
+	Run:  runAirfieldGet,
 	Flag: *flag.CommandLine,
+}
+
+// runAirfieldGet invokes the configured plugin and outputs airfield data.
+func runAirfieldGet(cmd *commander.Command, args []string) {
+	var err error
+	ctx := context.Ctx
+	airfield := ctx.Airfield
+	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v", err)
+		// FIXME: must return -1, but no way now to check this in test
+	}
+	glog.V(5).Infof("airfield get with args '%v' got %d results", args, len(airfields))
+	glog.V(20).Infof("%+v", airfields)
+	for i := range airfields {
+		fmt.Printf("%+v\n", airfields[i])
+	}
 }

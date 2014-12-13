@@ -28,6 +28,11 @@ import (
 	"flag"
 )
 
+var (
+	after  = flag.String("after", "", "consider only items updated after this date")
+	region = flag.String("region", "", "return only items for this comma separated list of regions")
+)
+
 // helpFlags builds the text in 'help' regarding available command flags.
 func helpFlags(fp *flag.FlagSet) string {
 	result := ""

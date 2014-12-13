@@ -17,23 +17,31 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// welt2000 provides functionality to fetch and parse airfield and
+// Package welt2000 provides functionality to fetch and parse airfield and
 // waypoint information, taking the welt release as input.
 //
 // Check the welt2000 website for more information on the data:
-// http://www.segelflug.de/vereine/welt2000/
+// 	http://www.segelflug.de/vereine/welt2000/
 //
 package welt2000
 
 import (
 	"errors"
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/rss"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/rss"
+)
+
+// ID for this plugin implementation.
+const (
+	ID string = "welt2000"
 )
 
 // Release contains info about a specific release
@@ -44,9 +52,89 @@ type Release struct {
 	Waypoints []common.Waypoint
 }
 
+var rssURL = "http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml"
+
+var releaseURL = "http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT"
+
+// Welt2000 is the plugin implementation to collect welt2000 data,
+// for airfields and waypoints.
+type Welt2000 struct {
+	rssURL     string
+	releaseURL string
+}
+
+// Init follows the plugin.Plugin interface (see plugin.Pluginer).
+func (wt *Welt2000) Init(cfg config.Config) error {
+	glog.V(10).Infof("Init with config %+v", cfg.Welt2000)
+	wt.rssURL = rssURL
+	if cfg.Welt2000.Rssurl != "" {
+		wt.rssURL = cfg.Welt2000.Rssurl
+	}
+	wt.releaseURL = releaseURL
+	if cfg.Welt2000.Releaseurl != "" {
+		wt.releaseURL = cfg.Welt2000.Releaseurl
+	}
+	glog.V(20).Infof("Plugin welt2000 initialized :: %+v", wt)
+	return nil
+}
+
+// GetAirfield follows common.GetAirfield().
+// FIXME: use region
+func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+	glog.V(10).Infof("GetAirfield with regions %v and updatedSince %v", regions, updatedSince)
+	releases, err := List(wt.rssURL)
+	if err != nil {
+		return nil, err
+	}
+	release := releases[0]
+	if !release.Date.After(updatedSince) {
+		return release.Airfields, nil
+	}
+
+	// We 'update' the release source as the rss feed points to an update
+	// summary page, not the actually release source.
+	release.Source = wt.releaseURL
+	err = release.Fetch()
+	glog.V(10).Infof("GetAirfield for regions %v and updatedsince %v retrieved %d results",
+		regions, updatedSince, len(release.Airfields))
+	glog.V(20).Infof("%v", release.Airfields)
+	return release.Airfields, err
+}
+
+// PutAirfield follows common.PutAirfield().
+func (wt *Welt2000) PutAirfield(airfields []common.Airfield) error {
+	return errors.New("not available for welt2000 plugin")
+}
+
+// GetWaypoint follows common.GetWaypoint().
+// FIXME: use region
+func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+	releases, err := List(wt.rssURL)
+	if err != nil {
+		return nil, err
+	}
+	release := releases[0]
+	if !release.Date.After(updatedSince) {
+		return release.Waypoints, nil
+	}
+
+	// We 'update' the release source as the rss feed points to an update
+	// summary page, not the actually release source.
+	release.Source = wt.releaseURL
+	err = release.Fetch()
+	return release.Waypoints, err
+}
+
+// PutWaypoint follows common.PutWaypoint().
+func (wt *Welt2000) PutWaypoint(waypoints []common.Waypoint) error {
+	return errors.New("not available for welt2000 plugin")
+}
+
 // List checks the welt2000 rss feed and lists the releases found
 func List(location string) ([]Release, error) {
 	var content []byte
+
+	glog.V(10).Infof("List for location %v", location)
 	// case http
 	resp, err := http.Get(location)
 	if err == nil {
@@ -59,6 +147,7 @@ func List(location string) ([]Release, error) {
 		}
 		content = resp
 	}
+	rss.Init()
 	feed, err := rss.Parse(content)
 	if err != nil {
 		return nil, err
@@ -69,11 +158,14 @@ func List(location string) ([]Release, error) {
 		res[i].Date = item.Date
 		res[i].Source = item.Link
 	}
+	glog.V(10).Infof("List got %v releases", len(res))
+	glog.V(20).Infof("%v", res)
 	return res, nil
 }
 
 // Fetch gets and returns the Release at the given location
 func Fetch(location string) (*Release, error) {
+	glog.V(10).Infof("Fetch with location %v", location)
 	r := Release{Source: location}
 	err := r.Fetch()
 	return &r, err
@@ -81,6 +173,7 @@ func Fetch(location string) (*Release, error) {
 
 // Fetch fills up the Release object with data after parsing the content at Release.Source
 func (r *Release) Fetch() error {
+	glog.V(10).Infof("Release fetch :: %+v", r)
 	var content []byte
 
 	resp, err := http.Get(r.Source)
@@ -128,7 +221,7 @@ func (r *Release) parseAirfield(line string) error {
 		airfield.ShortName = strings.Trim(line[0:5], " ")
 	}
 	airfield.Name = strings.Trim(line[7:20], " ")
-	if line[23] == '#' && line[24] != ' ' { // ICAO available
+	if line[23] == '#' && line[24] != ' ' && string(line[24:28]) != "GLD!" { // ICAO available
 		airfield.ICAO = line[24:28]
 		airfield.ID = airfield.ICAO
 	} else {
@@ -153,6 +246,7 @@ func (r *Release) parseAirfield(line string) error {
 	airfield.Elevation, _ = strconv.Atoi(elevation)
 	airfield.Latitude = line[45:52]
 	airfield.Longitude = line[52:60]
+	airfield.Region = line[60:62]
 	r.Airfields = append(r.Airfields, airfield)
 	return nil
 }
@@ -184,6 +278,7 @@ func (r *Release) parseWaypoint(line string) error {
 		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
 		Description: strings.Trim(line[7:41], " "),
 		Latitude:    line[45:52], Longitude: line[52:60],
+		Region: line[60:62],
 	}
 	elevation := strings.Trim(line[41:45], " ")
 	waypoint.Elevation, _ = strconv.Atoi(elevation)

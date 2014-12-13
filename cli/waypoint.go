@@ -21,8 +21,15 @@ package cli
 
 import (
 	"flag"
+	"fmt"
+	"os"
+	"strings"
+	"time"
 
 	commander "code.google.com/p/go-commander"
+	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/context"
 )
 
 // CmdWaypointGet command gets waypoint information and outputs the result.
@@ -32,7 +39,23 @@ var CmdWaypointGet = &commander.Command{
 	Long: `
 Gets waypoint information according to the given parameters.
 ` + "\n" + helpFlags(flag.CommandLine),
-	Run: func(cmd *commander.Command, args []string) {
-	},
+	Run:  runWaypointGet,
 	Flag: *flag.CommandLine,
+}
+
+// runWaypointGet invokes the configured plugin and outputs airfield data.
+func runWaypointGet(cmd *commander.Command, args []string) {
+	var err error
+	ctx := context.Ctx
+	waypoint := ctx.Waypoint
+	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get waypoint :: %v", err)
+		// FIXME: must return -1, but no way now to check this in test
+	}
+	glog.V(5).Infof("waypoint get with args '%v' got %d results", args, len(waypoints))
+	glog.V(20).Infof("%+v", waypoints)
+	for i := range waypoints {
+		fmt.Printf("%+v\n", waypoints[i])
+	}
 }

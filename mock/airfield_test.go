@@ -27,8 +27,8 @@ import (
 	"time"
 )
 
-func TestAirspaceInit(t *testing.T) {
-	mockI := &Airspace{
+func TestAirfieldInit(t *testing.T) {
+	mockI := &Airfield{
 		InitF: func(cfg config.Config) error {
 			return nil
 		},
@@ -36,37 +36,37 @@ func TestAirspaceInit(t *testing.T) {
 	x := plugin.Pluginer(mockI)
 	err := x.Init(config.Config{})
 	if err != nil {
-		t.Errorf("Failed to call init on mock airspace")
+		t.Errorf("Failed to call init on mock airfield")
 	}
 }
 
-func TestGetAirspace(t *testing.T) {
-	airspaces := []common.Airspace{
-		common.Airspace{Name: "TestMockAirspace"},
+func TestGetAirfield(t *testing.T) {
+	airfields := []common.Airfield{
+		common.Airfield{Name: "TestMockAirfield"},
 	}
-	mockI := &Airspace{
-		GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-			return airspaces, nil
+	mockI := &Airfield{
+		GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+			return airfields, nil
 		},
 	}
-	x := common.Airspacer(mockI)
-	result, err := x.GetAirspace(nil, time.Time{})
+	x := common.Airfielder(mockI)
+	result, err := x.GetAirfield(nil, time.Time{})
 	if err != nil {
-		t.Errorf("Failed to query mock airspaces")
+		t.Errorf("Failed to query mock airfields")
 	}
-	if len(result) != len(airspaces) {
-		t.Errorf("Got %v airspaces but expected %v", len(result), len(airspaces))
+	if len(result) != len(airfields) {
+		t.Errorf("Got %v airfields but expected %v", len(result), len(airfields))
 	}
 }
-func TestPutAirspace(t *testing.T) {
-	mockI := &Airspace{
-		PutF: func([]common.Airspace) error {
+func TestPutAirfield(t *testing.T) {
+	mockI := &Airfield{
+		PutF: func([]common.Airfield) error {
 			return nil // FIXME: implement
 		},
 	}
-	x := common.Airspacer(mockI)
-	err := x.PutAirspace(nil) // FIXME: implement
+	x := common.Airfielder(mockI)
+	err := x.PutAirfield(nil) // FIXME: implement
 	if err != nil {
-		t.Errorf("Failed to put mock airspaces")
+		t.Errorf("Failed to put mock airfields")
 	}
 }

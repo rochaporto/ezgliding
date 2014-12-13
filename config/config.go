@@ -45,6 +45,12 @@ type SoaringWeb struct {
 	Baseurl string
 }
 
+// Welt2000 holds all config information for the welt2000 plugin.
+type Welt2000 struct {
+	Rssurl     string
+	Releaseurl string
+}
+
 // Global holds all common information for all ezgliding plugins and apps.
 type Global struct {
 	Airspacer  string
@@ -56,6 +62,7 @@ type Global struct {
 type Config struct {
 	Global
 	SoaringWeb
+	Welt2000
 }
 
 // NewConfig returns a new Config based on given location (or default).

@@ -19,11 +19,23 @@
 
 package common
 
+import (
+	"time"
+)
+
+// Airfielder is implemented by any data source which can provide or
+// receive airfield information.
+type Airfielder interface {
+	GetAirfield(regions []string, updatedSince time.Time) ([]Airfield, error)
+	PutAirfield(airfields []Airfield) error
+}
+
 // Airfield keeps details about a specific airfield
 type Airfield struct {
 	ID        string
 	ShortName string
 	Name      string
+	Region    string
 	ICAO      string
 	Flags     int
 	Catalog   int
