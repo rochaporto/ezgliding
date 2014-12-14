@@ -35,10 +35,20 @@
 package config
 
 import (
-	"github.com/scalingdata/gcfg"
 	"os"
 	"os/user"
+
+	"github.com/scalingdata/gcfg"
 )
+
+// FusionTables holds all config information for the google fusiontables plugin.
+type FusionTables struct {
+	AirfieldTableID string
+	AirspaceTableID string
+	WaypointTableID string
+	Baseurl         string
+	APIKey          string
+}
 
 // SoaringWeb holds all config information for the soaringweb plugin.
 type SoaringWeb struct {
@@ -61,6 +71,7 @@ type Global struct {
 // Config holds all the config information for ezgliding plugins and apps.
 type Config struct {
 	Global
+	FusionTables
 	SoaringWeb
 	Welt2000
 }

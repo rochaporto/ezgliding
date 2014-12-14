@@ -46,7 +46,9 @@ func ExampleAirfieldGet() {
 	}
 	setupContext(ctx)
 	runAirfieldGet(CmdAirfieldGet, []string{})
-	// Output: {ID:MockID ShortName:MockShortName Name:MockName Region:FR ICAO:AAAA Flags:0 Catalog:11 Length:1000 Elevation:2000 Runway:32R Frequency:123.45 Latitude:N323200 Longitude:E1002233}
+	// Output:
+	// ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Location
+	// MockID,MockShortName,MockName,FR,AAAA,0,11,1000,2000,32R,123.45,32.533 100.376
 }
 
 func TestAirfieldGetFailed(t *testing.T) {

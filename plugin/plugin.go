@@ -41,6 +41,7 @@ import (
 	"errors"
 
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/fusiontables"
 	"github.com/rochaporto/ezgliding/soaringweb"
 	"github.com/rochaporto/ezgliding/welt2000"
 )
@@ -52,8 +53,9 @@ type Pluginer interface {
 
 // pluginRegistry holds instances of available pluginRegistry mapped by IDs (for discovery).
 var pluginRegistry = map[ID]Pluginer{
-	ID(soaringweb.ID): Pluginer(&soaringweb.SoaringWeb{}),
-	ID(welt2000.ID):   Pluginer(&welt2000.Welt2000{}),
+	ID(fusiontables.ID): Pluginer(&fusiontables.FusionTables{}),
+	ID(soaringweb.ID):   Pluginer(&soaringweb.SoaringWeb{}),
+	ID(welt2000.ID):     Pluginer(&welt2000.Welt2000{}),
 }
 
 // ID is the specific id of a given plugin.

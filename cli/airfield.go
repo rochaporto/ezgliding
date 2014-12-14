@@ -23,6 +23,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,6 +31,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/util"
 )
 
 // CmdAirfieldGet command gets airfield information and outputs the result.
@@ -50,12 +52,16 @@ func runAirfieldGet(cmd *commander.Command, args []string) {
 	airfield := ctx.Airfield
 	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v", err)
+		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v\n", err)
 		// FIXME: must return -1, but no way now to check this in test
 	}
 	glog.V(5).Infof("airfield get with args '%v' got %d results", args, len(airfields))
 	glog.V(20).Infof("%+v", airfields)
-	for i := range airfields {
-		fmt.Printf("%+v\n", airfields[i])
+	fmt.Printf("ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Location\n")
+	for _, a := range airfields {
+		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v %v\n", a.ID, a.ShortName, a.Name, a.Region, a.ICAO,
+			a.Flags, a.Catalog, a.Length, a.Elevation, a.Runway, a.Frequency,
+			strconv.FormatFloat(util.DMS2Decimal(a.Latitude), 'f', 3, 64),
+			strconv.FormatFloat(util.DMS2Decimal(a.Longitude), 'f', 3, 64))
 	}
 }
