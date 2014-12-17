@@ -16,4 +16,4 @@ deploy:
                 secure: KGNGEr3EMKusBJnDiOuQu6irnzdu4S2FeMDNInDNQJXtgeipN+ZeEWAdf61bFovviywHgfF++y0M/7M27g8G4xx7FmjgxT+bTGrpfXbQMdmsBvas85Vg2RWQ6zdro7tM4zEOlvQdU/7d9DSM6FeZR9+r3+9+bEFvyCstl8j+r0M=
         domain: ezgliding
         app:
-                master: stage
+                master: staging
