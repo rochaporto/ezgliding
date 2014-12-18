@@ -1,6 +1,7 @@
 language: go
 go:
         - tip
+sudo: false
 before_install:
         - go get -v github.com/golang/lint/golint
         - go get github.com/mattn/goveralls
