@@ -46,8 +46,11 @@ type FusionTables struct {
 	AirfieldTableID string
 	AirspaceTableID string
 	WaypointTableID string
-	Baseurl         string
+	BaseURL         string
+	UploadURL       string
 	APIKey          string
+	OAuthEmail      string
+	OAuthKey        string
 }
 
 // SoaringWeb holds all config information for the soaringweb plugin.

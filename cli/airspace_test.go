@@ -34,8 +34,8 @@ import (
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
 func ExampleAirspaceGet() {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+		Airspace: &mock.Mock{
+			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 				return []common.Airspace{
 					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName", Ceiling: "1000FT AMSL",
 						Floor: "500FT AMSL"},
@@ -50,8 +50,8 @@ func ExampleAirspaceGet() {
 
 func TestAirspaceGetFailed(t *testing.T) {
 	ctx := context.Context{
-		Airspace: &mock.Airspace{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+		Airspace: &mock.Mock{
+			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 				return nil, errors.New("mock testing get airspace failed")
 			},
 		},

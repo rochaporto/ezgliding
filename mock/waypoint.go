@@ -20,31 +20,23 @@
 package mock
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
 	"time"
+
+	"github.com/rochaporto/ezgliding/common"
 )
 
-// Waypoint is the mock implementation of Waypoint.
-// It provides a variation where you can pass the actual function implementation.
-// Especially useful for testing.
-type Waypoint struct {
-	GetF  func(regions []string, updatedSince time.Time) ([]common.Waypoint, error)
-	PutF  func(waypoint []common.Waypoint) error
-	InitF func(cfg config.Config) error
-}
-
-// Init is the mock implementation of common.Pluginer.Init.
-func (wp *Waypoint) Init(cfg config.Config) error {
-	return wp.InitF(cfg)
-}
-
 // GetWaypoint is the mock implementation of common.Waypointer.GetWaypoint.
-func (wp *Waypoint) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-	return wp.GetF(regions, updatedSince)
+func (mk *Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+	if mk.GetWaypointF != nil {
+		return mk.GetWaypointF(regions, updatedSince)
+	}
+	return []common.Waypoint{}, nil
 }
 
 // PutWaypoint is the mock implementation of common.Waypointr.PutWaypoint.
-func (wp *Waypoint) PutWaypoint(waypoint []common.Waypoint) error {
-	return wp.PutF(waypoint)
+func (mk *Mock) PutWaypoint(waypoint []common.Waypoint) error {
+	if mk.PutWaypointF != nil {
+		return mk.PutWaypointF(waypoint)
+	}
+	return nil
 }

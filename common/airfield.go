@@ -43,8 +43,8 @@ type Airfield struct {
 	Elevation int
 	Runway    string
 	Frequency float64
-	Latitude  string
-	Longitude string
+	Latitude  float64
+	Longitude float64
 }
 
 // Enum for Airfield flags

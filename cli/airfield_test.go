@@ -25,8 +25,10 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
+	"github.com/rochaporto/ezgliding/plugin"
 )
 
 // ExampleAirfieldGet uses the mock airfield implementation to query data and
@@ -34,12 +36,12 @@ import (
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
 func ExampleAirfieldGet() {
 	ctx := context.Context{
-		Airfield: &mock.Airfield{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
 				return []common.Airfield{
 					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
-						Runway: "32R", Frequency: 123.45, Latitude: "N323200", Longitude: "E1002233"},
+						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 				}, nil
 			},
 		},
@@ -47,18 +49,108 @@ func ExampleAirfieldGet() {
 	setupContext(ctx)
 	runAirfieldGet(CmdAirfieldGet, []string{})
 	// Output:
-	// ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Location
-	// MockID,MockShortName,MockName,FR,AAAA,0,11,1000,2000,32R,123.45,32.533 100.376
+	// ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
+	// MockID,MockShortName,MockName,FR,AAAA,0,11,1000,2000,32R,123.45,32.533,100.376
 }
 
 func TestAirfieldGetFailed(t *testing.T) {
 	ctx := context.Context{
-		Airfield: &mock.Airfield{
-			GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
 				return nil, errors.New("mock testing get airfield failed")
 			},
 		},
 	}
 	setupContext(ctx)
 	runAirfieldGet(CmdAirfieldGet, []string{})
+}
+
+// ExampleAirfieldPut uses the mock airfield implementation to push data and
+// verify airfield-put works.
+func ExampleAirfieldPut() {
+	ctx := context.Context{
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return []common.Airfield{
+					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
+						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
+				}, nil
+			},
+		},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{"mock"})
+	// Output:
+	// pushed 1 airfields into mock
+}
+
+func TestAirfieldPutFailed(t *testing.T) {
+	err := plugin.Register(plugin.ID("afputfailed"), plugin.Pluginer(
+		&mock.Mock{
+			PutAirfieldF: func(airfields []common.Airfield) error {
+				return errors.New("mock testing put airfield failed")
+			},
+		}))
+	if err != nil {
+		t.Errorf("failed to register plugin :: %v", err)
+	}
+	ctx := context.Context{
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return []common.Airfield{common.Airfield{}}, nil
+			},
+		},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{"afputfailed"})
+}
+
+func TestAirfieldPutBadGet(t *testing.T) {
+	ctx := context.Context{
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return nil, errors.New("mock testing get airfield failed")
+			},
+		},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{"mock"})
+}
+
+func TestAirfieldPutBadPluginID(t *testing.T) {
+	ctx := context.Context{
+		Airfield: &mock.Mock{},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{"afnonexisting"})
+}
+
+func TestAirfieldPutFailInit(t *testing.T) {
+	err := plugin.Register(plugin.ID("affailinit"), plugin.Pluginer(
+		&mock.Mock{
+			InitF: func(config.Config) error {
+				return errors.New("failed to init plugin")
+			},
+		}))
+	if err != nil {
+		t.Errorf("failed to register plugin :: %v", err)
+	}
+	ctx := context.Context{
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return []common.Airfield{common.Airfield{}}, nil
+			},
+		},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{"affailinit"})
+}
+
+func TestAirfieldPutBadArgNumber(t *testing.T) {
+	ctx := context.Context{
+		Airfield: &mock.Mock{},
+	}
+	setupContext(ctx)
+	runAirfieldPut(CmdAirfieldPut, []string{})
 }

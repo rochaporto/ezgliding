@@ -52,7 +52,7 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		false,
 	},
@@ -78,7 +78,7 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		false,
 	},
@@ -93,7 +93,7 @@ func TestGetAirfield(t *testing.T) {
 		defer ts.Close()
 
 		cfg := config.Config{}
-		cfg.FusionTables.Baseurl = ts.URL
+		cfg.FusionTables.BaseURL = ts.URL
 		cfg.FusionTables.AirfieldTableID = "testairfieldid"
 		plugin := FusionTables{}
 		err := plugin.Init(cfg)
@@ -121,7 +121,7 @@ func TestGetAirfield(t *testing.T) {
 
 func TestGetAirfieldWithMissingLocation(t *testing.T) {
 	cfg := config.Config{}
-	cfg.FusionTables.Baseurl = "http://doesnotexist"
+	cfg.FusionTables.BaseURL = "http://doesnotexist"
 	cfg.FusionTables.AirfieldTableID = "testairfieldid"
 	plugin := FusionTables{}
 	err := plugin.Init(cfg)
@@ -136,7 +136,7 @@ func TestGetAirfieldWithMissingLocation(t *testing.T) {
 
 func TestGetAirfieldWithMalformedURL(t *testing.T) {
 	cfg := config.Config{}
-	cfg.FusionTables.Baseurl = "wrong%url"
+	cfg.FusionTables.BaseURL = "wrong%url"
 	cfg.FusionTables.AirfieldTableID = "testairfieldid"
 	plugin := FusionTables{}
 	err := plugin.Init(cfg)
@@ -162,10 +162,10 @@ var putAirfieldTests = []PutAirfieldTest{
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
+HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
 `,
 		false,
 	},
@@ -174,10 +174,10 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-aHABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
+aHABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
 `,
 		true,
 	},
@@ -198,25 +198,25 @@ func TestPutAirfield(t *testing.T) {
 		defer ts.Close()
 
 		cfg := config.Config{}
-		cfg.FusionTables.Baseurl = ts.URL
+		cfg.FusionTables.UploadURL = ts.URL
 		cfg.FusionTables.AirfieldTableID = "testairfieldid"
 		plugin := FusionTables{}
 		err := plugin.Init(cfg)
 		if err != nil {
-			t.Errorf("failed to initialize plugin :: %v", err)
+			t.Errorf("%v failed to initialize plugin :: %v", test.t, err)
 		}
 		err = plugin.PutAirfield(test.in)
 		if err != nil && test.err {
 			continue
 		} else if err != nil {
-			t.Errorf("failed to put airfields :: %v", err)
+			t.Errorf("%v failed :: %v", test.t, err)
 		}
 	}
 }
 
 func TestPutAirfieldWithMissingLocation(t *testing.T) {
 	cfg := config.Config{}
-	cfg.FusionTables.Baseurl = "http://thisurlreallydoesnotexist.pt"
+	cfg.FusionTables.BaseURL = "http://thisurlreallydoesnotexist.pt"
 	cfg.FusionTables.AirfieldTableID = "testairfieldid"
 	plugin := FusionTables{}
 	err := plugin.Init(cfg)
@@ -231,7 +231,7 @@ func TestPutAirfieldWithMissingLocation(t *testing.T) {
 
 func TestPutAirfieldWithMalformedURL(t *testing.T) {
 	cfg := config.Config{}
-	cfg.FusionTables.Baseurl = "wrong%url"
+	cfg.FusionTables.BaseURL = "wrong%url"
 	cfg.FusionTables.AirfieldTableID = "testairfieldid"
 	plugin := FusionTables{}
 	err := plugin.Init(cfg)
@@ -251,7 +251,7 @@ func TestPutAirfieldWithBadStatus(t *testing.T) {
 	defer ts.Close()
 
 	cfg := config.Config{}
-	cfg.FusionTables.Baseurl = ts.URL
+	cfg.FusionTables.BaseURL = ts.URL
 	cfg.FusionTables.AirfieldTableID = "testairfieldid"
 	plugin := FusionTables{}
 	err := plugin.Init(cfg)
@@ -261,7 +261,7 @@ func TestPutAirfieldWithBadStatus(t *testing.T) {
 	err = plugin.PutAirfield([]common.Airfield{
 		common.Airfield{ID: "aHABER", ShortName: "HABER", Name: "HABERE POC69",
 			Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-			Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+			Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 	})
 	if err == nil {
 		t.Errorf("expected error but got success")

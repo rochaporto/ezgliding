@@ -42,6 +42,7 @@ import (
 
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/fusiontables"
+	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/soaringweb"
 	"github.com/rochaporto/ezgliding/welt2000"
 )
@@ -54,6 +55,7 @@ type Pluginer interface {
 // pluginRegistry holds instances of available pluginRegistry mapped by IDs (for discovery).
 var pluginRegistry = map[ID]Pluginer{
 	ID(fusiontables.ID): Pluginer(&fusiontables.FusionTables{}),
+	ID(mock.ID):         Pluginer(&mock.Mock{}),
 	ID(soaringweb.ID):   Pluginer(&soaringweb.SoaringWeb{}),
 	ID(welt2000.ID):     Pluginer(&welt2000.Welt2000{}),
 }
@@ -69,6 +71,17 @@ func Register(id ID, plugin Pluginer) error {
 		return errors.New("A plugin with ID " + string(id) + " already exists")
 	}
 	pluginRegistry[id] = plugin
+	return nil
+}
+
+// Unregister removes the plugin with the given ID from the register.
+// It fails if a plugin with the given ID does not exist.
+func Unregister(id ID) error {
+	_, present := pluginRegistry[id]
+	if !present {
+		return errors.New("A plugin with ID " + string(id) + " does not exist")
+	}
+	delete(pluginRegistry, id)
 	return nil
 }
 

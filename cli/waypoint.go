@@ -30,6 +30,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/plugin"
 )
 
 // CmdWaypointGet command gets waypoint information and outputs the result.
@@ -43,7 +44,7 @@ Gets waypoint information according to the given parameters.
 	Flag: *flag.CommandLine,
 }
 
-// runWaypointGet invokes the configured plugin and outputs airfield data.
+// runWaypointGet invokes the configured plugin and outputs waypoint data.
 func runWaypointGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
@@ -58,4 +59,52 @@ func runWaypointGet(cmd *commander.Command, args []string) {
 	for i := range waypoints {
 		fmt.Printf("%+v\n", waypoints[i])
 	}
+}
+
+// CmdWaypointPut command puts waypoint information from a source to a destination.
+var CmdWaypointPut = &commander.Command{
+	UsageLine: "waypoint-put [options] destination",
+	Short:     "puts waypoint information",
+	Long: `
+Puts waypoint information according to the given parameters
+` + "\n" + helpFlags(flag.CommandLine),
+	Run:  runWaypointPut,
+	Flag: *flag.CommandLine,
+}
+
+// runWaypointPut invokes the configured plugins to put waypoint data from source to dest.
+func runWaypointPut(cmd *commander.Command, args []string) {
+	var err error
+	if len(args) != 1 {
+		fmt.Fprintf(os.Stderr, "failed to put waypoint data :: no destination given\n")
+		return
+	}
+	pluginID := args[0]
+	ctx := context.Ctx
+	destPlugin, err := plugin.NewPlugin(plugin.ID(pluginID))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to get plugin '%v' :: %v\n", pluginID, err)
+		return
+	}
+	err = destPlugin.Init(ctx.Config)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
+		return
+	}
+	waypoint := ctx.Waypoint
+	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to get waypoint :: %v\n", err)
+		return
+	}
+	glog.V(5).Infof("putting %v waypoints", len(waypoints))
+	glog.V(20).Infof("%v", waypoints)
+	if len(waypoints) > 0 {
+		err = destPlugin.(common.Waypointer).PutWaypoint(waypoints)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to put waypoints :: %v\n", err)
+			return
+		}
+	}
+	fmt.Printf("pushed %v waypoints into %v\n", len(waypoints), pluginID)
 }

@@ -42,6 +42,22 @@ func TestRegister(t *testing.T) {
 	}
 }
 
+func TestUnregister(t *testing.T) {
+	id := ID("testplugin")
+	err := Unregister(id)
+	if err != nil {
+		t.Errorf("failed to unregister plugin :: %v", err)
+	}
+}
+
+func TestUnregisterMissing(t *testing.T) {
+	id := ID("nonexisting")
+	err := Unregister(id)
+	if err == nil {
+		t.Errorf("got success but should have failed")
+	}
+}
+
 func TestRegisterExisting(t *testing.T) {
 	id := ID("testpluginexisting")
 	var TestPlugin Pluginer

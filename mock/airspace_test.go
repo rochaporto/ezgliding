@@ -20,37 +20,23 @@
 package mock
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/plugin"
+	"reflect"
 	"testing"
 	"time"
-)
 
-func TestAirspaceInit(t *testing.T) {
-	mockI := &Airspace{
-		InitF: func(cfg config.Config) error {
-			return nil
-		},
-	}
-	x := plugin.Pluginer(mockI)
-	err := x.Init(config.Config{})
-	if err != nil {
-		t.Errorf("Failed to call init on mock airspace")
-	}
-}
+	"github.com/rochaporto/ezgliding/common"
+)
 
 func TestGetAirspace(t *testing.T) {
 	airspaces := []common.Airspace{
 		common.Airspace{Name: "TestMockAirspace"},
 	}
-	mockI := &Airspace{
-		GetF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+	mock := Mock{
+		GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 			return airspaces, nil
 		},
 	}
-	x := common.Airspacer(mockI)
-	result, err := x.GetAirspace(nil, time.Time{})
+	result, err := mock.GetAirspace(nil, time.Time{})
 	if err != nil {
 		t.Errorf("Failed to query mock airspaces")
 	}
@@ -58,15 +44,47 @@ func TestGetAirspace(t *testing.T) {
 		t.Errorf("Got %v airspaces but expected %v", len(result), len(airspaces))
 	}
 }
+
+func TestGetAirspaceNotImplemented(t *testing.T) {
+	mock := Mock{}
+	result, err := mock.GetAirspace(nil, time.Time{})
+	if err != nil {
+		t.Errorf("failed to get airspace :: %v", err)
+	}
+	if result == nil || len(result) != 0 {
+		t.Errorf("expected empty list but got %v", result)
+	}
+}
+
 func TestPutAirspace(t *testing.T) {
-	mockI := &Airspace{
-		PutF: func([]common.Airspace) error {
-			return nil // FIXME: implement
+	airspaces := []common.Airspace{
+		common.Airspace{Name: "TestMockAirspace"},
+	}
+	var result []common.Airspace
+	mock := Mock{
+		PutAirspaceF: func(a []common.Airspace) error {
+			result = a
+			return nil
 		},
 	}
-	x := common.Airspacer(mockI)
-	err := x.PutAirspace(nil) // FIXME: implement
+	err := mock.PutAirspace(airspaces)
 	if err != nil {
 		t.Errorf("Failed to put mock airspaces")
+	}
+	if len(result) != len(airspaces) {
+		t.Errorf("got %v airspaces but expected %v", len(result), len(airspaces))
+	}
+	for i := range result {
+		if !reflect.DeepEqual(result[i], airspaces[i]) {
+			t.Errorf("expected %v got %v", airspaces[i], result[i])
+		}
+	}
+}
+
+func TestPutAirspaceNotImplemented(t *testing.T) {
+	mock := Mock{}
+	err := mock.PutAirspace(nil)
+	if err != nil {
+		t.Errorf("failed to put airspace :: %v", err)
 	}
 }

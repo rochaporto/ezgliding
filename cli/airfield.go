@@ -23,7 +23,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -31,6 +30,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/util"
 )
 
@@ -57,11 +57,53 @@ func runAirfieldGet(cmd *commander.Command, args []string) {
 	}
 	glog.V(5).Infof("airfield get with args '%v' got %d results", args, len(airfields))
 	glog.V(20).Infof("%+v", airfields)
-	fmt.Printf("ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Location\n")
-	for _, a := range airfields {
-		fmt.Printf("%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v %v\n", a.ID, a.ShortName, a.Name, a.Region, a.ICAO,
-			a.Flags, a.Catalog, a.Length, a.Elevation, a.Runway, a.Frequency,
-			strconv.FormatFloat(util.DMS2Decimal(a.Latitude), 'f', 3, 64),
-			strconv.FormatFloat(util.DMS2Decimal(a.Longitude), 'f', 3, 64))
+	fmt.Printf("%v", util.Struct2CSV(airfields))
+}
+
+// CmdAirfieldPut command puts airfield information from a source to a destination.
+var CmdAirfieldPut = &commander.Command{
+	UsageLine: "airfield-put [options] destination",
+	Short:     "puts airfield information",
+	Long: `
+Puts airfield information according to the given parameters
+` + "\n" + helpFlags(flag.CommandLine),
+	Run:  runAirfieldPut,
+	Flag: *flag.CommandLine,
+}
+
+// runAirfieldPut invokes the configured plugins to put airfield data from source to dest.
+func runAirfieldPut(cmd *commander.Command, args []string) {
+	var err error
+	if len(args) != 1 {
+		fmt.Fprintf(os.Stderr, "failed to put airfield data :: no destination given\n")
+		return
 	}
+	pluginID := args[0]
+	ctx := context.Ctx
+	destPlugin, err := plugin.NewPlugin(plugin.ID(pluginID))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to get plugin '%v' :: %v\n", pluginID, err)
+		return
+	}
+	err = destPlugin.Init(ctx.Config)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
+		return
+	}
+	airfield := ctx.Airfield
+	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to get airfield :: %v\n", err)
+		return
+	}
+	glog.V(5).Infof("putting %v airfields", len(airfields))
+	glog.V(20).Infof("%v", airfields)
+	if len(airfields) > 0 {
+		err = destPlugin.(common.Airfielder).PutAirfield(airfields)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to put airfields :: %v\n", err)
+			return
+		}
+	}
+	fmt.Printf("pushed %v airfields into %v\n", len(airfields), pluginID)
 }

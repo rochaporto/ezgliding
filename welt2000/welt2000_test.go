@@ -50,7 +50,7 @@ var getAirfieldTests = []GetAirfieldTest{
 		time.Time{},
 		[]common.Airfield{
 			common.Airfield{
-				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR", ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0, Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5, Latitude: "N461611", Longitude: "E0062748",
+				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR", ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0, Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5, Latitude: 46.26972222222222, Longitude: 6.463333333333334,
 			},
 		},
 		false,
@@ -120,7 +120,7 @@ func TestGetAirfield(t *testing.T) {
 			var airfield = airfields[i]
 			var expected = test.rs[i]
 			if !reflect.DeepEqual(airfield, expected) {
-				t.Errorf("Got wrong airfield. %+v instead of %+v", airfield, expected)
+				t.Errorf("expected %v got %v", expected, airfield)
 				continue
 			}
 		}
@@ -370,9 +370,9 @@ func TestParseAirfield(t *testing.T) {
 	expected := common.Airfield{ID: "LFLI", ShortName: "ANNEM",
 		Name: "ANNEMASSE", ICAO: "LFLI", Flags: 0 | common.Asphalt,
 		Length: 1290, Runway: "1230", Frequency: 125.87, Elevation: 494,
-		Latitude: "N461131", Longitude: "E0061606", Region: "FR"}
+		Latitude: 46.19194444444444, Longitude: 6.2683333333333335, Region: "FR"}
 	if airfield != expected {
-		t.Errorf("Failed to parse airfield :: %v :: %v", expected, airfield)
+		t.Errorf("failed to parse airfield :: expected %v got %v", expected, airfield)
 	}
 }
 

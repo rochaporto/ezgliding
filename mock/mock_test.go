@@ -20,23 +20,27 @@
 package mock
 
 import (
-	"time"
+	"testing"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/config"
 )
 
-// GetAirfield is the mock implementation of common.Airfielder.GetAirfield.
-func (mk *Mock) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-	if mk.GetAirfieldF != nil {
-		return mk.GetAirfieldF(regions, updatedSince)
+func TestInit(t *testing.T) {
+	mock := Mock{
+		InitF: func(cfg config.Config) error {
+			return nil
+		},
 	}
-	return []common.Airfield{}, nil
+	err := mock.Init(config.Config{})
+	if err != nil {
+		t.Errorf("Failed to call init on mock waypoint")
+	}
 }
 
-// PutAirfield is the mock implementation of common.Airfielder.PutAirfield.
-func (mk *Mock) PutAirfield(airfield []common.Airfield) error {
-	if mk.PutAirfieldF != nil {
-		return mk.PutAirfieldF(airfield)
+func TestInitNotImplemented(t *testing.T) {
+	mock := Mock{}
+	err := mock.Init(config.Config{})
+	if err != nil {
+		t.Errorf("failed to init plugin :: %v", err)
 	}
-	return nil
 }

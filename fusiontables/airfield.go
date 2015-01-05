@@ -21,10 +21,7 @@ package fusiontables
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -37,14 +34,14 @@ func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([
 	glog.V(10).Infof("GetAirfield with regions %v and updatedSince %v", regions, updatedSince)
 
 	var qry string
-	qry = fmt.Sprintf("SELECT ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Location FROM %s", ft.AirfieldTableID)
+	qry = fmt.Sprintf("SELECT ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude FROM %s", ft.AirfieldTableID)
 	if updatedSince != *new(time.Time) { // FIXME: shouldn't allocate Time each time
 		qry = fmt.Sprintf("%v WHERE lastUpdate > %v", qry, updatedSince)
 	}
 	if len(regions) > 0 {
 		qry = fmt.Sprintf("%v WHERE Region = '%v'", qry, regions[0])
 	}
-	resp, err := ft.get(qry)
+	resp, err := ft.doGet(qry)
 	if err != nil {
 		return nil, fmt.Errorf("%v :: %v", err, resp)
 	}
@@ -65,22 +62,9 @@ func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([
 // PutAirfield follows common.PutAirfield().
 func (ft *FusionTables) PutAirfield(airfields []common.Airfield) error {
 	csv := util.Struct2CSV(airfields)
-	req, err := http.NewRequest("POST", ft.BaseURL+"/tables/ "+ft.AirfieldTableID+"/import",
-		strings.NewReader(csv))
+	resp, err := ft.doImport(csv)
 	if err != nil {
-		return err
-	}
-	req.Header.Add("Authorization", ft.APIKey)
-	req.Header.Add("Content-Type", "application/octet-stream")
-	client := http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Errorf("failed to put airfield :: %v", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		c, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("http %v: %v", resp.StatusCode, string(c))
+		return fmt.Errorf("failed to put airfield :: %v %v", resp, err)
 	}
 	return nil
 }

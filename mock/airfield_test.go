@@ -20,53 +20,71 @@
 package mock
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/plugin"
+	"reflect"
 	"testing"
 	"time"
-)
 
-func TestAirfieldInit(t *testing.T) {
-	mockI := &Airfield{
-		InitF: func(cfg config.Config) error {
-			return nil
-		},
-	}
-	x := plugin.Pluginer(mockI)
-	err := x.Init(config.Config{})
-	if err != nil {
-		t.Errorf("Failed to call init on mock airfield")
-	}
-}
+	"github.com/rochaporto/ezgliding/common"
+)
 
 func TestGetAirfield(t *testing.T) {
 	airfields := []common.Airfield{
 		common.Airfield{Name: "TestMockAirfield"},
 	}
-	mockI := &Airfield{
-		GetF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+	mock := Mock{
+		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
 			return airfields, nil
 		},
 	}
-	x := common.Airfielder(mockI)
-	result, err := x.GetAirfield(nil, time.Time{})
+	result, err := mock.GetAirfield(nil, time.Time{})
 	if err != nil {
-		t.Errorf("Failed to query mock airfields")
+		t.Errorf("failed to query mock airfields")
 	}
 	if len(result) != len(airfields) {
-		t.Errorf("Got %v airfields but expected %v", len(result), len(airfields))
+		t.Errorf("got %v airfields but expected %v", len(result), len(airfields))
 	}
 }
+
+func TestGetAirfieldNotImplemented(t *testing.T) {
+	mock := Mock{}
+	result, err := mock.GetAirfield(nil, time.Time{})
+	if err != nil {
+		t.Errorf("failed to get airfield :: %v", err)
+	}
+	if result == nil || len(result) != 0 {
+		t.Errorf("expected empty airfield list but got %v", result)
+	}
+}
+
 func TestPutAirfield(t *testing.T) {
-	mockI := &Airfield{
-		PutF: func([]common.Airfield) error {
-			return nil // FIXME: implement
+	airfields := []common.Airfield{
+		common.Airfield{Name: "TestMockAirfield"},
+	}
+	var result []common.Airfield
+	mock := Mock{
+		PutAirfieldF: func(a []common.Airfield) error {
+			result = a
+			return nil
 		},
 	}
-	x := common.Airfielder(mockI)
-	err := x.PutAirfield(nil) // FIXME: implement
+	err := mock.PutAirfield(airfields)
 	if err != nil {
-		t.Errorf("Failed to put mock airfields")
+		t.Errorf("failed to put mock airfields")
+	}
+	if len(result) != len(airfields) {
+		t.Errorf("got %v airfields but expected %v", len(result), len(airfields))
+	}
+	for i := range result {
+		if !reflect.DeepEqual(result[i], airfields[i]) {
+			t.Errorf("expected %v got %v", airfields[i], result[i])
+		}
+	}
+}
+
+func TestPutAirfieldNotImplemented(t *testing.T) {
+	mock := Mock{}
+	err := mock.PutAirfield(nil)
+	if err != nil {
+		t.Errorf("failed to put airfield :: %v", err)
 	}
 }

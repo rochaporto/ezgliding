@@ -20,37 +20,23 @@
 package mock
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/plugin"
+	"reflect"
 	"testing"
 	"time"
-)
 
-func TestWaypointInit(t *testing.T) {
-	mockI := &Waypoint{
-		InitF: func(cfg config.Config) error {
-			return nil
-		},
-	}
-	x := plugin.Pluginer(mockI)
-	err := x.Init(config.Config{})
-	if err != nil {
-		t.Errorf("Failed to call init on mock waypoint")
-	}
-}
+	"github.com/rochaporto/ezgliding/common"
+)
 
 func TestGetWaypoint(t *testing.T) {
 	waypoints := []common.Waypoint{
 		common.Waypoint{Name: "TestMockWaypoint"},
 	}
-	mockI := &Waypoint{
-		GetF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+	mock := Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
 			return waypoints, nil
 		},
 	}
-	x := common.Waypointer(mockI)
-	result, err := x.GetWaypoint(nil, time.Time{})
+	result, err := mock.GetWaypoint(nil, time.Time{})
 	if err != nil {
 		t.Errorf("Failed to query mock waypoints")
 	}
@@ -58,15 +44,47 @@ func TestGetWaypoint(t *testing.T) {
 		t.Errorf("Got %v waypoints but expected %v", len(result), len(waypoints))
 	}
 }
+
+func TestGetWaypointNotImplemented(t *testing.T) {
+	mock := Mock{}
+	result, err := mock.GetWaypoint(nil, time.Time{})
+	if err != nil {
+		t.Errorf("failed to get waypoint :: %v", err)
+	}
+	if result == nil || len(result) != 0 {
+		t.Errorf("expected empty list but got %v", result)
+	}
+}
+
 func TestPutWaypoint(t *testing.T) {
-	mockI := &Waypoint{
-		PutF: func([]common.Waypoint) error {
-			return nil // FIXME: implement
+	waypoints := []common.Waypoint{
+		common.Waypoint{Name: "TestMockWaypoint"},
+	}
+	var result []common.Waypoint
+	mock := Mock{
+		PutWaypointF: func(w []common.Waypoint) error {
+			result = w
+			return nil
 		},
 	}
-	x := common.Waypointer(mockI)
-	err := x.PutWaypoint(nil) // FIXME: implement
+	err := mock.PutWaypoint(waypoints)
 	if err != nil {
 		t.Errorf("Failed to put mock waypoints")
+	}
+	if len(result) != len(waypoints) {
+		t.Errorf("got %v waypoints but expected %v", len(result), len(waypoints))
+	}
+	for i := range result {
+		if !reflect.DeepEqual(result[i], waypoints[i]) {
+			t.Errorf("expected %v got %v", waypoints[i], result[i])
+		}
+	}
+}
+
+func TestPutWaypointNotImplemented(t *testing.T) {
+	mock := Mock{}
+	err := mock.PutWaypoint(nil)
+	if err != nil {
+		t.Errorf("failed to put waypoint :: %v", err)
 	}
 }

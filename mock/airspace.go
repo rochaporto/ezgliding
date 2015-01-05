@@ -17,35 +17,26 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// Package mock provides mock implementations of all interfaces.
 package mock
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
 	"time"
+
+	"github.com/rochaporto/ezgliding/common"
 )
 
-// Airspace is the mock implementation of Airspace.
-// It provides a variation where you can pass the actual function implementation.
-// Especially useful for testing.
-type Airspace struct {
-	GetF  func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
-	PutF  func(airspace []common.Airspace) error
-	InitF func(cfg config.Config) error
-}
-
-// Init is the mock implementation of common.Pluginer.Init.
-func (ma *Airspace) Init(cfg config.Config) error {
-	return ma.InitF(cfg)
-}
-
 // GetAirspace is the mock implementation of common.Airspacer.GetAirspace.
-func (ma *Airspace) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-	return ma.GetF(regions, updatedSince)
+func (mk *Mock) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+	if mk.GetAirspaceF != nil {
+		return mk.GetAirspaceF(regions, updatedSince)
+	}
+	return []common.Airspace{}, nil
 }
 
 // PutAirspace is the mock implementation of common.Airspacer.PutAirspace.
-func (ma *Airspace) PutAirspace(airspace []common.Airspace) error {
-	return ma.PutF(airspace)
+func (mk *Mock) PutAirspace(airspace []common.Airspace) error {
+	if mk.PutAirspaceF != nil {
+		return mk.PutAirspaceF(airspace)
+	}
+	return nil
 }

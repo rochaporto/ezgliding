@@ -21,10 +21,7 @@ package fusiontables
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -44,7 +41,7 @@ func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([
 	if len(regions) > 0 {
 		qry = fmt.Sprintf("%v WHERE Region = '%v'", qry, regions[0])
 	}
-	resp, err := ft.get(qry)
+	resp, err := ft.doGet(qry)
 	if err != nil {
 		return nil, fmt.Errorf("%v :: %v", err, resp)
 	}
@@ -64,22 +61,9 @@ func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([
 // PutWaypoint follows common.PutWaypoint().
 func (ft *FusionTables) PutWaypoint(waypoints []common.Waypoint) error {
 	csv := util.Struct2CSV(waypoints)
-	req, err := http.NewRequest("POST", ft.BaseURL+"/tables/ "+ft.WaypointTableID+"/import",
-		strings.NewReader(csv))
+	resp, err := ft.doImport(csv)
 	if err != nil {
-		return err
-	}
-	req.Header.Add("Authorization", ft.APIKey)
-	req.Header.Add("Content-Type", "application/octet-stream")
-	client := http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Errorf("failed to put airfield :: %v", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		c, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("http %v: %v", resp.StatusCode, string(c))
+		return fmt.Errorf("failed to put waypoint :: %v %v", resp, err)
 	}
 	return nil
 }

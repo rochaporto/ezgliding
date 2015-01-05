@@ -61,6 +61,7 @@ func main() {
 		Name: "ezgliding",
 		Commands: []*commander.Command{
 			cli.CmdAirfieldGet,
+			cli.CmdAirfieldPut,
 			cli.CmdAirspaceGet,
 			cli.CmdWaypointGet,
 		},

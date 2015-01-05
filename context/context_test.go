@@ -20,18 +20,17 @@
 package context
 
 import (
+	"testing"
+
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/mock"
-	"testing"
 )
 
 func TestNewContext(t *testing.T) {
-	airspace := mock.Airspace{}
-	airfield := mock.Airfield{}
-	waypoint := mock.Waypoint{}
-	_, err := NewContext(config.Config{}, common.Airspacer(&airspace),
-		common.Airfielder(&airfield), common.Waypointer(&waypoint))
+	mock := mock.Mock{}
+	_, err := NewContext(config.Config{}, common.Airspacer(&mock),
+		common.Airfielder(&mock), common.Waypointer(&mock))
 	if err != nil {
 		t.Errorf("Failed to get new context :: %v", err)
 	}

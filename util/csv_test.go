@@ -42,7 +42,7 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		false,
 	},
@@ -56,10 +56,10 @@ LSGB,BEX,BEX,CH,LSGB,1024,0,0,399,1533,122.15,46.258,6.986
 		[]common.Airfield{
 			common.Airfield{ID: "LSGG", ShortName: "GENEV", Name: "GENEVE COINTR",
 				Region: "CH", ICAO: "LSGG", Flags: 64, Catalog: 0, Length: 3880, Elevation: 430,
-				Runway: "0523", Frequency: 118.7, Latitude: "46.238", Longitude: "6.109"},
+				Runway: "0523", Frequency: 118.7, Latitude: 46.238, Longitude: 6.109},
 			common.Airfield{ID: "LSGB", ShortName: "BEX", Name: "BEX",
 				Region: "CH", ICAO: "LSGB", Flags: 1024, Catalog: 0, Length: 0, Elevation: 399,
-				Runway: "1533", Frequency: 122.15, Latitude: "46.258", Longitude: "6.986"},
+				Runway: "1533", Frequency: 122.15, Latitude: 46.258, Longitude: 6.986},
 		},
 		false,
 	},
@@ -163,10 +163,10 @@ var airfield2CSVTests = []Airfield2CSVTest{
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: "46.270", Longitude: "6.463"},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
 		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
+HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
 `,
 		false,
 	},
@@ -181,10 +181,10 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "", ShortName: "", Name: "",
 				Region: "", ICAO: "", Flags: 0, Catalog: 0, Length: 0, Elevation: 0,
-				Runway: "", Frequency: 0, Latitude: "", Longitude: ""},
+				Runway: "", Frequency: 0, Latitude: 0.0, Longitude: 0.0},
 		},
 		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-,,,,,0,0,0,0,,0,,
+,,,,,0,0,0,0,,0,0,0
 `,
 		false,
 	},
@@ -194,7 +194,7 @@ func TestAirfield2CSV(t *testing.T) {
 	for _, test := range airfield2CSVTests {
 		result := Struct2CSV(test.in)
 		if result != test.csv {
-			t.Errorf("expected %v but got %v", test.csv, result)
+			t.Errorf("expected\n%v\ngot\n%v", test.csv, result)
 			continue
 		}
 	}
