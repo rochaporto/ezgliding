@@ -38,6 +38,20 @@ git merge <branch-name>
 git push
 ```
 
+### Logging
+
+In the command line tool, enable using (v is 0 to 20):
+```
+./ezgliding airfield-get -alsologtostderr -v=10
+```
+
+In tests, compile the test binary and run with similar flags (on a single package):
+```
+cd fusiontables
+go test -c
+./fusiontables.test -alsologtostderr -v=20 -test.v -test.run=GetAirfield
+```
+
 ### Bugs, features, code review
 
 GitHub for **everything**.
