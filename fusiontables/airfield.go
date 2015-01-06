@@ -62,7 +62,7 @@ func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([
 // PutAirfield follows common.PutAirfield().
 func (ft *FusionTables) PutAirfield(airfields []common.Airfield) error {
 	csv := util.Struct2CSV(airfields)
-	resp, err := ft.doImport(csv)
+	resp, err := ft.doImport(csv, ft.AirfieldTableID)
 	if err != nil {
 		return fmt.Errorf("failed to put airfield :: %v %v", resp, err)
 	}

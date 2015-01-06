@@ -160,7 +160,7 @@ var getWaypointTests = []GetWaypointTest{
 		[]common.Waypoint{
 			common.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
-				Latitude: "N463422", Longitude: "E0082455", Region: "CH",
+				Latitude: 46.57277777777778, Longitude: 8.415277777777778, Region: "CH",
 			},
 		},
 		false,
@@ -505,7 +505,7 @@ func TestParseWaypoint(t *testing.T) {
 	waypoint := r.Waypoints[0]
 	expected := common.Waypoint{
 		Name: "FURKAP", ID: "FURKAP", Description: "FURKAPASS PASSHOEHE",
-		Latitude: "N463422", Longitude: "E0082455", Elevation: 2432, Region: "CH",
+		Latitude: 46.57277777777778, Longitude: 8.415277777777778, Elevation: 2432, Region: "CH",
 	}
 	if waypoint != expected {
 		t.Errorf("Parse failed for waypoint: got %v instead of %v", waypoint, expected)

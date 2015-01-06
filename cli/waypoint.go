@@ -31,6 +31,7 @@ import (
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/plugin"
+	"github.com/rochaporto/ezgliding/util"
 )
 
 // CmdWaypointGet command gets waypoint information and outputs the result.
@@ -56,9 +57,7 @@ func runWaypointGet(cmd *commander.Command, args []string) {
 	}
 	glog.V(5).Infof("waypoint get with args '%v' got %d results", args, len(waypoints))
 	glog.V(20).Infof("%+v", waypoints)
-	for i := range waypoints {
-		fmt.Printf("%+v\n", waypoints[i])
-	}
+	fmt.Printf("%v", util.Struct2CSV(waypoints))
 }
 
 // CmdWaypointPut command puts waypoint information from a source to a destination.

@@ -91,7 +91,7 @@ func TestDoImportError(t *testing.T) {
 	cfg.FusionTables = config.FusionTables{
 		OAuthEmail: "myemail", OAuthKey: "nonexisting.file", UploadURL: "%%%.."}
 	err := plugin.Init(cfg)
-	_, err = plugin.doImport("")
+	_, err = plugin.doImport("", "")
 	if err == nil {
 		t.Errorf("expected error got success")
 	}
@@ -111,6 +111,6 @@ func TestDoOAuth(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
-	_, err = plugin.doImport("")
+	_, err = plugin.doImport("", cfg.FusionTables.AirfieldTableID)
 	// FIXME: figure how to test oauth here
 }

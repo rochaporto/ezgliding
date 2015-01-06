@@ -308,7 +308,7 @@ func (r *Release) parseWaypoint(line string) error {
 	waypoint := common.Waypoint{
 		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
 		Description: strings.Trim(line[7:41], " "),
-		Latitude:    line[45:52], Longitude: line[52:60],
+		Latitude:    util.DMS2Decimal(line[45:52]), Longitude: util.DMS2Decimal(line[52:60]),
 		Region: line[60:62],
 	}
 	elevation := strings.Trim(line[41:45], " ")

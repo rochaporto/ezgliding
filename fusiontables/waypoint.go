@@ -61,7 +61,7 @@ func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([
 // PutWaypoint follows common.PutWaypoint().
 func (ft *FusionTables) PutWaypoint(waypoints []common.Waypoint) error {
 	csv := util.Struct2CSV(waypoints)
-	resp, err := ft.doImport(csv)
+	resp, err := ft.doImport(csv, ft.WaypointTableID)
 	if err != nil {
 		return fmt.Errorf("failed to put waypoint :: %v %v", resp, err)
 	}

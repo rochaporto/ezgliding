@@ -31,8 +31,8 @@ type Waypoint struct {
 	Region      string
 	Flags       int
 	Elevation   int
-	Latitude    string
-	Longitude   string
+	Latitude    float64
+	Longitude   float64
 }
 
 // Waypointer is implemented in any data source which can provide or

@@ -52,7 +52,7 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
-				Latitude: "46.270", Longitude: "6.463"},
+				Latitude: 46.270, Longitude: 6.463},
 		},
 		false,
 	},
@@ -78,7 +78,7 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
-				Latitude: "46.270", Longitude: "6.463"},
+				Latitude: 46.270, Longitude: 6.463},
 		},
 		false,
 	},
@@ -162,10 +162,10 @@ var putWaypointTests = []PutWaypointTest{
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
-				Latitude: "46.270", Longitude: "6.463"},
+				Latitude: 46.270, Longitude: 6.463},
 		},
 		`ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
+FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.27,6.463
 `,
 		false,
 	},
@@ -174,10 +174,10 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
-				Latitude: "46.270", Longitude: "6.463"},
+				Latitude: 46.270, Longitude: 6.463},
 		},
 		`ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-aFURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
+aFURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.27,6.463
 `,
 		true,
 	},
@@ -261,7 +261,7 @@ func TestPutWaypointWithBadStatus(t *testing.T) {
 	err = plugin.PutWaypoint([]common.Waypoint{
 		common.Waypoint{ID: "aFURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 			Region: "CH", Flags: 0, Elevation: 2432,
-			Latitude: "46.270", Longitude: "6.463"},
+			Latitude: 46.270, Longitude: 6.463},
 	})
 	if err == nil {
 		t.Errorf("expected error but got success")

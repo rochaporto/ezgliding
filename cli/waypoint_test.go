@@ -40,14 +40,16 @@ func ExampleWaypointGet() {
 			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
 				return []common.Waypoint{
 					common.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
-						Region: "FR", Flags: 0, Elevation: 2000, Latitude: "N323200", Longitude: "E1002233"},
+						Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.376},
 				}, nil
 			},
 		},
 	}
 	setupContext(ctx)
 	runWaypointGet(CmdWaypointGet, []string{})
-	// Output: {ID:MockID Name:MockName Description:MockDescription Region:FR Flags:0 Elevation:2000 Latitude:N323200 Longitude:E1002233}
+	// Output:
+	// ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
+	// MockID,MockName,MockDescription,FR,0,2000,32.533,100.376
 }
 
 func TestWaypointGetFailed(t *testing.T) {
@@ -70,7 +72,7 @@ func ExampleWaypointPut() {
 			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
 				return []common.Waypoint{
 					common.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
-						Region: "FR", Flags: 0, Elevation: 2000, Latitude: "N323200", Longitude: "E1002233"},
+						Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.576},
 				}, nil
 			},
 		},

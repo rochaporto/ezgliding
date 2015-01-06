@@ -64,6 +64,7 @@ func main() {
 			cli.CmdAirfieldPut,
 			cli.CmdAirspaceGet,
 			cli.CmdWaypointGet,
+			cli.CmdWaypointPut,
 		},
 	}
 

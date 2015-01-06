@@ -115,9 +115,9 @@ func (ft *FusionTables) doGet(sql string) (string, error) {
 }
 
 // doImport pushes the given content via a fusion tables REST import call.
-func (ft *FusionTables) doImport(content string) (string, error) {
+func (ft *FusionTables) doImport(content string, tableID string) (string, error) {
 	req, err := http.NewRequest("POST",
-		ft.UploadURL+"/tables/"+ft.AirfieldTableID+"/import", strings.NewReader(content))
+		ft.UploadURL+"/tables/"+tableID+"/import", strings.NewReader(content))
 	if err != nil {
 		return "", err
 	}
