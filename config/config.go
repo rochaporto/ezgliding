@@ -58,6 +58,12 @@ type SoaringWeb struct {
 	Baseurl string
 }
 
+// Web holds all config information for the web server.
+type Web struct {
+	Port   int
+	Static string
+}
+
 // Welt2000 holds all config information for the welt2000 plugin.
 type Welt2000 struct {
 	Rssurl     string
@@ -76,6 +82,7 @@ type Config struct {
 	Global
 	FusionTables
 	SoaringWeb
+	Web
 	Welt2000
 }
 
