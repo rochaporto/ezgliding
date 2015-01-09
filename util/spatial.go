@@ -73,7 +73,7 @@ func Struct2GeoJSON(features []interface{}) (*geojson.FeatureCollection, error) 
 func airfield2GeoJSON(airfields []common.Airfield) []*geojson.Feature {
 	result := []*geojson.Feature{}
 	for _, airfield := range airfields {
-		g := geojson.NewPointFeature([]float64{airfield.Latitude, airfield.Longitude})
+		g := geojson.NewPointFeature([]float64{airfield.Longitude, airfield.Latitude})
 		g.SetProperty("ID", airfield.ID)
 		g.SetProperty("ShortName", airfield.ShortName)
 		g.SetProperty("Name", airfield.Name)
@@ -95,7 +95,7 @@ func airfield2GeoJSON(airfields []common.Airfield) []*geojson.Feature {
 func waypoint2GeoJSON(waypoints []common.Waypoint) []*geojson.Feature {
 	result := []*geojson.Feature{}
 	for _, waypoint := range waypoints {
-		g := geojson.NewPointFeature([]float64{waypoint.Latitude, waypoint.Longitude})
+		g := geojson.NewPointFeature([]float64{waypoint.Longitude, waypoint.Latitude})
 		g.SetProperty("ID", waypoint.ID)
 		g.SetProperty("Name", waypoint.Name)
 		g.SetProperty("Description", waypoint.Description)
@@ -143,8 +143,8 @@ func feature2Airfield(f *geojson.Feature) common.Airfield {
 		Elevation: f.PropertyMustInt("Elevation"), Runway: f.PropertyMustString("Runway"),
 		Frequency: f.PropertyMustFloat64("Frequency"),
 	}
-	a.Latitude = f.Geometry.Point[0]
-	a.Longitude = f.Geometry.Point[1]
+	a.Longitude = f.Geometry.Point[0]
+	a.Latitude = f.Geometry.Point[1]
 	return a
 }
 func feature2Waypoint(f *geojson.Feature) common.Waypoint {
@@ -153,7 +153,7 @@ func feature2Waypoint(f *geojson.Feature) common.Waypoint {
 		Name: f.PropertyMustString("Name"), Region: f.PropertyMustString("Region"),
 		Flags: f.PropertyMustInt("Flags"), Elevation: f.PropertyMustInt("Elevation"),
 	}
-	w.Latitude = f.Geometry.Point[0]
-	w.Longitude = f.Geometry.Point[1]
+	w.Longitude = f.Geometry.Point[0]
+	w.Latitude = f.Geometry.Point[1]
 	return w
 }

@@ -79,7 +79,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 				Region: "FR", ICAO: "HHHH", Flags: 1032, Catalog: 69, Length: 900, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
-		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.27,6.463]},"properties":{"Catalog":69,"Elevation":1113,"Flags":1032,"Frequency":122.5,"Go":"Airfield","ICAO":"HHHH","ID":"HABER","Length":900,"Name":"HABERE POC69","Region":"FR","Runway":"0119","ShortName":"HABER"}}]}`,
+		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[6.463,46.27]},"properties":{"Catalog":69,"Elevation":1113,"Flags":1032,"Frequency":122.5,"Go":"Airfield","ICAO":"HHHH","ID":"HABER","Length":900,"Name":"HABERE POC69","Region":"FR","Runway":"0119","ShortName":"HABER"}}]}`,
 	},
 	Struct2GeoJSONTest{
 		"simple waypoint conversion",
@@ -89,7 +89,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
 		},
-		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.572,8.415]},"properties":{"Description":"FURKAPASS PASSHOEHE","Elevation":2432,"Flags":0,"Go":"Waypoint","ID":"FURKAP","Name":"FURKAP","Region":"CH"}}]}`,
+		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[8.415,46.572]},"properties":{"Description":"FURKAPASS PASSHOEHE","Elevation":2432,"Flags":0,"Go":"Waypoint","ID":"FURKAP","Name":"FURKAP","Region":"CH"}}]}`,
 	},
 	Struct2GeoJSONTest{
 		"multiple type conversion",
@@ -102,7 +102,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
 		},
-		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.27,6.463]},"properties":{"Catalog":69,"Elevation":1113,"Flags":1032,"Frequency":122.5,"Go":"Airfield","ICAO":"HHHH","ID":"HABER","Length":900,"Name":"HABERE POC69","Region":"FR","Runway":"0119","ShortName":"HABER"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[46.572,8.415]},"properties":{"Description":"FURKAPASS PASSHOEHE","Elevation":2432,"Flags":0,"Go":"Waypoint","ID":"FURKAP","Name":"FURKAP","Region":"CH"}}]}`,
+		`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[6.463,46.27]},"properties":{"Catalog":69,"Elevation":1113,"Flags":1032,"Frequency":122.5,"Go":"Airfield","ICAO":"HHHH","ID":"HABER","Length":900,"Name":"HABERE POC69","Region":"FR","Runway":"0119","ShortName":"HABER"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[8.415,46.572]},"properties":{"Description":"FURKAPASS PASSHOEHE","Elevation":2432,"Flags":0,"Go":"Waypoint","ID":"FURKAP","Name":"FURKAP","Region":"CH"}}]}`,
 	},
 }
 
@@ -153,14 +153,14 @@ func TestGeoJSON2Struct(t *testing.T) {
 }
 
 func TestGeoJSON2StructUnsupported(t *testing.T) {
-	_, err := GeoJSON2Struct(`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.572,8.415]},"properties":{"Go":"UnsupportedType"}}]}`)
+	_, err := GeoJSON2Struct(`{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[8.415,46.572]},"properties":{"Go":"UnsupportedType"}}]}`)
 	if err == nil {
 		t.Errorf("expected error got success")
 	}
 }
 
 func TestGeoJSON2StructInvalid(t *testing.T) {
-	_, err := GeoJSON2Struct(`{"type":invalid"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[46.572,8.415]},"properties":{}}]}`)
+	_, err := GeoJSON2Struct(`{"type":invalid"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[8.415,46.572]},"properties":{}}]}`)
 	if err == nil {
 		t.Errorf("expected error got success")
 	}

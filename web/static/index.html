@@ -1,1 +1,40 @@
-test page
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Easy Gliding</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+     .airportlabel {
+       font-family: "Lucida Grande", "Arial", sans-serif;
+       font-size: 10px;
+       font-weight: bolder;
+       text-align: center;
+       text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+     }
+     .outlandinglabel {
+       font-family: "Lucida Grande", "Arial", sans-serif;
+       font-size: 10px;
+       font-weight: bold;
+       text-align: center;
+       text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+     }
+    </style>
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="js/google/markermanager.js"></script>
+    <script src="js/google/markerwithlabel.js"></script>
+    <script src="js/google/infobox.js"></script>
+    <script src="js/ezgliding-common.js"></script>
+    <script src="js/ezgliding-markers.js"></script>
+    <script src="js/ezgliding-map.js"></script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>

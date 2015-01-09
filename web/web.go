@@ -22,6 +22,7 @@ package web
 
 import (
 	"compress/gzip"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -102,6 +103,11 @@ func (srv *Server) Start() {
 func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		glog.V(2).Infof("%v", *r)
+		params := r.URL.Query()
+		if v, ok := params["accept"]; ok {
+			glog.V(10).Infof("adding %v accept from querystring", v)
+			r.Header.Set("accept", fmt.Sprintf("%v,%v", r.Header.Get("accept"), v))
+		}
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			fn(w, r)
 			return
@@ -116,6 +122,7 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 
 // airspaceHandler handles /airspace/.
 func (srv *Server) airspaceHandler(w http.ResponseWriter, r *http.Request) {
+	glog.V(10).Infof("AAA :: %v", r.Header)
 	params := r.URL.Query()
 	updated := time.Time{}
 	if t, ok := params["updated"]; ok {
@@ -136,7 +143,9 @@ func (srv *Server) airspaceHandler(w http.ResponseWriter, r *http.Request) {
 	for _, a := range airfields {
 		wrapper = append(wrapper, a)
 	}
-	result, err := srv.toOutput(r.Header.Get("Accept"), wrapper)
+	format := srv.accept(r.Header.Get("Accept"))
+	result, err := srv.toOutput(format, wrapper)
+	w.Header().Set("Content-Type", format)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -166,7 +175,9 @@ func (srv *Server) waypointHandler(w http.ResponseWriter, r *http.Request) {
 	for _, a := range waypoints {
 		wrapper = append(wrapper, a)
 	}
-	result, err := srv.toOutput(r.Header.Get("Accept"), wrapper)
+	format := srv.accept(r.Header.Get("Accept"))
+	result, err := srv.toOutput(format, wrapper)
+	w.Header().Set("Content-Type", format)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -179,17 +190,27 @@ func (srv *Server) waypointHandler(w http.ResponseWriter, r *http.Request) {
 // of Struct which can be Airfield, Waypoint, etc.
 func (srv *Server) toOutput(format string, content []interface{}) (string, error) {
 	var output string
-	if strings.Contains(format, "application/json") {
+	switch format {
+	case "application/json":
 		collection, err := util.Struct2GeoJSON(content)
 		if err != nil {
 			return "", err
 		}
-		bytes, _ := collection.MarshalJSON()
+		bytes, _ := json.MarshalIndent(collection, "", "\t")
 		output = string(bytes)
-		//} else if strings.Contains(format, "application/csv") { FIXME: enable csv output
-		//	output = util.Struct2CSV(content)
-	} else {
+	//case "application/csv": FIXME: enable csv output
+	//output = util.Struct2CSV(content)
+	default:
 		return "", fmt.Errorf("format %v not supported", format)
 	}
 	return output, nil
+}
+
+func (srv *Server) accept(accept string) string {
+	if strings.Contains(accept, "application/json") {
+		return "application/json"
+	} else if strings.Contains(accept, "application/csv") {
+		return "application/csv"
+	}
+	return ""
 }

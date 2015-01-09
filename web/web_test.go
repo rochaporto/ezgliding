@@ -61,6 +61,19 @@ var serverTests = []ServerTest{
 		nil,
 	},
 	{
+		"query airfield json accept in querystring",
+		[]interface{}{
+			common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+				Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
+				Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
+		},
+		"/airfield/?region=FR&updated=2012-12-12&accept=application/json",
+		"",
+		false,
+		false,
+		nil,
+	},
+	{
 		"query waypoint json",
 		[]interface{}{
 			common.Waypoint{
@@ -307,5 +320,24 @@ func TestToOutputJSONBadType(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected error got success")
 		return
+	}
+}
+
+func TestAccept(t *testing.T) {
+	srv := Server{}
+
+	r := srv.accept("[text/html,application/xhtml+xml,application/json;q=0.9,image/webp,*/*;q=0.8]")
+	if r != "application/json" {
+		t.Errorf("bad result for application/json :: %v", r)
+	}
+
+	r = srv.accept("[text/html,application/xhtml+xml,application/csv;q=0.9,image/webp,*/*;q=0.8]")
+	if r != "application/csv" {
+		t.Errorf("bad result for application/csv :: %v", r)
+	}
+
+	r = srv.accept("[text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8]")
+	if r != "" {
+		t.Errorf("bad result for unknown accept :: %v", r)
 	}
 }
