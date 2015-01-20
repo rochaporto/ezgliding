@@ -33,6 +33,7 @@ type Waypoint struct {
 	Elevation   int
 	Latitude    float64
 	Longitude   float64
+	Update      time.Time
 }
 
 // Waypointer is implemented in any data source which can provide or

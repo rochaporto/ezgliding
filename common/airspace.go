@@ -53,6 +53,7 @@ type Airspace struct {
 	Label    []string
 	Segments []AirspaceSegment
 	Pen      Pen
+	Update   time.Time
 }
 
 // AirspaceSegment is one of polygon, arc, circle.

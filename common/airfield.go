@@ -45,6 +45,7 @@ type Airfield struct {
 	Frequency float64
 	Latitude  float64
 	Longitude float64
+	Update    time.Time
 }
 
 // Enum for Airfield flags

@@ -55,15 +55,7 @@ func Struct2CSV(v interface{}) string {
 			if i != 0 {
 				c = c + ","
 			}
-			k := f.Type().Kind()
-			switch k {
-			case reflect.Int:
-				c = c + fmt.Sprintf("%v", f.Int())
-			case reflect.Float64:
-				c = c + fmt.Sprintf("%v", f.Float())
-			default:
-				c = c + fmt.Sprintf("%v", f.String())
-			}
+			c = c + fmt.Sprintf("%v", f.Interface())
 		}
 		c = c + "\n"
 	}

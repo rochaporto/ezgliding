@@ -244,7 +244,7 @@ func (r *Release) Parse(content []byte) error {
 }
 
 func (r *Release) parseAirfield(line string) error {
-	airfield := common.Airfield{}
+	airfield := common.Airfield{Update: r.Date}
 	if line[4] == '2' { // unclear airstrip
 		airfield.Flags |= common.UnclearAirstrip
 		airfield.ShortName = strings.Trim(line[0:4], " ")
@@ -309,7 +309,7 @@ func (r *Release) parseWaypoint(line string) error {
 		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
 		Description: strings.Trim(line[7:41], " "),
 		Latitude:    util.DMS2Decimal(line[45:52]), Longitude: util.DMS2Decimal(line[52:60]),
-		Region: line[60:62],
+		Region: line[60:62], Update: r.Date,
 	}
 	elevation := strings.Trim(line[41:45], " ")
 	waypoint.Elevation, _ = strconv.Atoi(elevation)

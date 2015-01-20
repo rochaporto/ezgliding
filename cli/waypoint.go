@@ -50,7 +50,16 @@ func runWaypointGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
 	waypoint := ctx.Waypoint
-	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
+
+	tafter := time.Time{}
+	if *after != "" {
+		tafter, err = time.Parse("2006-01-02", *after)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to get waypoint :: %v\n", err)
+			return
+		}
+	}
+	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), tafter)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get waypoint :: %v", err)
 		// FIXME: must return -1, but no way now to check this in test

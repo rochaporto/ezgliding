@@ -162,10 +162,11 @@ var putAirfieldTests = []PutAirfieldTest{
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463,
+				Update: time.Time{}},
 		},
-		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
+		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude,Update
+HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
 		false,
 	},
@@ -174,10 +175,11 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
 		[]common.Airfield{
 			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
-				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
+				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463,
+				Update: time.Time{}},
 		},
-		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-aHABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463
+		`ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude,Update
+aHABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
 		true,
 	},

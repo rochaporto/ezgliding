@@ -50,9 +50,19 @@ func runAirfieldGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
 	airfield := ctx.Airfield
-	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
+
+	tafter := time.Time{}
+	if *after != "" {
+		tafter, err = time.Parse("2006-01-02", *after)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v\n", err)
+			return
+		}
+	}
+	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), tafter)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v\n", err)
+		return
 		// FIXME: must return -1, but no way now to check this in test
 	}
 	glog.V(5).Infof("airfield get with args '%v' got %d results", args, len(airfields))

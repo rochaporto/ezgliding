@@ -37,15 +37,15 @@ func ExampleAirspaceGet() {
 		Airspace: &mock.Mock{
 			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
 				return []common.Airspace{
-					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName", Ceiling: "1000FT AMSL",
-						Floor: "500FT AMSL"},
+					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName",
+						Ceiling: "1000FT AMSL", Floor: "500FT AMSL", Update: time.Time{}},
 				}, nil
 			},
 		},
 	}
 	setupContext(ctx)
 	runAirspaceGet(CmdAirspaceGet, []string{})
-	// Output: {ID:MockID Date:0001-01-01 00:00:00 +0000 UTC Class:67 Name:MockName Ceiling:1000FT AMSL Floor:500FT AMSL Label:[] Segments:[] Pen:{Style:0 Width:0 Color:<nil> InsideColor:<nil>}}
+	// Output: {ID:MockID Date:0001-01-01 00:00:00 +0000 UTC Class:67 Name:MockName Ceiling:1000FT AMSL Floor:500FT AMSL Label:[] Segments:[] Pen:{Style:0 Width:0 Color:<nil> InsideColor:<nil>} Update:0001-01-01 00:00:00 +0000 UTC}
 }
 
 func TestAirspaceGetFailed(t *testing.T) {

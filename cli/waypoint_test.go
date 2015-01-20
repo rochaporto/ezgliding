@@ -21,6 +21,7 @@ package cli
 
 import (
 	"errors"
+	"flag"
 	"testing"
 	"time"
 
@@ -38,18 +39,49 @@ func ExampleWaypointGet() {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
 			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-				return []common.Waypoint{
-					common.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
-						Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.376},
-				}, nil
+				waypoints := []common.Waypoint{
+					common.Waypoint{
+						ID: "MockID1", Name: "MockName",
+						Description: "MockDescription", Region: "FR", Flags: 0,
+						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 01, 0, 0, 0, 0, time.UTC),
+					},
+					common.Waypoint{
+						ID: "MockID2", Name: "MockName",
+						Description: "MockDescription", Region: "CH", Flags: 0,
+						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC),
+					},
+					common.Waypoint{
+						ID: "MockID3", Name: "MockName",
+						Description: "MockDescription", Region: "CH", Flags: 0,
+						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC),
+					},
+				}
+				result := []common.Waypoint{}
+				for _, waypoint := range waypoints {
+					b := false
+					for _, r := range regions {
+						if waypoint.Region == r {
+							b = true
+						}
+					}
+					if waypoint.Update.After(updatedSince) && b {
+						result = append(result, waypoint)
+					}
+				}
+				return result, nil
 			},
 		},
 	}
 	setupContext(ctx)
+	flag.Set("region", "CH")
+	flag.Set("after", "2014-02-02")
 	runWaypointGet(CmdWaypointGet, []string{})
 	// Output:
-	// ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-	// MockID,MockName,MockDescription,FR,0,2000,32.533,100.376
+	// ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
+	// MockID3,MockName,MockDescription,CH,0,2000,32.533,100.376,2014-02-03 00:00:00 +0000 UTC
 }
 
 func TestWaypointGetFailed(t *testing.T) {
@@ -61,6 +93,22 @@ func TestWaypointGetFailed(t *testing.T) {
 		},
 	}
 	setupContext(ctx)
+	flag.Set("region", "")
+	flag.Set("after", "")
+	runWaypointGet(CmdWaypointGet, []string{})
+}
+
+func TestWaypointGetBadAfter(t *testing.T) {
+	ctx := context.Context{
+		Waypoint: &mock.Mock{
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+				return nil, nil
+			},
+		},
+	}
+	setupContext(ctx)
+	flag.Set("after", "22-00-11")
+	flag.Set("region", "")
 	runWaypointGet(CmdWaypointGet, []string{})
 }
 

@@ -46,8 +46,8 @@ var getGetWaypointTests = []GetWaypointTest{
 		[]string{"CH"},
 		time.Time{},
 		`
-ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
+ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
+FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
@@ -61,8 +61,8 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
 		[]string{"CH"},
 		time.Time{},
 		`
-ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,a
+ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
+FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC,a
 `,
 		[]common.Waypoint{common.Waypoint{}},
 		true,
@@ -72,8 +72,8 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,a
 		[]string{"CH"},
 		time.Date(2012, time.January, 25, 0, 0, 0, 0, time.UTC), // FIXME: figure out how to actually filter here
 		`
-ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463
+ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
+FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
 		[]common.Waypoint{
 			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
@@ -164,8 +164,8 @@ var putWaypointTests = []PutWaypointTest{
 				Region: "CH", Flags: 0, Elevation: 2432,
 				Latitude: 46.270, Longitude: 6.463},
 		},
-		`ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude
-FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.27,6.463
+		`ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
+FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.27,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
 		false,
 	},

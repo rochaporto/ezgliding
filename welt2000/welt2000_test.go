@@ -32,6 +32,8 @@ import (
 	"github.com/rochaporto/ezgliding/config"
 )
 
+var GMT, _ = time.LoadLocation("GMT")
+
 type GetAirfieldTest struct {
 	t   string
 	r   string
@@ -50,7 +52,11 @@ var getAirfieldTests = []GetAirfieldTest{
 		time.Time{},
 		[]common.Airfield{
 			common.Airfield{
-				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR", ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0, Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5, Latitude: 46.26972222222222, Longitude: 6.463333333333334,
+				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR",
+				ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0,
+				Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5,
+				Latitude: 46.26972222222222, Longitude: 6.463333333333334,
+				Update: time.Date(2014, time.February, 24, 12, 0, 0, 0, GMT),
 			},
 		},
 		false,
@@ -161,6 +167,7 @@ var getWaypointTests = []GetWaypointTest{
 			common.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.57277777777778, Longitude: 8.415277777777778, Region: "CH",
+				Update: time.Date(2014, time.February, 24, 12, 0, 0, 0, GMT),
 			},
 		},
 		false,
@@ -230,7 +237,7 @@ func TestGetWaypoint(t *testing.T) {
 			var waypoint = waypoints[i]
 			var expected = test.rs[i]
 			if !reflect.DeepEqual(waypoint, expected) {
-				t.Errorf("Got wrong waypoint. %+v instead of %+v", waypoint, expected)
+				t.Errorf("Got wrong waypoint. %v instead of %v", waypoint, expected)
 				continue
 			}
 		}

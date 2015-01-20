@@ -21,6 +21,7 @@ package cli
 
 import (
 	"errors"
+	"flag"
 	"testing"
 	"time"
 
@@ -38,19 +39,49 @@ func ExampleAirfieldGet() {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
 			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				return []common.Airfield{
-					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
-						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
-						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
-				}, nil
+				airfields := []common.Airfield{
+					common.Airfield{
+						ID: "MockID1", ShortName: "MockShortName",
+						Name: "MockName", Region: "FR", ICAO: "AAAA", Flags: 0,
+						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
+						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC)},
+					common.Airfield{
+						ID: "MockID2", ShortName: "MockShortName",
+						Name: "MockName", Region: "CH", ICAO: "AAAA", Flags: 0,
+						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
+						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC)},
+					common.Airfield{
+						ID: "MockID3", ShortName: "MockShortName",
+						Name: "MockName", Region: "CH", ICAO: "AAAA", Flags: 0,
+						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
+						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC)},
+				}
+				result := []common.Airfield{}
+				for _, airfield := range airfields {
+					b := false
+					for _, r := range regions {
+						if airfield.Region == r {
+							b = true
+						}
+					}
+					if airfield.Update.After(updatedSince) && b {
+						result = append(result, airfield)
+					}
+				}
+				return result, nil
 			},
 		},
 	}
 	setupContext(ctx)
+	_ = flag.Set("after", "2014-02-02")
+	_ = flag.Set("region", "CH")
 	runAirfieldGet(CmdAirfieldGet, []string{})
 	// Output:
-	// ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
-	// MockID,MockShortName,MockName,FR,AAAA,0,11,1000,2000,32R,123.45,32.533,100.376
+	// ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude,Update
+	// MockID3,MockShortName,MockName,CH,AAAA,0,11,1000,2000,32R,123.45,32.533,100.376,2014-02-03 00:00:00 +0000 UTC
 }
 
 func TestAirfieldGetFailed(t *testing.T) {
@@ -62,6 +93,22 @@ func TestAirfieldGetFailed(t *testing.T) {
 		},
 	}
 	setupContext(ctx)
+	flag.Set("after", "")
+	flag.Set("region", "")
+	runAirfieldGet(CmdAirfieldGet, []string{})
+}
+
+func TestAirfieldGetBadAfter(t *testing.T) {
+	ctx := context.Context{
+		Airfield: &mock.Mock{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+				return nil, nil
+			},
+		},
+	}
+	setupContext(ctx)
+	flag.Set("after", "22-00-11")
+	flag.Set("region", "")
 	runAirfieldGet(CmdAirfieldGet, []string{})
 }
 
@@ -74,7 +121,8 @@ func ExampleAirfieldPut() {
 				return []common.Airfield{
 					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
-						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
+						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
+						Update: time.Time{}},
 				}, nil
 			},
 		},
