@@ -1,0 +1,4 @@
+FROM rochaporto/ezgliding
+MAINTAINER Ricardo Rocha <rocha.porto@gmail.com>
+EXPOSE 8000
+ENTRYPOINT ["/ezgliding web"]

@@ -52,7 +52,24 @@ go test -c
 ./fusiontables.test -alsologtostderr -v=20 -test.v -test.run=GetAirfield
 ```
 
+### Docker
+
+To build the docker images, do the following:
+```shell
+# go build
+# sudo docker build -t rochaporto/ezgliding .
+# sudo docker build -t rochaporto/ezgliding-web - < Dockerfile-web
+# sudo docker images
+rochaporto/ezgliding-web   latest              9c034c6d954b        5 seconds ago        9.045 MB
+rochaporto/ezgliding       latest              6c09d51e6020        About a minute ago   9.045 MB
+scratch                    latest              511136ea3c5a        19 months ago        0 B
+```
+
+The first build creates the base image containing the docker binary.
+
+The second build creates the ezgliding web service container image, including
+an entrypoint running `ezgliding web`.
+
 ### Bugs, features, code review
 
 GitHub for **everything**.
-
