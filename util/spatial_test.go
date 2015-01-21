@@ -110,12 +110,12 @@ func TestStruct2GeoJSON(t *testing.T) {
 	for _, test := range struct2GeoJSONTests {
 		result, err := Struct2GeoJSON(test.in)
 		if err != nil {
-			t.Errorf("%v failed :: %v", test.t)
+			t.Errorf("%v failed :: %v", test.t, err)
 			continue
 		}
 		geo, err := result.MarshalJSON()
 		if err != nil {
-			t.Errorf("%v failed :: %v", test.t)
+			t.Errorf("%v failed :: %v", test.t, err)
 			continue
 		}
 		if string(geo) != test.r {
@@ -138,7 +138,7 @@ func TestGeoJSON2Struct(t *testing.T) {
 	for _, test := range struct2GeoJSONTests {
 		result, err := GeoJSON2Struct(test.r)
 		if err != nil {
-			t.Errorf("%v failed :: %v", test.t)
+			t.Errorf("%v failed :: %v", test.t, err)
 			continue
 		}
 		if len(result) != len(test.in) {

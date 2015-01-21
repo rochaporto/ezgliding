@@ -7,8 +7,10 @@ before_install:
         - go get github.com/mattn/goveralls
         - go get github.com/axw/gocov/gocov
         - go get golang.org/x/tools/cmd/cover
+        - go get golang.org/x/tools/cmd/vet
 script:
         - $HOME/gopath/bin/golint .
+        - go vet ./...
         - ./scripts/goveralls.sh
 deploy:
         provider: openshift
