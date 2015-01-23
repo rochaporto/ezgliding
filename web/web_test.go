@@ -199,7 +199,7 @@ func TestServer(t *testing.T) {
 		if test.zip {
 			zipr, err := gzip.NewReader(resp.Body)
 			if err != nil {
-				t.Errorf("failed to create zip reader :: %v", err)
+				t.Errorf("%v :: failed to create zip reader :: %v", test.t, err)
 				continue
 			}
 			defer zipr.Close()
@@ -208,7 +208,7 @@ func TestServer(t *testing.T) {
 			r, err = ioutil.ReadAll(resp.Body)
 		}
 		if err != nil {
-			t.Errorf("failed to read response :: %v", err)
+			t.Errorf("%v :: failed to read response :: %v", test.t, err)
 			continue
 		}
 		if resp.Code != 200 && test.err {
@@ -219,7 +219,7 @@ func TestServer(t *testing.T) {
 		}
 		result, err := util.GeoJSON2Struct(string(r))
 		if err != nil {
-			t.Errorf("failed to convert response :: %v", err)
+			t.Errorf("%v :: failed to convert response :: %v :: %v", test.t, err, result)
 			continue
 		}
 		if len(result) != len(test.dt) {

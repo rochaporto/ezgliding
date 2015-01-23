@@ -2,6 +2,8 @@ language: go
 go:
         - tip
 sudo: false
+services:
+        - memcached
 before_install:
         - go get -v github.com/golang/lint/golint
         - go get github.com/mattn/goveralls

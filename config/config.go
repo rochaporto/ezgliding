@@ -60,8 +60,9 @@ type SoaringWeb struct {
 
 // Web holds all config information for the web server.
 type Web struct {
-	Port   int
-	Static string
+	Port     int
+	Static   string
+	Memcache string
 }
 
 // Welt2000 holds all config information for the welt2000 plugin.
