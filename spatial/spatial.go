@@ -25,11 +25,21 @@ package spatial
 
 import (
 	"errors"
+	"math"
 	"strconv"
 
 	"github.com/paulmach/go.geojson"
 	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/waypoint"
+)
+
+const (
+	// EarthRadius is the defined earth radius (in meters)
+	EarthRadius = 6371000
+	// Deg2Rad defines a constant to easily convert from degrees to radians
+	Deg2Rad = math.Pi / 180
+	// Rad2Deg defines a constant to easily convert from radians to degrees
+	Rad2Deg = 180 / math.Pi
 )
 
 // DMS2Decimal converts the given coordinates from DMS to decimal format.
@@ -189,4 +199,51 @@ func feature2Waypoint(f *geojson.Feature) waypoint.Waypoint {
 	w.Longitude = f.Geometry.Point[0]
 	w.Latitude = f.Geometry.Point[1]
 	return w
+}
+
+// GCDistance returns the great circle distance between the two points.
+// Points latitude and longitude are in decimal degrees, result in meters.
+// It uses this formula:
+//   d=2*asin(sqrt((sin((lat1-lat2)/2))^2 + cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))
+//
+// Check EarthRadius in this pkg for the assumed earth radius.
+func GCDistance(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
+	lat1 = lat1 * Deg2Rad
+	lon1 = lon1 * Deg2Rad
+	lat2 = lat2 * Deg2Rad
+	lon2 = lon2 * Deg2Rad
+	return GCDistanceRadians(lat1, lon1, lat2, lon2)
+}
+
+// GCDistanceRadians returns the great circle distance between the two points.
+// Points latitude and longitude are in radians, result in meters.
+func GCDistanceRadians(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
+	return (2 * math.Asin(
+		math.Sqrt(math.Pow(math.Sin((lat1-lat2)/2), 2)+
+			math.Cos(lat1)*math.Cos(lat2)*
+				math.Pow(math.Sin((lon1-lon2)/2), 2)))) * EarthRadius
+}
+
+// Bearing returns the true course from point1 to point2.
+// Points latitude and longitude are decimal degrees, result is in degrees.
+// It uses the formula:
+//   mod(atan2(sin(lon1-lon2)*cos(lat2), cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2)), 2*pi)
+func Bearing(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
+	lat1 = lat1 * Deg2Rad
+	lon1 = lon1 * Deg2Rad
+	lat2 = lat2 * Deg2Rad
+	lon2 = lon2 * Deg2Rad
+	return BearingRadians(lat1, lon1, lat2, lon2)
+}
+
+// BearingRadians returns the true course from point1 to point2.
+// Points latitude and longitude are in radians, result is in degrees.
+// It uses the formula:
+//   mod(atan2(sin(lon1-lon2)*cos(lat2), cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2)), 2*pi)
+func BearingRadians(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
+	return math.Mod(
+		math.Atan2(
+			math.Sin(lon1-lon2)*math.Cos(lat2),
+			math.Cos(lat1)*math.Sin(lat2)-math.Sin(lat1)*math.Cos(lat2)*math.Cos(lon1-lon2)),
+		2*math.Pi) * Rad2Deg
 }

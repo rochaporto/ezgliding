@@ -1,0 +1,2072 @@
+From: <Saved by WebKit>
+Subject: Aviation Formulary V1.46
+Date: Fri, 5 Feb 2015 21:14:00 -0000
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_06DA_40D3B0D5.0A3EAA4B"
+
+------=_NextPart_000_06DA_40D3B0D5.0A3EAA4B
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://williams.best.vwh.net/avform.htm
+
+<html><head><meta charset=3D"windows-1252">
+
+<meta name=3D"description" content=3D"Aviation Formulary">
+<meta name=3D"keywords" content=3D"great circle, E6B, wind, altitude, altim=
+etry, Mach, humidity, course,
+Bellamy, navigation, latitude, longitude">
+<link rel=3D"icon" href=3D"http://williams.best.vwh.net/favicon.ico" type=
+=3D"image/x-icon">
+<link rel=3D"shortcut icon" href=3D"http://williams.best.vwh.net/favicon.ic=
+o" type=3D"image/x-icon">
+
+<title>Aviation Formulary V1.46</title>
+</head>
+
+<body>
+
+<h1 align=3D"center">Aviation Formulary V1.46</h1>
+
+<h3 align=3D"center">By Ed Williams</h3>
+<form action=3D"https://www.paypal.com/cgi-bin/webscr" method=3D"post">
+  <input type=3D"hidden" name=3D"cmd" value=3D"_xclick">
+  <input type=3D"hidden" name=3D"business" value=3D"ed_williams@compuserve.=
+com">
+  <input type=3D"hidden" name=3D"item_name" value=3D"Aviation Formulary">
+  <input type=3D"hidden" name=3D"no_shipping" value=3D"1">
+  <input type=3D"hidden" name=3D"return" value=3D"http://williams.best.vwh.=
+net/avform.htm">
+  <input type=3D"image" src=3D"http://images.paypal.com/images/x-click-but0=
+4.gif" name=3D"submit" alt=3D"PayPal=97 Donate">
+</form>
+<hr>
+
+<h4>Table of Contents</h4>
+
+<ul>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Intro">Introduct=
+ion to Great Circle Navigation
+        Formulae</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#GCF">Great Circl=
+e Navigation Formulae</a></li>
+        <ul>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Dist">Di=
+stance between points</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Crs">Cou=
+rse between points</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Int">Lat=
+itude of point on GC</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#LL">Lat/=
+lon given radial and distance</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Intersec=
+tion">Intersection of two
+                radials</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Clairaut=
+">Clairaut's formula</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Par">GC =
+crossing parallel</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Intermed=
+iate">
+                    Intermediate points on a great circle</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#XTE">Cro=
+ss track error and along track distance</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#POINTDME=
+"> Points a known distance from a great circle</a></li>
+        </ul>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Implement">Imple=
+mentation notes</a></li>
+        <ul>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Math">At=
+an, atan2, acos, asin and mod
+                functions</a></li>
+            <li><a href=3D"http://williams.best.vwh.net/avform.htm#Sign">Si=
+gn conventions</a></li>
+        </ul>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Example">Worked =
+examples</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Triangle">Some g=
+eneral spherical triangle
+        formulae.</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Rhumb">Rhumb Lin=
+e Navigation</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#flat">Local, fla=
+t earth approximation</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Wind">Wind Trian=
+gles</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Xwind">Head and =
+cross-winds</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#3gs">TAS and win=
+d speed from three groundspeeds</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Var">Variation <=
+/a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Altimetry">Altim=
+etry and the standard
+        atmosphere formulae</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Mach">Mach numbe=
+rs, true vs calibrated
+        airspeeds etc.</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#RH">Relative hum=
+idity related to temperature
+        and dewpoint or frostpoint</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Bellamy">Bellamy=
+'s formula for the wind drift</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Conv">Unit conve=
+rsions, etc.</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Turns">Turns and=
+ pivotal altitude.</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Horizon"> Distan=
+ce to the horizon.</a></li>
+    <li><a href=3D"http://williams.best.vwh.net/avform.htm#Changes">Revisio=
+n History</a></li>
+</ul>
+
+<p><a href=3D"http://williams.best.vwh.net/gccalc.htm">Javascript calculato=
+r with elliptical
+earth models</a> </p>
+<p><a href=3D"http://williams.best.vwh.net/sunrise_sunset_algorithm.htm"> S=
+unrise-sunset algorithm</a> </p>
+<p><a href=3D"http://williams.best.vwh.net/sunrise_sunset_example.htm"> Sun=
+rise-sunset example</a> </p>
+<p><a href=3D"http://williams.best.vwh.net/compass/compass.html"> Compass e=
+rrors</a> </p>
+<p><a href=3D"http://williams.best.vwh.net/ellipsoid/ellipsoid.html"> Navig=
+ation on spheroidal earth</a> </p>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Intro" name=3D"Intro"></a>Intro=
+duction</h4>
+
+<p>This introduction is written for pilots (and others) who are
+interested in great circle navigation and would like to know how
+to compute courses, headings and other quantities of interest.
+These formulae can be programmed into your calculator or
+spreadsheet. I'll attempt to include enough information that
+those familiar with plane trigonometry can derive additional
+results if required. </p>
+
+<p>It is a well known that the shortest distance between two
+points is a straight line. However anyone attempting to fly from
+Los Angeles to New York on the straight line connecting them
+would have to dig a very substantial tunnel first. The shortest
+distance, <em>following the earth's surface </em>lies vertically
+above the aforementioned straight line route. This route can be
+constructed by slicing the earth in half with an imaginary plane
+through LAX and JFK. This plane cuts the (assumed spherical)
+earth in a circular arc connecting the two points, called a <em>great
+</em>circle. Only planes through the center of the earth give
+rise to great circles. Any plane will cut a sphere in a circle,
+but the resulting little circles are not the shortest distance
+between the points they connect. A little thought will show that
+lines of longitude (meridians) are great circles, but lines of
+latitude, with the exception of the equator, are not. </p>
+
+<p>I will assume the reader is familiar with latitude and
+longitude as a means of designating locations on the earth's
+surface. For the convenience of North Americans I will take North
+latitudes and West longitudes as positive and South and East
+negative. The longitude is the opposite of the usual mathematical
+convention. True course is defined as usual, as the angle between
+the course line and the local meridian measured clockwise. </p>
+
+<p>The first important fact to realise is that in general a great
+circle route has a true course that varies from point to point.
+For instance the great circle route between two points of equal
+(non-zero) latitude does not follow the line of latitude in an
+E-W direction, but arcs towards the pole. It <em>is</em> possible
+to fly between two points using an unvarying true course, but in
+general the resulting route differs from the great circle route
+and is called a <em>rhumb </em>line. Unlike a great circle which
+encircles the earth in a closed curve, a pilot flying a rhumb line
+ would spiral poleward. </p>
+
+<p>Natural questions are to seek the great circle distance
+between two specified points and true course at points along the
+route. The required spherical trigonometric formulae are greatly
+simplified if angles and distances are measured in the
+appropriate natural units, which are both radians! A radian, by
+definition, is the angle subtended by a circular arc of unit
+length and unit radius. Since the length of a complete circular
+arc of unit radius is 2*pi, the conversion is 360 degrees equals
+2*pi radians, or:</p>
+
+<pre>      angle_radians=3D(pi/180)*angle_degrees
+      angle_degrees=3D(180/pi)*angle_radians </pre>
+
+<p>Great circle distance can be likewise be expressed in radians
+by defining the distance to be the angle subtended by the arc at
+the center of the earth. Since by definition, one nautical mile
+subtends one minute (=3D1/60 degree) of arc, we have:</p>
+
+<pre>      distance_radians=3D(pi/(180*60))*distance_nm
+      distance_nm=3D((180*60)/pi)*distance_radians </pre>
+
+<p>In all subsequent formulae all distances and angles, such as
+latitudes, longitudes and true courses will be assumed to be
+given in radians, greatly simplifying them, and in applications
+the above formulae and their inverses are necessary to convert
+back and forth between natural and practical units. Examples of
+this process are given later. </p>
+
+<p> Note: the nautical mile is currently defined to be 1852 meters -=20
+which to be
+consistent with its historical definition implies the earth's radius to
+be 1.852 * (180*60/pi) =3D 6366.71 km, which indeed lies between the curren=
+tly=20
+accepted ( WGS84) equatorial and polar radii of 6378.137 and 6356.752 km,=
+=20
+respectively. Other choices of the earth's radius in this range are consist=
+ent
+with the spherical approximation and may for some specialized purposes=20
+be preferred.</p>  =20
+<p>   For instance, the former FAI standard for aviation records used the
+"FAI sphere" with radius 6371.0 km.</p>
+<p>  To use a different spherical radius, use </p>
+<pre>      distance_km =3D radius_km * distance_radians=20
+      distance_radians =3D distance_km/radius_km
+</pre>
+to convert
+between angular and distance units.
+<p></p>
+<p> A sample implementation of many of these formulae in the
+form of an Excel spreadsheet can be found
+<a href=3D"http://williams.best.vwh.net/ftp/avsig/avform.xls">here</a>. The=
+ formulae are in
+VBA macros, for readability, so you will need to enable macros
+to have them work. If you are unable to open the spreadsheet
+with macros disabled (to check for viruses) etc, then you
+may need to patch your Excel. Try
+http://office.microsoft.com/downloaddetails/Xl8p9pkg.htm
+for Excel 97 SR-2.
+</p>
+<p> <em>If you decide to program up these formulae, you'd be well-advised
+to look at the <a href=3D"http://williams.best.vwh.net/avform.htm#Implement=
+">implementation notes</a>
+ and check your results against the <a href=3D"http://williams.best.vwh.net=
+/avform.htm#Example">worked examples</a>=20
+ and spreadsheets.</em>
+</p>
+
+
+
+<hr>
+
+<p><a href=3D"http://williams.best.vwh.net/GCF" name=3D"GCF"></a></p>
+
+<h4>Some great circle formulae:
+</h4>
+
+<h5><a href=3D"http://williams.best.vwh.net/Dist" name=3D"Dist"></a>Distanc=
+e between points </h5>
+
+<p>The great circle distance d between two points with
+coordinates {lat1,lon1} and {lat2,lon2} is given by: </p>
+
+<pre>d=3Dacos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon1-lon2))</pre>
+
+<p>A mathematically equivalent formula, which is less subject to
+rounding error for short distances is: </p>
+
+<pre>d=3D2*asin(sqrt((sin((lat1-lat2)/2))^2 +=20
+                 cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))</pre>
+<hr>
+<h5><a href=3D"http://williams.best.vwh.net/Crs" name=3D"Crs"></a>Course be=
+tween points </h5>
+
+<p>We obtain the initial course, tc1, (at point 1) from point 1 to point 2
+by the following. The formula fails if the initial point is a pole. We can
+special case this with:
+  </p>
+<pre>IF (cos(lat1) &lt; EPS)   // EPS a small number ~ machine precision
+  IF (lat1 &gt; 0)
+     tc1=3D pi        //  starting from N pole
+  ELSE
+     tc1=3D 2*pi         //  starting from S pole
+  ENDIF
+ENDIF
+</pre>
+
+<p> For starting points other than the poles:
+</p>
+
+<pre>IF sin(lon2-lon1)&lt;0      =20
+   tc1=3Dacos((sin(lat2)-sin(lat1)*cos(d))/(sin(d)*cos(lat1)))   =20
+ELSE      =20
+   tc1=3D2*pi-acos((sin(lat2)-sin(lat1)*cos(d))/(sin(d)*cos(lat1)))   =20
+ENDIF </pre>
+
+<p>An alternative formula, not requiring the pre-computation of
+d, the distance between the points, is: </p>
+
+<pre>   tc1=3Dmod(atan2(sin(lon1-lon2)*cos(lat2),
+           cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2)), 2*pi)</=
+pre>
+
+<hr>
+<h5><a href=3D"http://williams.best.vwh.net/Int" name=3D"Int"></a>Latitude =
+of point on GC </h5>
+
+<p>Intermediate points {lat,lon} lie on the great circle
+connecting points 1 and 2 when: </p>
+
+<pre>lat=3Datan((sin(lat1)*cos(lat2)*sin(lon-lon2)
+     -sin(lat2)*cos(lat1)*sin(lon-lon1))/(cos(lat1)*cos(lat2)*sin(lon1-lon2=
+)))</pre>
+
+<p>(not applicable for meridians. i.e if sin(lon1-lon2)=3D0) <a href=3D"htt=
+p://williams.best.vwh.net/LL" name=3D"LL"></a> </p>
+
+<hr>
+<h5><a href=3D"http://williams.best.vwh.net/LL" name=3D"LL"></a>Lat/lon giv=
+en radial and distance</h5>
+
+<p>A point {lat,lon} is a distance d out on the tc radial from
+point 1 if: </p>
+
+<pre>     lat=3Dasin(sin(lat1)*cos(d)+cos(lat1)*sin(d)*cos(tc))
+     IF (cos(lat)=3D0)
+        lon=3Dlon1      // endpoint a pole
+     ELSE
+        lon=3Dmod(lon1-asin(sin(tc)*sin(d)/cos(lat))+pi,2*pi)-pi
+     ENDIF</pre>
+
+<p>This algorithm is limited to distances such that dlon
+&lt;pi/2, i.e those that extend around less than one quarter of
+the circumference of the earth in longitude. A completely
+general, but more complicated algorithm is necessary if greater
+distances are allowed: </p>
+
+<pre>     lat =3Dasin(sin(lat1)*cos(d)+cos(lat1)*sin(d)*cos(tc))
+     dlon=3Datan2(sin(tc)*sin(d)*cos(lat1),cos(d)-sin(lat1)*sin(lat))
+     lon=3Dmod( lon1-dlon +pi,2*pi )-pi</pre>
+
+<hr>
+<h5><a href=3D"http://williams.best.vwh.net/Intersection" name=3D"Intersect=
+ion"></a>Intersecting radials </h5>
+
+<p>Now how to compute the latitude, lat3, and longitude, lon3 of
+an intersection formed by the crs13 true bearing from point 1 and
+the crs23 true bearing from point 2: </p>
+
+<pre>dst12=3D2*asin(sqrt((sin((lat1-lat2)/2))^2+
+                   cos(lat1)*cos(lat2)*sin((lon1-lon2)/2)^2))
+IF sin(lon2-lon1)&lt;0
+   crs12=3Dacos((sin(lat2)-sin(lat1)*cos(dst12))/(sin(dst12)*cos(lat1)))
+   crs21=3D2.*pi-acos((sin(lat1)-sin(lat2)*cos(dst12))/(sin(dst12)*cos(lat2=
+)))
+ELSE
+   crs12=3D2.*pi-acos((sin(lat2)-sin(lat1)*cos(dst12))/(sin(dst12)*cos(lat1=
+)))
+   crs21=3Dacos((sin(lat1)-sin(lat2)*cos(dst12))/(sin(dst12)*cos(lat2)))
+ENDIF
+
+ang1=3Dmod(crs13-crs12+pi,2.*pi)-pi
+ang2=3Dmod(crs21-crs23+pi,2.*pi)-pi
+
+IF (sin(ang1)=3D0 AND sin(ang2)=3D0)
+   "infinity of intersections"
+ELSEIF sin(ang1)*sin(ang2)&lt;0
+   "intersection ambiguous"
+ELSE
+   ang1=3Dabs(ang1)
+   ang2=3Dabs(ang2)
+   ang3=3Dacos(-cos(ang1)*cos(ang2)+sin(ang1)*sin(ang2)*cos(dst12))=20
+   dst13=3Datan2(sin(dst12)*sin(ang1)*sin(ang2),cos(ang2)+cos(ang1)*cos(ang=
+3))
+   lat3=3Dasin(sin(lat1)*cos(dst13)+cos(lat1)*sin(dst13)*cos(crs13))
+   dlon=3Datan2(sin(crs13)*sin(dst13)*cos(lat1),cos(dst13)-sin(lat1)*sin(la=
+t3))
+   lon3=3Dmod(lon1-dlon+pi,2*pi)-pi
+ENDIF</pre>
+
+<p>The points 1,2 and the (if unique) intersection 3 form a spherical trian=
+gle with interior angles abs(ang1), abs(ang2) and ang3.  To find the pair o=
+f antipodal intersections of two great circles uses the following reference=
+.</p>
+<hr>
+<a href=3D"http://williams.best.vwh.net/intersect.htm">Intersections of two=
+ great circles</a>
+<hr>
+
+<h5><a href=3D"http://williams.best.vwh.net/Clairaut" name=3D"Clairaut"></a=
+>Clairaut's formula: </h5>
+
+<p>This relates the latitude (lat) and true course (tc) along any
+great circle, namely: sin(tc)*cos(lat)=3Dconstant. That is, for any
+two points on the GC: </p>
+
+<pre>           sin(tc1)*cos(lat1)=3Dsin(tc2)*cos(lat2)</pre>
+
+<p>Since at the highest latitude (latmx) reached the tc must be
+90/270, we also have: </p>
+
+<pre>latmx=3Dacos(abs(sin(tc)*cos(lat))) </pre>
+
+<p>where lat and tc are the latitude and true course at *any*
+point on the great circle.
+</p><hr>
+<a href=3D"http://williams.best.vwh.net/Par" name=3D"Par"></a><p></p>
+<h5>Crossing parallels: </h5>
+
+<p>Any given great circle (excepting one over the poles) crosses each
+meridian once and only once. However, any given great circle (except
+the equator) has a maximum latitude reached at its apex. It crosses
+lower latitudes twice and higher latitudes never. Thus the algorithm
+for finding the longitudes at which a given great circle crosses a
+given parallel is a little more complex. </p>
+
+<p>Suppose a great circle passes through (lat1,lon1) and
+(lat2,lon2). It crosses the parallel lat3 at longitudes lon3_1
+and lon3_2 given by: </p>
+
+<pre>   l12 =3D lon1-lon2
+   A =3D sin(lat1)*cos(lat2)*cos(lat3)*sin(l12)
+   B =3D sin(lat1)*cos(lat2)*cos(lat3)*cos(l12) - cos(lat1)*sin(lat2)*cos(l=
+at3)
+   C =3D cos(lat1)*cos(lat2)*sin(lat3)*sin(l12)
+   lon =3D atan2(B,A)                      ( atan2(y,x) convention)
+  IF (abs(C) &gt;sqrt(A^2 + B^2))
+    "no crossing"
+  ELSE
+    dlon =3D acos(C/sqrt(A^2+B^2))
+    lon3_1=3Dmod(lon1+dlon+lon+pi, 2*pi)-pi
+    lon3_2=3Dmod(lon1-dlon+lon+pi, 2*pi)-pi
+  ENDIF</pre>
+
+<hr>
+<h5><a href=3D"http://williams.best.vwh.net/Intermediate" name=3D"Intermedi=
+ate">
+</a>Intermediate points on a great circle</h5>
+<p>
+
+In previous sections we have found intermediate points on a great
+circle given either the crossing latitude or longitude. Here we find
+points (lat,lon) a given fraction of the distance (d) between
+them. Suppose the starting point is (lat1,lon1) and the final point
+(lat2,lon2) and we want the point a fraction f along the great circle
+route. f=3D0 is point 1. f=3D1 is point 2.  The two points cannot be
+antipodal ( i.e. lat1+lat2=3D0 and abs(lon1-lon2)=3Dpi) because then the
+route is undefined.  The intermediate latitude and longitude is then given =
+by:
+
+</p>
+<pre>        A=3Dsin((1-f)*d)/sin(d)
+        B=3Dsin(f*d)/sin(d)
+        x =3D A*cos(lat1)*cos(lon1) +  B*cos(lat2)*cos(lon2)
+        y =3D A*cos(lat1)*sin(lon1) +  B*cos(lat2)*sin(lon2)
+        z =3D A*sin(lat1)           +  B*sin(lat2)
+        lat=3Datan2(z,sqrt(x^2+y^2))
+        lon=3Datan2(y,x)
+</pre>
+<hr>
+
+
+<h5><a href=3D"http://williams.best.vwh.net/XTE" name=3D"XTE"></a>Cross tra=
+ck error: </h5>
+
+<p>Suppose you are proceeding on a great circle route from A to B
+(course =3Dcrs_AB) and end up at D, perhaps off course. (We presume that
+A is ot a pole!) You can calculate the course from A to D (crs_AD) and
+the distance from A to D (dist_AD) using the formulae above. In terms
+of these the cross track error, XTD, (distance off course) is given by
+</p>
+
+<pre>           XTD =3Dasin(sin(dist_AD)*sin(crs_AD-crs_AB))</pre>
+
+<pre>(positive XTD means right of course, negative means left)
+(If the point A is the N. or S. Pole replace crs_AD-crs_AB with=20
+lon_D-lon_B or lon_B-lon_D, respectively.)</pre>
+
+<p>  The "along track distance", ATD, the distance from A
+along the course towards B to the point abeam D is given by:
+</p>
+<pre>                 ATD=3Dacos(cos(dist_AD)/cos(XTD))
+</pre>
+<p>  For very short distances:
+</p>
+<pre>                 ATD=3Dasin(sqrt( (sin(dist_AD))^2 - (sin(XTD))^2 )/co=
+s(XTD))
+</pre>
+<p> is less susceptible to rounding error</p>
+<p>  Note that we can also use the above formulae to find the point of clos=
+est approach to the point D on the great circle through A and B</p>
+<h5><a href=3D"http://williams.best.vwh.net/POINTDME" name=3D"POINTDME"></a=
+>Point(s) known distance from a=20
+great circle</h5>
+
+ Let points A and B define a great circle route and D be a third point. Fin=
+d=20
+the points on the great circle through A and B that lie a distance d from D=
+, if
+they exist.
+<pre>   A =3D crs_AD - crs_AB
+</pre>
+<p>
+     ( crs_AB and crs_AD are the initial GC bearings from A to B and D,
+respectively. Compute using <a href=3D"http://williams.best.vwh.net/avform.=
+htm#Crs">Course between points</a>)
+</p>
+<pre>   b =3D dist_AD
+</pre>
+<p>
+     (dist_AD is the distance from A to D. Compute using <a href=3D"http://=
+williams.best.vwh.net/avform.htm#Dist">Distance between points</a>)
+</p>
+<pre>   r=3D(cos(b)^2+sin(b)^2*cos(A)^2)^(1/2)
+</pre>
+<p> (acos(r) is the XTD) </p>
+<pre>   p=3Datan2(sin(b)*cos(A),cos(b))
+</pre>
+<p> (p is the ATD) </p>
+<pre>   IF (cos(d)^2 &gt; r^2) THEN
+      No points exist
+   ELSE
+      Two points exist
+     dp =3D p +- acos(cos(d)/r)
+   ENDIF
+</pre>
+<p> dp are the distances of the desired points from A along AB. Their=20
+lat/lons can be computed using=20
+<a href=3D"http://williams.best.vwh.net/avform.htm#LL">Lat/lon given radial=
+ and distance</a> </p>
+
+
+<hr>
+
+
+<h4><a href=3D"http://williams.best.vwh.net/Implement" name=3D"Implement"><=
+/a>Implementation
+notes:<a href=3D"http://williams.best.vwh.net/Math" name=3D"Math"></a></h4>
+
+<h5>Notes on mathematical functions</h5>
+
+<p>Note: ^ denotes the exponentiation operator, sqrt is the
+square root function, acos the arc-cosine (or inverse cosine)
+function and asin is the arc-sine function. If asin or acos are
+unavailable they can be implemented using the atan2 function: </p>
+
+<pre>acos(x)=3Datan2(sqrt(1-x^2),x)
+  acos returns a value in the range 0 &lt;=3D acos &lt;=3D pi
+asin(x)=3Datan2(x,sqrt(1-x^2))}
+  asin returns a value in the range -pi/2 &lt;=3D asin &lt;=3D pi/2</pre>
+
+<p>Note: Here atan2 has the conventional (C) ordering of
+arguments, namely atan2(y,x). This is not universal, Excel for
+instance uses atan2(x,y), but it has asin and acos anyway. Be
+warned. It returns a value in the range -pi &lt; atan2 &lt;=3D pi. </p>
+
+
+
+<p>Further note: if your calculator/programming language is so
+impoverished that only atan is available then use: </p>
+
+<pre>   asin(x)=3D2*atan(x/(1+sqrt(1-x*x)))  =20
+   acos(x)=3D2*atan(sqrt((1-x)/(1+x)))       x&gt;=3D0
+          =3Dpi - 2*atan(sqrt((1+x)/(1-x)))  x&lt;0
+
+   atan2(y,x)=3Datan(y/x)       x&gt;0
+   atan2(y,x)=3Datan(y/x)+pi    x&lt;0, y&gt;=3D0
+   atan2(y,x)=3Dpi/2            x=3D0, y&gt;0
+   atan2(y,x)=3Datan(y/x)-pi    x&lt;0, y&lt;0
+   atan2(y,x)=3D-pi/2           x=3D0, y&lt;0
+   atan2(0,0) is undefined and should give an error.
+</pre>
+
+<p>Another potential implementation problem is that the arguments
+of asin and/or acos may, because of rounding error, exceed one in
+magnitude. With perfect arithmetic this can't happen. You may
+need to use "safe" versions of asin and acos on the
+lines of: </p>
+
+<pre>  asin_safe(x)=3Dasin(max(-1,min(x,1)))
+  acos_safe(x)=3Dacos(max(-1,min(x,1)))</pre>
+
+<p>Note on the mod function. This appears to be implemented
+differently in different languages, with differing conventions on whether t=
+he sign of the result
+ follows the sign of the divisor or the dividend. (We want the sign to=20
+<a href=3D"http://en.wikipedia.org/wiki/Modulo_operation">follow the diviso=
+r or be Euclidean.</a> C's fmod and Java's % do not work.)
+In this document, Mod(y,x) is the remainder on
+dividing y by x and always lies in the range 0 &lt;=3Dmod &lt;x.
+For instance: mod(2.3,2.)=3D0.3 and mod(-2.3,2.)=3D1.7
+</p>
+<p>
+
+  If you have a floor function (int in Excel), that returns=20
+floor(x)=3D "largest integer less than or equal to x"
+e.g. floor(-2.3)=3D-3 and floor(2.3) =3D2
+</p>
+<pre>        mod(y,x) =3D y - x*floor(y/x)
+</pre>
+The following should work in the absence of a floor function-
+regardless of whether "int" truncates or rounds downward: <p></p>
+
+<pre>=20
+    mod=3Dy - x * int(y/x)
+    if ( mod &lt; 0) mod =3D mod + x
+</pre>
+
+<h5><a href=3D"http://williams.best.vwh.net/Sign" name=3D"Sign"></a>Sign Co=
+nvention </h5>
+
+<p>As stated in the introduction, North latitudes and <em>West </em>longitu=
+des
+are treated as positive, and South latitudes and East longitudes
+negative. It's easier to go with the flow, but if you prefer
+another convention you can change the signs in the formulae. </p>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Example" name=3D"Example"></a>W=
+orked Examples:</h4>
+
+<pre>=20
+  Suppose point 1 is LAX: (33deg 57min N, 118deg 24min W)
+  Suppose point 2 is JFK: (40deg 38min N,  73deg 47min W)</pre>
+
+<p>In radians LAX is </p>
+
+<pre>lat1=3D(33+57/60)*pi/180=3D0.592539, lon1=3D(118+24/60)*pi/180=3D2.066=
+470</pre>
+
+<p>and JFK is </p>
+
+<pre>(lat2=3D0.709186,lon2=3D1.287762)</pre>
+
+<p>The distance from LAX to JFK is</p>
+
+<pre>    d =3D 2*asin(sqrt((sin((lat1-lat2)/2))^2+
+                   cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))
+      =3D 2*asin(sqrt((sin((0.592539-0.709186)/2))^2+
+                   cos(0.592539)*cos(0.709186)*(sin((2.066470-1.287762)/2))=
+^2))
+      =3D 2*asin(sqrt((-0.05829)^2 +0.829525*0.758893*0.379591^2))
+      =3D 2*asin(0.306765)
+      =3D 0.623585 radians
+      =3D 0.623585*180*60/pi=3D2144nm
+ or
+
+    d =3D acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon1-lon2))
+      =3D acos(sin(0.592539)*sin(0.709186)+
+                     cos(0.592539)*cos(0.709186)*cos(0.778708))
+      =3D acos(0.811790)
+      =3D 0.623585 radians
+      =3D 0.623585*180*60/pi=3D2144nm
+</pre>
+
+<p>The initial true course out of LAX is:</p>
+
+<pre>   sin(-0.778708)=3D-0.702&lt;0 so
+
+       tc1 =3D acos((sin(lat2)-sin(lat1)*cos(d))/(sin(d)*cos(lat1)))
+           =3D acos((sin(0.709186)-sin(0.592539)*cos(0.623585))/
+                (sin(0.623585)*cos(0.592535))
+           =3D acos(0.408455)
+           =3D 1.150035 radians
+           =3D 66 degrees  </pre>
+
+<p>An enroute waypoint 100nm from LAX on the 66 degree radial
+(100nm along the GC to JFK) has lat and long given by:</p>
+
+<pre> =20
+   100nm =3D 100*pi/(180*60)=3D0.0290888radians
+     lat =3D asin(sin(lat1)*cos(d)+cos(lat1)*sin(d)*cos(tc))
+         =3D asin(sin(0.592539)*cos(0.0290888)
+              +cos(0.592539)*sin(0.0290888)*cos(1.150035))
+         =3D asin(0.568087)
+         =3D 0.604180radians
+         =3D 34degrees 37min N
+
+     lon =3D mod(lon1-asin(sin(tc)*sin(d)/cos(lat))+pi,2*pi)-pi
+         =3D mod(2.066470- asin(sin(1.150035)*sin(0.0290888)/cos(0.604180))=
++pi,2*pi)-pi
+         =3D mod(2.034206+pi,2*pi)-pi radians
+         =3D 2.034206 radians
+         =3D 116 degrees 33min W=20
+   </pre>
+
+<p>The great circle route from LAX to JFK crosses the 111degree W
+meridian at a latitude of:</p>
+
+<pre>    (111degrees=3D1.937315 radians)
+
+  lat =3D atan((sin(lat1)*cos(lat2)*sin(lon-lon2)
+        -sin(lat2)*cos(lat1)*sin(lon-lon1))/(cos(lat1)*cos(lat2)*sin(lon1-l=
+on2)))
+      =3D atan((sin(0.592539)*cos(0.709186)*sin(0.649553)
+         -sin(0.709186)*cos(0.592539)*sin(-0.129154))/(cos(0.592539)*cos(0.=
+709186)
+                                                      *sin(0.778708)))
+      =3D atan(0.737110)
+      =3D 0.635200radians
+      =3D 36 degrees 24min
+</pre>
+
+<p>Cross track error </p>
+
+<p>Suppose enroute from LAX to JFK you find yourself at (D)
+N34:30 W116:30, which in radians is (0.6021386,2.033309) (See
+earlier for LAX, JFK coordinates and course) </p>
+
+<p>From LAX to D the distance is: </p>
+
+<pre>=20
+   dist_AD =3D acos(sin(0.592539)*sin(0.6021386)+
+               cos(0.592539)*cos(0.6021386)*cos(2.066470-2.033309))
+           =3D 0.02905 radians (99.8665 nm)</pre>
+
+<p>From LAX to D the course is: </p>
+
+<pre>=20
+    crs_AD =3D acos((sin(0.6021386)-sin(0.592539)*cos(0.02905))/
+                               (sin(0.02905)*cos(0.592539)))
+           =3D 1.22473 radians  (70.17 degrees)</pre>
+
+<p>At point D the cross track error is: </p>
+
+<pre>=20
+      xtd =3D asin(sin(0.02905)*sin(1.22473-1.15003))
+          =3D 0.00216747 radians
+          =3D 0.00216747*180*60/pi =3D7.4512 nm right of course
+
+      atd =3D acos(cos(0.02905)/cos(0.00216747))
+          =3D 0.0289691 radians
+          =3D 0.0289691*180*60/pi =3D 99.588 nm along course
+</pre>
+
+<p> The point 40% of the way from LAX to JFK is found by:
+</p><pre>       d =3D 2*asin(sqrt((sin((lat1-lat2)/2))^2+
+                   cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))
+         =3D 2*asin(sqrt((-0.05829)^2 +0.829525*0.758893*0.379591^2))
+         =3D 2*asin(0.306765)
+         =3D 0.623585 radians (as above)
+       f =3D 0.4    (40%)
+       A =3D sin((1-f)*d)/sin(d)
+         =3D sin(0.6*0.623585)/sin(0.623585)
+         =3D 0.62588
+       B =3D sin(f*d)/sin(d)
+         =3D sin(0.4*0.623585)/sin(0.623585)
+         =3D 0.422735
+       x =3D A*cos(lat1)*cos(lon1) +  B*cos(lat2)*cos(lon2)
+         =3D -0.157344
+       y =3D A*cos(lat1)*sin(lon1) +  B*cos(lat2)*sin(lon2)
+         =3D 0.764745
+       z =3D A*sin(lat1)           +  B*sin(lat2)
+         =3D 0.624826
+     lat =3D atan2(z,sqrt(x^2+y^2))
+         =3D 0.674909 radians
+         =3D 38 deg 40.167' N
+     lon =3D atan2(y,x)
+         =3D 1.77371 radians
+         =3D 101 degrees 37.570 W
+</pre>
+
+
+<p>Example of an intersection calc (briefly): </p>
+
+<pre>Let point 1 be REO (42.600N,117.866W)=3D(0.74351,2.05715)rad
+Let point 2 be BKE (44.840N,117.806W)=3D(0.782606,2.056103)rad </pre>
+
+<p>The 51 degree (=3D0.890118rad) bearing from REO intersects with
+137 degree (=3D2.391101rad) from BKE at (lat3,lon3): </p>
+
+<p>Then:</p>
+
+<pre>dst12=3D0.039103
+crs12=3D0.018996
+crs21=3D3.161312
+ang1=3D0.871122
+ang2=3D0.770211
+ang3=3D1.500667
+dst13=3D0.027290
+(dst23=3D0.029986)
+lat3=3D0.760473      =3D43.572N
+lon3=3D2.027876      =3D116.189W  at BOI! </pre>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Triangle" name=3D"Triangle"></a=
+>Some general spherical
+triangle formulae. </h4>
+
+<p>A spherical triangle is one whose sides are all great circular
+arcs. Let the sides have lengths a,b and c radians, and the
+opposite angles be A, B and C radians.</p>
+
+<pre>                c
+           A -------B
+            \       |
+             \      |
+              \b    |a
+               \    |
+                \   |
+                 \  |
+                  \C|
+                   \|
+
+    (The angle at B is not necessarily a right angle)
+
+      sin(a)  sin(b)   sin(c)
+      ----- =3D ------ =3D ------
+      sin(A)  sin(B)   sin(C)
+   =20
+  cos(a)=3Dcos(b)*cos(c)+sin(b)*sin(c)*cos(A)
+  cos(b)=3Dcos(c)*cos(a)+sin(c)*sin(a)*cos(B)
+  cos(c)=3Dcos(a)*cos(b)+sin(a)*sin(b)*cos(C)
+
+  cos(A)=3D-cos(B)*cos(C)+sin(B)*sin(C)*cos(a)
+  cos(B)=3D-cos(C)*cos(A)+sin(C)*sin(A)*cos(b)
+  cos(C)=3D-cos(A)*cos(B)+sin(A)*sin(B)*cos(c)
+
+  Some useful consequences of these are:
+
+  tan(A)=3Dsin(B)*sin(a)/(sin(c)*cos(a)-cos(B)*cos(c)*sin(a))
+  tan(B)=3Dsin(C)*sin(b)/(sin(a)*cos(b)-cos(C)*cos(a)*sin(b))
+  tan(C)=3Dsin(A)*sin(c)/(sin(b)*cos(c)-cos(A)*cos(b)*sin(c))
+
+  tan(a)=3Dsin(b)*sin(A)/(sin(C)*cos(A)+cos(b)*cos(C)*sin(A))
+  tan(b)=3Dsin(c)*sin(B)/(sin(A)*cos(B)+cos(c)*cos(A)*sin(B))
+  tan(c)=3Dsin(a)*sin(C)/(sin(B)*cos(C)+cos(a)*cos(B)*sin(C)) </pre>
+
+<p>Given *any* three of {a,b,c,A,B,C} the remaining sides and
+angles can be found using these formulae. To solve a spherical triangle
+(requiring 0 &lt; a,b,c,A,B,C &lt; pi to get rid of pathological cases):
+</p>
+<pre>  Given {A,b,c}:  // Two sides, included angle
+   a=3Dacos(cos(b)*cos(c)+sin(b)*sin(c)*cos(A))
+   B=3Dacos((cos(b) - cos(c)*cos(a))/(sin(c)*sin(a)))
+   C=3Dacos((cos(c) - cos(a)*cos(b))/(sin(a)*sin(b)))
+
+</pre>
+<pre>  Given {a,B,C}:  // Two angles, included side
+   A=3Dacos(-cos(B)*cos(C)+sin(B)*sin(C)*cos(a))
+   b=3Datan2(sin(a)*sin(B)*sin(C),cos(B)+cos(C)*cos(A))
+   c=3Datan2(sin(a)*sin(B)*sin(C),cos(C)+cos(A)*cos(B))
+
+</pre>
+<pre>  Given {a,b,c}:  // Three sides
+   A=3Dacos((cos(a) - cos(b)*cos(c))/(sin(b)*sin(c)))
+   B=3Dacos((cos(b) - cos(c)*cos(a))/(sin(c)*sin(a)))
+   C=3Dacos((cos(c) - cos(a)*cos(b))/(sin(a)*sin(b)))
+
+</pre>
+<pre>  Given {A,B,C}:  // Three angles (this has an infinity of solutions
+for plane triangles and so is potentially numerically inaccurate for small
+spherical triangles)
+   delta=3D(A+B+C-pi)/2
+   a=3D2*asin(sqrt(sin(delta)*sin(A-delta)/(sin(B)*sin(C))))
+   b=3D2*asin(sqrt(sin(delta)*sin(B-delta)/(sin(C)*sin(A))))
+   c=3D2*asin(sqrt(sin(delta)*sin(C-delta)/(sin(A)*sin(B))))
+
+</pre>
+<pre>  Given {A,a,b}:  // Two sides, non-included angle
+   x=3Dsin(A)*sin(b)/sin(a)
+   if (x=3D1) {
+     B=3Dpi/2    // One spherical triangle exists
+   } else if (x &lt; 1) {
+     B=3D asin(x) and pi-asin(x) // Two triangles exist =20
+   } else{
+     // No triangles exist
+   }
+   For each triangle
+   c=3Dmod(2*atan2(cos((A+B)/2)*sin((a+b)/2),cos((A-B)/2)*cos((a+b)/2)),2*p=
+i)
+   C=3Dmod(2*atan2(cos((a-b)/2)*cos((A+B)/2),cos((a+b)/2)*sin((A+B)/2)),2*p=
+i)
+
+</pre>
+<pre>  Given {a,A,B}:  // Two angles, non-included side
+   x=3Dsin(a)*sin(B)/sin(A)
+   if (x=3D1) {
+     b=3Dpi/2    // One spherical triangle exists
+   } else if (x &lt; 1) {
+     b=3Dasin(x) and pi-asin(x) // Two triangles exist =20
+   } else{
+     // No triangles exist
+   }
+   For each triangle
+   c=3Dmod(2*atan2(cos((A+B)/2)*sin((a+b)/2),cos((A-B)/2)*cos((a+b)/2)),2*p=
+i)
+   C=3Dmod(2*atan2(cos((a-b)/2)*cos((A+B)/2),cos((a+b)/2)*sin((A+B)/2)),2*p=
+i)
+</pre>
+
+<p>
+For a spherical triangle the sum of the interior angles A+B+C is not pi
+(180 degrees) but greater.
+The difference is called the spherical excess E, defined as
+E=3DA+B+C-pi. </p>
+
+<p>In terms of which the surface area enclosed by a spherical
+triangle is given by </p>
+
+<pre>Area =3D E*R^2
+</pre>
+
+<p>In terms of the sides: </p>
+
+<pre>    E =3D 4*atan(sqrt(tan(s/2)*tan((s-a)/2)*tan((s-b)/2)*tan((s-c)/2))=
+)</pre>
+
+<p>where</p>
+
+<pre>    s =3D (a+b+c)/2</pre>
+
+<p>This is l'Huiller's formula analogous to Heron's for a plane triangle.
+  Note that is well-behaved numerically in the limit of small triangles</p>
+
+<p>Some other formulae that may occasionally be useful are: </p>
+
+<pre>   sin(A/2) =3D sqrt((sin(s-b)*sin(s-c))/(sin(b)*sin(c)))
+   cos(A/2) =3D sqrt((sin(s)*sin(s-a))/(sin(b)*sin(c)))
+   tan(A/2) =3D sin((b-c)/2)/(sin((b+c)/2)*tan((B-C)/2))
+            =3D cos((b-c)/2)/(cos((b+c)/2)*tan((B+C)/2))
+   tan(a/2) =3D cos((B+C)/2)*tan((b+c)/2)/cos((B-C)/2)
+            =3D sin((B+C)/2)*tan((b-c)/2)/sin((B-C)/2)
+   tan((A-B)/2)=3Dcot(C/2)*sin((a-b)/2)/sin((a+b)/2)
+   tan((A+B)/2)=3Dcot(C/2)*cos((a-b)/2)/cos((a+b)/2)
+   sin(a)*cos(B)=3Dcos(b)*sin(c)-sin(b)*cos(c)*cos(A)
+   cos(a)*cos(C)=3Dsin(a)*cot(b)-sin(C)*cot(B)
+</pre>
+
+<p>In any of these formulae, A, B and C can be interchanged, provided a,
+b and c change with them.
+  ie a-&gt;b, b-&gt;c, c-&gt;a, A-&gt;B, B-&gt;C, C-&gt;A.
+ In addition, the formulae hold if pi-a is written for A, pi-b for B and pi=
+-c
+for C, etc.
+  ie A-&gt;pi-a, B-&gt;pi-b, C-&gt;pi-c, a-&gt;pi-A, b-&gt;pi-B, c-&gt;pi-C
+</p>
+
+<h4> Right spherical triangles </h4>
+<p> If the angle B is a right angle, there are ten relations ( Napier's rul=
+es)
+that allow computing any unknown side or angle in terms of any two of the=
+=20
+others:
+</p>
+<pre> =20
+  cos(A) =3D sin(C)*cos(a)
+  cos(C) =3D sin(A)*cos(c)
+  sin(a) =3D sin(A)*sin(b)
+  sin(c) =3D sin(C)*sin(b)
+  tan(a) =3D tan(b)*cos(C) =3D sin(c)*tan(A)
+  tan(c) =3D tan(b)*cos(A) =3D sin(a)*tan(C)
+  cos(b) =3D cos(a)*cos(c) =3D 1/(tan(A)*tan(C))
+</pre>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Rhumb" name=3D"Rhumb"></a>Rhumb=
+ Line Navigation</h4>
+
+<p>Rhumb lines or loxodromes are tracks of constant true course.
+With the exception of meridians and the equator, they are not the
+same as great circles. They are not very useful approaching
+either pole, where they become tightly wound spirals. The
+formulae below fail if any point actually <em>is</em> a pole. </p>
+<p> East-West rhumb lines are special. They follow the latitude parallels
+and form a closed curve. Other rhumb lines extend from pole-to-pole, encirc=
+ling
+each pole an infinite number of times. Despite this, they have a finite len=
+gth
+given by pi/abs(cos(tc)) (in our angular units, multiply by the radius of
+the earth to get it in distance units).
+
+</p><p>When two points (lat1,lon1), (lat2,lon2) are connected by a
+rhumb line with true course tc : </p>
+
+<pre> lon2-lon1=3D-tan(tc)*(log((1+sin(lat2))/cos(lat2))-
+                     log((1+sin(lat1))/cos(lat1)))=20
+          =3D-tan(tc)*(log((1+tan(lat2/2))/(1-tan(lat2/2)))-
+                     log((1+tan(lat1/2))/(1-tan(lat1/2))))
+          =3D-tan(tc)*(log(tan(lat2/2+pi/4)/tan(lat1/2+pi/4)))</pre>
+
+<p>(logs are "natural" logarithms to the base e.) </p>
+
+<p>The true course between the points is given by: </p>
+
+<pre> tc=3D mod(atan2(lon1-lon2,log(tan(lat2/2+pi/4)/tan(lat1/2+pi/4))),2*p=
+i)</pre>
+
+<p>The dist, <code>d</code> between the points is given by: </p>
+
+<pre>         if (abs(lat2-lat1) &lt; sqrt(TOL)){
+             q=3Dcos(lat1)
+         } else {
+             q=3D (lat2-lat1)/log(tan(lat2/2+pi/4)/tan(lat1/2+pi/4))
+         }
+         d=3Dsqrt((lat2-lat1)^2+ q^2*(lon2-lon1)^2)</pre>
+
+<p>This formula fails if the rhumb line in question crosses the
+180 E/W meridian. Allowing this as a possibility, the true course
+<code>tc</code>, and distance <code>d</code>, for the shortest
+rhumb line connecting two points is given by: </p>
+
+<pre>  dlon_W=3Dmod(lon2-lon1,2*pi)
+  dlon_E=3Dmod(lon1-lon2,2*pi)
+  dphi=3Dlog(tan(lat2/2+pi/4)/tan(lat1/2+pi/4))
+  if (abs(lat2-lat1) &lt; sqrt(TOL)){
+     q=3Dcos(lat1)
+  } else {
+     q=3D (lat2-lat1)/dphi
+  }
+  if (dlon_W &lt; dlon_E){// Westerly rhumb line is the shortest
+      tc=3Dmod(atan2(-dlon_W,dphi),2*pi)
+      d=3D sqrt(q^2*dlon_W^2 + (lat2-lat1)^2)
+  } else{
+      tc=3Dmod(atan2(dlon_E,dphi),2*pi)
+      d=3D sqrt(q^2*dlon_E^2 + (lat2-lat1)^2)
+      }</pre>
+
+<p>To find the lat/lon of a point on true course tc, distance d
+from (lat1,lon1) along a rhumbline (initial point cannot be a
+pole!): </p>
+
+<pre>  lat=3D lat1+d*cos(tc)
+    IF (abs(lat) &gt; pi/2) "d too large. You can't go this far along this =
+rhumb line!"
+    IF (abs(lat-lat1) &lt; sqrt(TOL)){
+     q=3Dcos(lat1)
+  } ELSE {
+     dphi=3Dlog(tan(lat/2+pi/4)/tan(lat1/2+pi/4))
+     q=3D (lat-lat1)/dphi
+  }
+  dlon=3D-d*sin(tc)/q
+  lon=3Dmod(lon1+dlon+pi,2*pi)-pi</pre>
+
+<p>TOL is a small number of order machine precision- say 1e-15.
+The tests avoid 0/0 indeterminacies on E-W courses. </p>
+
+<p>Example:</p><pre>  Suppose point 1 is LAX: (33deg 57min N, 118deg 24min =
+W)
+  Suppose point 2 is JFK: (40deg 38min N,  73deg 47min W)
+</pre><p>
+Rhumb line course from LAX to JFK: LAX
+(0.592539,2.066470) and JFK is (0.709185,1.287762) </p>
+
+<pre>dlon_W=3Dmod(1.287762-2.066470,2*pi)=3D5.504478
+dlon_E=3Dmod(2.066470-1.287762,2*pi)=3D0.778708
+
+dphi=3Dlog(tan(0.709185/2+pi/4)/tan(0.592539/2+pi/4))
+    =3D0.146801
+q=3D (0.709185-0.592539)/0.146801 =3D0.794586
+  dlon_E &lt; dlon_W: East is shorter!
+tc=3Dmod(atan2(0.778708,0.146801),2*pi)=3D 1.384464 radians =3D 79.32 degre=
+es
+d=3Dsqrt(0.794586^2*0.778708^2 + (0.709185-0.592539)^2)
+=3D 0.629650 radians =3D 2164.6 nm</pre>
+
+<p>Compare this with the great circle course of 66 degrees and
+distance of 2144 nm. </p>
+
+<p>Conversely, if we proceed 2164.6nm (0.629650 radians) on a
+rhumbline course of 79.3 degrees (1.384464 radians) starting at
+LAX, our final point will be given by: </p>
+
+<pre>lat=3D0.592539 + 0.629650 * cos(1.384464)=20
+   =3D 0.709185
+dphi=3Dlog(tan(0.709185/2+pi/4)/tan(0.592539/2+pi/4))
+    =3D0.146801
+q=3D (0.709185-0.592539)/0.146801 =3D0.794586
+dlon=3D-0.629650*sin(1.384464)/0.794586=3D-0.778708
+lon=3Dmod(2.066470-0.778708+pi,2*pi)-pi
+   =3D1.287762</pre>
+
+<p>which is the lat/lon of JFK- as required. </p>
+
+<hr>
+<h4><a href=3D"http://williams.best.vwh.net/flat" name=3D"flat"></a>Local, =
+flat earth approximation</h4>
+If you stay in the vicinity of a given fixed point (lat0,lon0), it may be
+a good enough approximation to consider the earth as "flat", and use a Nort=
+h,
+ East, Down rectangular coordinate system with origin at the fixed point.
+If we call the changes in latitude and longitude dlat=3Dlat-lat0, dlon=3Dlo=
+n-lon0
+(Here treating North and East as positive!), then
+<pre>       distance_North=3DR1*dlat
+       distance_East=3DR2*cos(lat0)*dlon
+</pre>
+   R1 and R2 are called the meridional radius of curvature and the radius o=
+f=20
+curvature in the prime vertical, respectively.
+<pre>      R1=3Da(1-e^2)/(1-e^2*(sin(lat0))^2)^(3/2)
+      R2=3Da/sqrt(1-e^2*(sin(lat0))^2)
+</pre>
+<p>
+   a is the equatorial radius of the earth (=3D6378.137000km for WGS84), an=
+d
+e^2=3Df*(2-f) with the flattening f=3D1/298.257223563 for WGS84.
+</p><p>
+   In the spherical model used elsewhere in the Formulary, R1=3DR2=3DR, the=
+ earth's
+radius. (using R=3D1 we get distances in radians, using R=3D60*180/pi dista=
+nces=20
+are in nm.)
+</p>
+<p>
+ In the flat earth approximation, distances and bearings are given by the u=
+sual
+plane trigonometry formulae, i.e:
+</p>
+<pre>    distance =3D sqrt(distance_North^2 + distance_East^2)
+    bearing to (lat,lon) =3D mod(atan2(distance_East, distance_North), 2*pi=
+)
+                        (=3D mod(atan2(cos(lat0)*dlon, dlat), 2*pi) in the =
+spherical case)
+</pre>
+<p>
+  These approximations fail in the vicinity of either pole and at=20
+large distances. The fractional errors are of order (distance/R)^2.
+</p>
+<hr>
+<h4><a href=3D"http://williams.best.vwh.net/Wind" name=3D"Wind"></a>Wind Tr=
+iangles</h4>
+
+<p>In all formulae, all angles are in radians. Convert back and
+forth as in the Great Circle section. [This is unnecessary on
+calculators which have a "degree mode" for trig
+functions. Most programming languages provide only "radian
+mode".]</p>
+
+<pre>      angle_radians=3D(pi/180)*angle_degrees
+      angle_degrees=3D(180/pi)*angle_radians </pre>
+
+<pre>A further conversion is required if using degrees/minutes/seconds:
+
+ angle_degrees=3Ddegrees+(minutes/60.)+(seconds/3600.)
+
+ degrees=3Dint(angle_degrees)
+ minutes=3Dint(60*(angle_degrees-degrees))
+ seconds=3D60*(60*(angle_degrees-degrees)-minutes)) </pre>
+
+<pre>[ You may have a built-in HH &lt;-&gt; HH:MM:SS conversion to do this =
+efficiently]</pre>
+
+<p>Let CRS=3Dcourse, HD=3Dheading, WD=3Dwind direction (from), TAS=3DTrue
+airpeed, GS=3Dgroundspeed, WS=3Dwindspeed. </p>
+
+<p>Units of the speeds do not matter as long as they are all the
+same.</p>
+
+<pre>  (1) Unknown Wind:
+
+ WS=3Dsqrt( (TAS-GS)^2+ 4*TAS*GS*(sin((HD-CRS)/2))^2 )
+ WD=3DCRS + atan2(TAS*sin(HD-CRS), TAS*cos(HD-CRS)-GS)  (**)
+ IF (WD&lt;0) THEN WD=3DWD+2*pi
+ IF (WD&gt;2*pi) THEN WD=3DWD-2*pi
+   ( (**) assumes atan2(y,x), reverse arguments if your implementation=20
+ has atan2(x,y) )
+
+  (2) Find HD, GS
+
+ SWC=3D(WS/TAS)*sin(WD-CRS)
+ IF (abs(SWC)&gt;1)
+      "course cannot be flown-- wind too strong"
+ ELSE=20
+      HD=3DCRS+asin(SWC)
+      if (HD&lt;0) HD=3DHD+2*pi
+      if (HD&gt;2*pi) HD=3DHD-2*pi
+      GS=3DTAS*sqrt(1-SWC^2)-WS*cos(WD-CRS)
+      if (GS &lt; 0)  "course cannot be flown-- wind too strong"
+ ENDIF</pre>
+
+<dl>
+    <dt>Note: </dt>
+    <dd>The purpose of the "if (HD&lt;0) HD=3DHD+2*pi; if
+        (HD&gt;2*pi) HD=3DHD-2*pi" is to ensure the final
+        heading ends up in the range (0, 2*pi). Another way to do
+        this, with the MOD function available is:</dd>
+</dl>
+
+<pre>   HD=3DMOD(HD,2*pi)</pre>
+
+<p>(3) Find CRS, GS </p>
+
+<pre>  GS=3Dsqrt(WS^2 + TAS^2 - 2*WS*TAS*cos(HD-WD))
+  WCA=3Datan2(WS*sin(HD-WD),TAS-WS*cos(HD-WD))  (*)
+  CRS=3DMOD(HD+WCA,2*pi)</pre>
+
+<p>(*) WCA=3Dasin((WS/GS)*sin(HD-WD)) works if the wind correction
+angle is less than 90 degrees, which will always be the case if
+WS &lt; TAS. The listed formula works in the general case </p>
+
+<h4><a href=3D"http://williams.best.vwh.net/Xwind" name=3D"Xwind"></a>Head-=
+ and cross-wind components.</h4>
+<pre>   HW=3D WS*cos(WD-RD)     (tailwind negative)
+   XW=3D WS*sin(WD-RD)     (positive=3D  wind from right)
+</pre>
+where HW, XW, WS are the headwind, crosswind and wind speed. WD and RD are =
+the
+wind direction (from) and runway direction.
+<p>
+  As usual, unless you have a version of sin and cos available that takes
+degree arguments, you'll need to convert to radians.
+</p>
+ Example: Wind 060 @ 20 departing Runway 3.
+<pre>  WS=3D20 knots
+  WD=3D60 degrees =3D 60*pi/180 radians
+  RD=3D30 degrees =3D 30*pi/180 radians
+  Plugging in:
+  Headwind=3D17.32 knots
+  Crosswind =3D 10 knots (from right)
+</pre>
+
+<hr>
+<h4><a href=3D"http://williams.best.vwh.net/3gs" name=3D"3gs"></a>TAS and w=
+indspeed from three (GPS) groundspeeds.</h4>
+<p> Determine your groundspeed on three headings that differ by 120
+degrees (eg 40, 160 and 280 degrees), call these v1, v2 and v3
+</p>
+<p> Let</p>
+<pre>     vms =3D (v1^2 + v2^2 + v3^2)/3
+     a1=3D v1^2/vms -1
+     a2=3D v2^2/vms -1
+     a3=3D v3^2/vms -1
+     mu=3D (a1^2 + a2^2 + a3^2)/6
+</pre>
+<p> Let bp and bm be the roots of the quadratic b^2 -b + mu =3D0 ie: </p>
+<pre>     bp=3D 1/2 +sqrt(1/4-mu)=20
+     bm=3D mu/bp
+</pre>
+<p>
+The TAS and windspeed are then given by sqrt(vms*bp) and sqrt(vms*bm)
+provided that the TAS exceeds the windspeed. If this is not the
+     case, the roots are exchanged.
+This is a handy way to check your TAS (and the calibration of your
+airspeed indicator) using your GPS groundspeed, even though the wind
+is unknown.
+</p>
+<hr>
+
+
+<h4><a href=3D"http://williams.best.vwh.net/Var" name=3D"Var"></a>Approxima=
+te variation formulae.</h4>
+
+<p>I did a least squares polynomial fit to the NFDC airport
+database.</p>
+
+<pre>x=3Dlatitude (N degrees) y=3Dlongitude (W degrees) var=3D variation (d=
+egrees)
+
+   var=3D  -65.6811 + 0.99*x + 0.0128899*x^2 - 0.0000905928*x^3 + 2.87622*y=
+ -=20
+        0.0116268*x*y - 0.00000603925*x^2*y - 0.0389806*y^2 -=20
+        0.0000403488*x*y^2 + 0.000168556*y^3</pre>
+
+<p>Continental US only, 3771 points, RMS error 1 degree All
+within 2 degrees except for the following airports: MO49 MO86
+MO50 3K6 02K and KOOA</p>
+
+<pre>   (24 &lt; x &lt; 50,  66 &lt; y &lt; 125)
+---------------------
+Alaska Fit, better than 1 degree, all points:
+  var=3D  618.854 + 2.76049*x - 0.556206*x^2 + 0.00251582*x^3 - 12.7974*y +=
+=20
+        0.408161*x*y + 0.000434097*x^2*y - 0.00602173*y^2 -=20
+        0.00144712*x*y^2 + 0.000222521*y^3
+
+    55 points (x &gt; 54, 130 &lt; y &lt; 172)</pre>
+
+<pre>-------------------- </pre>
+
+<p>For Western Europe, fitting to the 1997 IGRF reference field: </p>
+
+<pre> var =3D10.4768771667158 -0.507385322418858*lon +0.00753170031703826*l=
+on^2-
+    1.40596203924748e-05*lon^3 -0.535560699962353*lat +
+    0.0154348808069955*lat*lon -8.07756425110592e-05*lat*lon^2 +
+    0.00976887198864442*lat^2 -0.000259163929798334*lat^2*lon-
+    3.69056939266123e-05*lat^3;</pre>
+
+<p>Here *East* lon is positive! In the range -10 &lt; lon &lt;
+28, 36 &lt; lat &lt; 68 RMS error =3D 0.04 degrees, max error 0.20
+degrees. </p>
+
+<pre>---------------------</pre>
+
+<p>I've written software that computes magnetic variation
+anywhere on (or above) the earth's surface, using either the WMM
+or IGRF reference models. There are <a href=3D"http://williams.best.vwh.net=
+/ftp/avsig/magmac.sit">Mac </a>, <a href=3D"http://williams.best.vwh.net/ft=
+p/avsig/magdos.zip">DOS </a>and <a href=3D"http://williams.best.vwh.net/ftp=
+/avsig/magvar">Linux </a>executables available.
+My web calculator is <a href=3D"http://williams.best.vwh.net/magvar.htm"> h=
+ere </a></p>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Altimetry" name=3D"Altimetry"><=
+/a>Standard Atmosphere
+and Altimetry </h4>
+
+<p>The following contains some formulae concerning altimetry and
+the standard atmosphere (1976 International Standard Atmosphere).</p>
+
+<p>At sea-level on a standard day: </p>
+
+<pre>    the temperature, T_0 =3D 59=B0F =3D 15=B0C =3D 288.15=B0K (=B0C=3D=
+Celsius =B0K=3DKelvin,
+                                     T=B0K=3DT=B0C+273.15)</pre>
+
+<pre>    the pressure, P_0 =3D 29.92126 "Hg =3D 1013.250 mB =3D 2116.2166 l=
+bs/ft^2
+                      =3D 760.0 mmHg   =3D 101325.0 Pa =3D 14.69595 psi =3D=
+ 1.0 atm  	</pre>
+
+<pre>    the air density, rho_0 =3D 1.2250 kg/m^3 =3D 0.002376892 slugs/ft^=
+3  </pre>
+
+<p>The standard lapse rate is T_r=3D 0.0065=B0C/m =3D .0019812=B0C/ft below
+the tropopause h_Tr=3D 11.0km=3D 36089.24ft</p>
+
+<p>Above the tropopause, standard temperature is T_Tr=3D -56.5=B0C=3D
+216.65=B0K (up to an altitude of 20km)=20
+ Standard temperature at altitude h is thus given by:</p>
+
+<pre>   T_s=3D T_0- T_r*h  (h &lt; h_Tr)
+      =3D T_Tr        (h &gt; h_Tr)
+      =3D 15-.0019812*h(ft) =B0C (h &lt; 36089.24ft) </pre>
+
+<hr>
+
+<p>Variation of pressure with altitude:</p>
+
+<pre>  p=3D P_0*(1-6.8755856*10^-6 h)^5.2558797    h&lt;36,089.24ft
+  p_Tr=3D 0.2233609*P_0                 =20
+  p=3Dp_Tr*exp(-4.806346*10^-5(h-36089.24)) h&gt;36,089.24ft </pre>
+
+<hr>
+
+<p>Variation of density with altitude:</p>
+
+<pre>  rho=3Drho_0*(1.- 6.8755856*10^-6 h)^4.2558797 h&lt;36,089.24ft
+  rho_Tr=3D0.2970756*rho_0
+  rho=3Drho_Tr*exp(-4.806346*10^-5(h-36089.24)) h&gt;36,089.24ft</pre>
+
+<hr>
+
+<p>Relationship of pressure and indicated altitude:</p>
+
+<pre>  alt_set in inches, heights in feet
+  P_alt_corr=3D 145442.2*(1- (alt_set/29.92126)^0.190261)  or
+  P_alt_corr=3D (29.92-alt_set)*1000 (simple approximation)
+  P_alt=3D Ind_Alt + P_alt_corr</pre>
+
+<hr>
+
+<p>Relationship of pressure and density altitude:</p>
+
+<pre>  D_Alt=3DP_alt+(T_s/T_r)*(1.-(T_s/T)^0.2349690)
+     (Standard temp T_s and actual temp T in Kelvin)</pre>
+
+<p>An approximate, but fairly accurate formula is:</p>
+
+<pre>  D_Alt=3DP_Alt+118.6*(T-T_s)
+  where T and T_s may (both) be either Celsius or Kelvin</pre>
+
+<hr>
+
+<p>Density altitude example:</p>
+
+<p>Let pressure altitude (P_alt) be 8000 ft, temperature 18=B0C.</p>
+
+<p>Standard temp (T_s) is given by</p>
+
+<pre>   T_s=3D15-.0019812*8000=3D-0.85=B0C =3D (273.15-0.85)=B0K=3D272.30=
+=B0K</pre>
+
+<p>Actual temperature (T) is</p>
+
+<pre> 18=B0C=3D(273.15+18)=B0K=3D291.15=B0K
+
+  Density altitude (D_Alt) =3D 8000 +(272.30/.0019812)*(1-(272.30/291.15)^0=
+.2349690)
+                           =3D 8000 + 2145 =3D 10145ft </pre>
+
+<p>or approximately:</p>
+
+<pre>  Density Altitude=3D8000 +118.6*(18+0.85)=3D10236ft</pre>
+
+<hr>
+
+<p>Relationship of true and calibrated (indicated) altitude:</p>
+
+<pre> TA=3D CA + (CA-FE)*(ISADEV)/(273+OAT)  </pre>
+
+<p>where </p>
+
+<pre> TA=3D True Altitude above sea-level
+ FE=3D Field Elevation of station providing the altimeter setting
+ CA=3D Calibrated altitude=3D Altitude indicated by altimeter when set to t=
+he
+       altimeter setting, corrected for calibration error.
+
+ ISADEV=3D Average deviation from standard temperature from standard in the=
+ air
+	column between the station and the aircraft (in C)
+
+ OAT=3D Outside air temperature (at altitude)   </pre>
+
+<p>The above is more precise than provided by the E6B or similar.</p>
+
+<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/Mach" name=3D"Mach"></a>Mach nu=
+mbers, true vs
+calibrated airspeeds etc.</h4>
+
+<pre> Mach Number (M) =3D TAS/CS
+ CS =3D sound speed=3D 38.967854*sqrt(T+273.15)  where T is the OAT in cels=
+ius.
+ TAS is true airspeed in knots.</pre>
+
+<p>Because of compressibility, the measured IAT (indicated air
+temperature) is higher than the actual true OAT. Approximately:</p>
+
+<pre>  IAT=3DOAT+K*TAS^2/7592</pre>
+
+<p>The recovery factor K, depends on installation, and is usually
+in the range 0.95 to 1.0, but can be as low as 0.7. Temperatures
+are Celsius, TAS in knots.</p>
+
+<p>Also:</p>
+
+<pre>    OAT =3D (IAT + 273.15) / (1 + 0.2*K*M^2) - 273.15  </pre>
+
+<p>The airspeed indicator measures the differential pressure, DP,
+between the pitot tube and the static port, the resulting
+indicated airspeed (IAS), when corrected for calibration and
+installation error is called "calibrated airspeed"
+(CAS).</p>
+
+<p>For low-speed (M&lt;0.3) airplanes the true airspeed can be
+obtained from CAS and the density altitude, DA.</p>
+
+<pre>  TAS =3D CAS*(rho_0/rho)^0.5=3DCAS/(1-6.8755856*10^-6 * DA)^2.127940 =
+(DA&lt;36,089.24ft) </pre>
+
+<p>Roughly, TAS increases by 1.5% per 1000ft.</p>
+
+<p>When compressibility is taken into account, the calculation of
+the TAS is more elaborate:</p>
+
+<pre>  DP=3DP_0*((1 + 0.2*(IAS/CS_0)^2)^3.5 -1)
+  M=3D(5*( (DP/P + 1)^(2/7) -1) )^0.5   (*)
+  TAS=3D M*CS </pre>
+
+<p> [(*) If this results in M&gt;1 - ie supersonic flight, we have to accou=
+nt
+for the shock wave ahead of the pitot tube, using=20
+<a href=3D"http://www.edwards.af.mil/sharing/tech_pubs/Handbook-10%20March0=
+2.pdf">
+Rayliegh's Supersonic Pitot equation.</a>
+</p><p>
+  Using the M from above as the first guess on the RHS, iterate:</p>
+<pre>    M=3D0.881285 sqrt((DP/P + 1)(1 - 1/(7*M^2))^(5/2))
+</pre>=20
+ to convergence.]
+
+<p>P_0 is is (standard) sea-level pressure, CS_0 is the speed of
+sound at sea-level, CS is the speed of sound at altitude, and P
+is the pressure at altitude.</p>
+
+<p>These are given by earlier formulae:</p>
+
+<pre>    P_0=3D 29.92126 "Hg =3D 1013.25 mB =3D 2116.2166 lbs/ft^2  =20
+    P=3D P_0*(1-6.8755856*10^-6*PA)^5.2558797, pressure altitude, PA&lt;36,=
+089.24ft
+    CS=3D 38.967854*sqrt(T+273.15)  where T is the (static/true) OAT in Cel=
+sius.
+    CS_0=3D38.967854*sqrt(15+273.15)=3D661.4786 knots
+
+  [Example: CAS=3D250 knots, PA=3D10000ft, IAT=3D2=B0C, recovery factor=3D0=
+.8
+  DP=3D29.92126*((1+0.2*(250/661.4786)^2)^3.5 -1)=3D 3.1001 "
+  P=3D29.92126*(1-6.8755856*10^-6 *10000)^5.2558797=3D 20.577 "
+  M=3D (5*( (3.1001/20.577 +1)^(2/7) -1) )^0.5=3D 0.4523 Mach
+  OAT=3D(2+273.15)/(1 + 0.2*0.8*0.4523^2) - 273.15=3D -6.72C
+  CS=3D 38.967854*sqrt(-6.7+273.15)=3D636.08 knots
+  TAS=3D636.08*0.4523=3D287.7 knots]</pre>
+<p>
+  In the reverse direction, given Mach number M and pressure altitude PA, w=
+e
+can find the IAS with:
+</p>
+<pre>  x=3D(1-6.8755856e-6*PA)^5.2558797
+  ias=3D661.4786*(5*((1 + x*((1 + M^2/5)^3.5 - 1))^(2/7.) - 1))^0.5 (for M =
+&lt;=3D1)
+</pre>
+<hr>
+
+<p>Some notes on the origins of some of the "magic" number
+constants in the preceeding section:</p>
+
+<p>6.8755856*10^-6 =3D T'/T_0, where T' is the standard temperature lapse
+rate and T_0 is the standard sea-level temperature. </p>
+
+<p>5.2558797 =3D Mg/RT', where M is the (average) molecular weight of
+air, g is the acceleration of gravity and R is the gas constant. </p>
+
+<p>0.2233609 =3D ratio of the pressure at the tropopause to sea-level=20
+pressure. </p>
+
+<p>4.806346*10^-5 =3D Mg/RT_tr, where T_tr is the temperature at the=20
+tropopause. </p>
+
+<p>4.2558797 =3D Mg/RT' -1 </p>
+
+<p>0.2970756 =3D ratio of the density at the tropopause to the density
+at SL (rho_0) </p>
+
+<p>145442 =3D T_0/T' </p>
+
+<p>38.967854 =3D sqrt(gamma R/M) (in knots/Kelvin^0.5), where gamma is
+the ratio of the specific heats of air</p>
+
+v<hr>
+
+<h4><a href=3D"http://williams.best.vwh.net/RH" name=3D"RH"></a> Relative h=
+umidity, dewpoint,
+frostpoint etc.</h4>
+
+<p>The relative humidity, f (as a fraction) is related to the
+temperature, T and dewpoint Td by:</p>
+
+<pre>       f=3D exp(17.27(Td/(Td+237.3)-T/(T+237.3)))
+
+and to the frostpoint temperature Tf by:
+
+       f=3D exp(21.87(Tf/(Tf+265.5)-T/(T+265.5)))</pre>
+
+<p>Temperatures are in Celsius. Multiply f by 100 if you want a
+percentage. The above are based on an empirical fit to the
+saturation vapor pressure of water due to O. Tetens in <i>Zeitschrift
+fur Geophysik, Vol VI</i> (1930), quoted in <i>"Principles
+of Meteorological Analysis"</i> by W. J. Saucier (Dover NY
+1983).</p>
+
+<p>This fit is: </p>
+
+<pre> e_s=3D6.11 * exp(bT/(T+a))   for the saturation vapor pressure e_s in=
+ mbar
+   over water a=3D237.3, b=3D17.27
+   over ice a=3D265.5, b=3D21.87=20
+  An alternative slightly more accurate fit (over water) is:
+ e_s =3D 6.10779 + T * (4.43652e-1 + T * (1.42894e-2 + T * (2.65064e-4 + T =
+*
+        (3.03124e-6 + T * (2.03408e-8 + (6.13682e-11 * T))))))
+ (from Lowe, JAM (1977), 103)</pre>
+<p>
+  The latest and greatest
+<a href=3D"http://www.honeywell.com/sensing/prodinfo/humiditymoisture/techn=
+ical/c15_145.pdf"> fit </a> based on "Thermodynamic
+properties of Dry Air, Moist Air and Water, and SI Psychrometric charts" by
+Arnold Wexler and Richard Hyland, National Bureau of Standards; Richard
+Stewart, University of Idaho.
+</p>
+
+<p>Tables of Relative Humidity and Dewpoint vs Temperature and
+Wet Bulb Temperature can be found in "Introduction to
+Meteorology" by Franklyn Cole (Wiley NY 1975).</p>
+
+<p>Inverting this to find dewpoint in terms of temp and RH: </p>
+
+<pre> Dewpoint   Td=3D237.3/(1/(ln(f)/17.27+T/(T+237.3))-1)
+ Frostpoint Tf=3D265.5/(1/(ln(f)/21.87+T/(T+265.5))-1)</pre>
+
+<p>Given the wet bulb temperature Tw (=B0C), the dry bulb
+temperature T (=B0C), and the pressure, p in mbar one gets the
+(approximate) relative humidity and dewpoint by the following: </p>
+
+<pre> ed=3D 6.11*exp(17.27*T/(T+237.3))       /* SVP at dry-bulb temp
+ ew=3D 6.11*exp(17.27*Tw/(Tw+237.3))       /* SVP at wet-bulb temp
+ wd=3D0.62197*ed/(p-ed)                /* saturation mixing ratio at T
+ ww=3D0.62197*ew/(p-ew)                /* saturation mixing ratio at Tw
+ w=3D(2500.0*ww-1.0046*(T-Tw))/(2500.0+1.81*(T-Tw)) /* mixing ratio
+ f=3D w/wd                             /* relative humidity as a fraction
+ e=3D p*w/(0.62197+w)                  /* vapor pressure (mb)
+ Td=3D(237.3*log10(e)-186.527)/(8.286-log10(e)) /* the dewpoint (C)</pre>
+
+<p>This uses the Tetens fit for the saturated vapor pressure and
+treat water vapor as an ideal gas, both of which are pretty good
+approximations. If you want better refer to the Smithsonian
+Meteorological Tables (<i> Smithsonian Institute 1963 </i>) </p>
+
+<hr>
+
+<p>A related formula gives the increase in effective density
+altitude due to humidity. It only addresses the reduction of air
+density, and not the effect on engine power output:</p>
+
+<pre>Increase(ft)=3D0.267*RH*(T+273)*exp(17.3*T/(T+237))*(1-0.00000688*H)^(=
+-5.26) </pre>
+
+<p>RH (f above) is the relative humidity expressed as a fraction,
+T is the temperature in Celsius and H is the pressure altitude in
+feet.</p>
+
+<p>Examples are:</p>
+
+<pre> SL/30C/100% -&gt; 565' increase in DA
+ 10000/5C/80% -&gt; 124' increase in DA
+ 5000/40C/80% -&gt; 977' increase in DA. </pre>
+
+<p>In terms of the dewpoint, Td the formula is:</p>
+
+<pre>  Increase(ft)=3D0.267*(T+273)*exp(17.3*Td/(Td+237))*(1-0.00000688*H)^=
+(-5.26)</pre>
+
+<p>which clearly agrees with the above when T=3DTd and RH=3D1.</p>
+
+<hr>
+
+<p><a href=3D"http://williams.best.vwh.net/Bellamy" name=3D"Bellamy"></a></=
+p>
+
+<h4>Bellamy's formula. </h4>
+
+<p>Bellamy's formula for the wind drift and (single) wind
+correction angle is as follows:</p>
+
+<pre>   Drift (nm) =3D 21500*(p2-p1)/(sin(latitude)*TAS)  (p2-p1 in inches)
+              =3D 635  *(p2-p1)/(sin(latitude)*TAS)  (p2-p1 in mB)
+
+   Wind Correction Angle=3D 1230000*(p2-p1)/(sin(latitude)*TAS*Dist)  (inch=
+es)
+                        =3D 36300*  (p2-p1)/(sin(latitude)*TAS*Dist)   (mB)=
+ </pre>
+
+<p><code>p2-p1 </code>is the difference between the destination
+and departure pressures. <code>latitude </code>is the average
+latitude on the route. <code>TAS</code> is the true airspeed in
+knots. <code>Dist</code> is the distance in nm. </p>
+
+<p>If the destination pressure is higher, the drift is to the
+left, and the required WCA is to the right (and vice-versa).</p>
+
+<p>Example:</p>
+
+<p>SFO -&gt; LAX 300nm at 100 knots, latitude 36 degrees. Suppose
+the LAX altimeter setting is 0.2" higher (better the actual
+pressure difference at cruise altitude if you can get it).</p>
+
+<pre>    Drift =3D 21500*0.2/(sin(36)*100)=3D 73nm left
+    WCA=3D1230000*0.2/(sin(36)*100*300)=3D 14 degrees right</pre>
+
+<p>A discussion of this is in Barry Schiff's "<i>Proficient
+Pilot I</i>". </p>
+
+<hr>
+
+<p><a href=3D"http://williams.best.vwh.net/Conv" name=3D"Conv"></a>Unit con=
+versions, etc.</p>
+
+<pre>=20
+ 1 knot =3D 1.852000 km/hr*
+ 1 knot =3D 185200/109728 ft/sec* =3D1.687810 ft/sec
+ 1 knot =3D 1852000/1609344 mph* =3D 1.150779 mph
+ 1 mph  =3D 0.868976 knot
+ 1 mph  =3D 1.609344 km/hr*
+ 1 mph  =3D 1.466667 ft/sec
+ 1 km/hr=3D 0.539968 knot
+ 1 km/hr=3D 0.911344 ft/sec
+ 1 km/hr=3D 0.621371 mph</pre>
+
+<pre>* =3D exact conversion factor</pre>
+
+<hr>
+
+<p>Ellipsoidal parameters:</p>
+
+<pre>Name           Major axis, a (km)    Flattening (f)
+WGS84          6378.13700	   1/298.257223563
+GRS80/NAD83    6378.13700	   1/298.257222101
+WGS66          6378.145            1/298.25
+GRS67/IAU68    6378.16000          1/298.2472
+WGS72          6378.135            1/298.26
+Krasovsky      6378.245            1/298.3
+Clarke66/NAD27 6378.2064           1/294.9786982138</pre>
+
+<p>Reference: <i>Coordinate Systems and Map Projections</i>, D.
+H. Maling (Pergamon 1992) (except Clarke66 !)</p>
+
+<p>To convert between geocentric (radius r, geocentric latitude
+u) and geodetic coordinates (geodetic latitude v, height above
+the ellipsoid h): </p>
+
+<pre>  tan(u) =3D tan(v)*(h*sqrt((a*cos(v))^2+(b*sin(v))^2) +b^2)/
+                  (h*sqrt((a*cos(v))^2+(b*sin(v))^2) +a^2)
+
+  r^2 =3D h^2 + 2*h*sqrt((a*cos(v))^2+(b*sin(v))^2)+
+               (a^4-(a^4-b^4)*(sin(v))^2)/(a^2-(a^2-b^2)*(sin(v))^2)</pre>
+
+<p>a and b are the semi-major axes of the ellipsoid, and
+b=3Da*(1-f), where f is the flattening. Note that geocentric and
+geodetic longitudes are equal. </p>
+
+<hr>
+
+<p><a href=3D"http://williams.best.vwh.net/Turns" name=3D"Turns"></a></p><h=
+4>Turns and pivotal altitude</h4><p></p>
+
+<p>In a steady turn, in no wind, with bank angle, b at an
+airspeed v </p>
+
+<pre>  tan(b)=3D v^2/(R g)
+  v=3D w R</pre>
+
+<p>where g is the acceleration due to gravity, R is the radius of
+turn and w is the rate of turn. </p>
+
+<p>Pivotal altitude h_p is given by </p>
+
+<pre>   h =3D v^2/g</pre>
+
+<p>With R in feet, v in knots, b in degrees and w in degrees/sec
+(inconsistent units!), numerical constants are introduced: </p>
+
+<pre>   R =3Dv^2/(11.23*tan(0.01745*b))</pre>
+
+<p>(Example) At 100 knots, with a 45 degree bank, the radius of
+turn is 100^2/(11.23*tan(0.01745*45))=3D 891 feet. </p>
+
+<p>The rate of turn w is given by: </p>
+
+<pre>   w =3D 96.7*v/R</pre>
+
+<p>(Example) =3D 96.7*100/891=3D 10.9 degs/sec </p>
+
+<p>The bank angle b_s for a standard rate turn is given by: </p>
+
+<pre>  b_s =3D 57.3*atan(v/362.1)</pre>
+
+<p>(Example) for 100 knots, b_s =3D 57.3*atan(100/362.1) =3D 15.4
+degrees </p>
+<p> A useful rule-of-thumb, accurate to ~1 degree for speeds less than 250
+knots, is b_s=3D v/7 (v in knots).
+</p>
+
+<p>The pivotal altitude is given by: </p>
+
+<pre>  h_p =3D v^2/11.23</pre>
+
+<p>(Example) At 100 knots groundspeed the pivotal altitude is
+100^2/11.23 =3D 890 feet. </p>
+
+<hr>
+<p><a href=3D"http://williams.best.vwh.net/Horizon" name=3D"Horizon"></a></=
+p><h4>Distance to horizon</h4><p></p>
+
+<p>At a height h above the ground, the distance to the horizon d, is given =
+by:</p>
+<pre>  d =3D sqrt(2*R*h/b) </pre>
+<p>
+b=3D0.8279 is a factor that accounts for atmospheric refraction and depends=
+ on the atmospheric temperature lapse rate, which is taken to be standard. =
+R is the=20
+radius of the earth. Note that the earth is assumed smooth- likely only=20
+true over the oceans!
+</p>
+<p> For h in feet and d in nm:</p>
+<pre> d =3D1.17*sqrt(h)</pre>
+<p> i.e. from 10000 feet, the horizon is 117nm away</p>
+<p>(Reference <a href=3D"http://pollux.nss.nima.mil/pubs"> Bowditch</a> Ame=
+rican
+Practical Navigator (1995) Table 12.)</p>
+<hr>
+
+<p><a href=3D"http://williams.best.vwh.net/Changes" name=3D"Changes"></a></=
+p><h4>Revision History</h4><p></p>
+
+<p><i>Version 1.46 4/24/11</i> </p>
+Added some text about rhumb lines.
+<pre>1.45</pre>
+Fixed some unbalanced parentheses in the distance formulae of the worked ex=
+amples. Added a note
+about point of closest approach to a great circle.
+<pre>1.44</pre>
+In the cross-track error example, the trip should have been LAX-JFK, as in =
+the previous examples.
+<pre>1.43</pre>
+The previous versions' "intersection of two radials" formulae were only goo=
+d when the intersection was less than one quarter of the earth's circumfere=
+nce from point 1.  These were replaced with more complicated, but globally =
+applicable ones.  Added special case where initial point is a pole in XTD f=
+ormula.=20
+<pre>1.42</pre>
+Corrected the test in the "crossing parallels" section, which failed to cat=
+ch
+all cases where the great circle failed to cross.
+Added Napier's rules for right spherical triangles.
+<pre>1.41</pre>
+Added to the flat earth section.
+<pre>1.40</pre>
+Points a known distance from a great circle
+<pre>1.39</pre>
+Added intermediate point example.
+Comment on negative GS in wind triangle
+Added  ft/sec to speed conversions
+<pre>1.38</pre>
+Corrected typo in flat earth: e^2=3Df*(2-f)
+<pre>1.37</pre>
+<p>
+Added note on choice of earth's radius.
+</p>
+<pre>1.36</pre>
+<p> Added section on local, flat earth approximation.=20
+Treated supersonic case of Mach/CAS relationship</p>
+<pre>1.35</pre><p></p><p>
+ Corrected typo mod(y,x) =3D y - x*floor(y/x)
+</p><pre>1.34</pre><p></p><p>
+Added section on along-track distance. Made lat/lon given radial
+and distance numerical example more complete.</p>
+<pre>1.33</pre><p>
+Changed section added in 1.32 to interpolate distances along the=20
+great circle connecting the points, not the chord, which is
+more useful and what was originally intended!</p>
+<pre>1.32</pre>
+<p> Added section on intermediate points between two others -=20
+given the fractional distance along the GC route between them.</p>
+<pre>1.31</pre>
+<p> Added section on distance to horizon</p>
+<pre>1.30</pre>
+<p> Courses starting at the S. Pole now 360 degrees not 0.
+Added reference to sample spreadsheet
+</p>
+<pre>1.29</pre>
+<p> Added formulae to determine TAS and windspeed from groundspeeds on
+three headings that differ by 120 degrees ie that form an equilateral=20
+triangle.
+</p><p>
+Corrected bug in "Heron" formula for spherical excess.
+</p>
+<pre>1.28</pre>
+<p> Added implementations of asin and acos with only atan available.
+(For those crippled with Visual Basic)
+</p>
+<pre>1.27</pre>
+<p>
+4.2558797 =3D Mg/RT'-1 not Mg/RT_0-1 , and
+</p><p>
+38.967854 =3D sqrt(gamma R/M) (in knots/Kelvin^0.5) (numerical formulae OK)
+</p><p>
+Added reference to intersections of two great circles.
+</p>
+<pre>1.26</pre>
+<p>
+5.2558797 =3D Mg/RT' not Mg/RT_0 (numerical formulae OK)
+</p>
+<pre>1.25</pre>
+<p>
+Head and cross-wind components.
+</p>
+<pre>1.24</pre>
+<p>
+ Corrected some last digit rounding errors in the rhumb line examples. Adde=
+d
+a reference to the latest (1983) National Bureau of Standards fits
+to the vapor pressure of water over water and ice.
+(Thank you Oscar Van Vlijmen!)
+</p>
+<pre>1.23</pre>
+<p>
+ Additions to spherical triangle section
+</p>
+<pre>1.22</pre>
+<p>
+ Course between points formula failed if the initial point was exactly a po=
+le.
+This has to be special-cased.
+</p>
+<pre>1.21</pre>
+<p>
+  Added references to sunrise/sunset
+</p>
+<p>
+  Added Mach -&gt; IAS formulae
+</p>
+<pre>1.20</pre>
+<p>
+  Third numerical example of the effect of humidity on density
+altitude corrected.
+</p>
+<p>
+  Added standard rate turn bank angle rule-of-thumb.
+</p>
+
+<pre>1.19</pre>
+<p>
+Another bug in the intersection section... The test for input data where
+"no intersection exists", or more precisely, when it's ambiguous which of t=
+he
+two
+great circle intersections is desired, was misplaced. With valid data, no
+problem...
+</p>
+<p>
+The Clarke66/NAD27 inverse flattening was incorrect in my reference book.
+Corrected.
+Thanks to Larry Lewis.
+</p>
+
+<pre>1.18</pre>
+  Corrected equation for dst12 in intersection section. (Should have been
+the distance formula in the first section!) The numerical example
+used the correct formula.
+
+<pre>1.17</pre>
+
+<p>(1/26/98) Changed formula constants to use 1976 US/ICAO Standard
+Atmosphere instead of 1962 US Standard. Made unit conversions more
+accurate.=20
+(by Doug Haluza)
+</p>
+
+<pre>1.16</pre>
+
+<p>(10/26/97) Corrected conversion to hh:mm:ss
+seconds=3D60*(60*(angle_degrees-degrees)-minutes)) </p>
+
+<pre>1.15 </pre>
+
+<p>(9/11/97) Added European variation fit </p>
+
+<pre>1.14</pre>
+
+<p>(9/2/97) Added warnings about arguments of asin and acos being
+out of range from rounding error. </p>
+
+<pre>1.13</pre>
+
+<p>(8/31/97) The rhumb line section was rewritten. Erroneously
+corrected one formula, then changed it back! Added a numerical
+example for the calculation of the endpoint of a rhumb line.
+Added some more spherical triangle formulae. </p>
+
+<pre>1.12</pre>
+
+<p>Somehow I dropped a line in the the 1.08 atan2 fix. Sigh!
+Added turn radius, pivotal altitude formulae. </p>
+
+<pre>1.11</pre>
+
+<p>Made "Lat/lon given radial and distance" handle the
+pole endpoint case more elegantly. </p>
+
+<pre>1.10</pre>
+
+<p>Add "find CRS, GS" to wind triangle section </p>
+
+<pre>1.09</pre>
+
+<p>Added geodetic/geocentric coordinate conversion </p>
+
+<pre>1.08</pre>
+
+<p>Added an alternative method for calculation of course between
+two points, not requiring pre-computation of the distance between
+them. </p>
+
+<p>Changed the definition of atan2 to the ANSI standard one where
+it is defined to have a range of -pi &lt; atan2 &lt;=3D pi, rather
+than 0 &lt;=3D atan2 &lt; 2pi. This was a bug only if had you used
+the previous version to define asin in terms of atan via atan2.
+No one reported it though... </p>
+
+<p>Corrected some damaged formulae in the intersection section of
+the html version. </p>
+
+<pre>1.07 (4/1/97) </pre>
+
+<p>Add additional spherical triangle formulae. Correct the
+condition (dlon&lt;pi/2) for the validity of the short range
+formula in the "lat/lon given radial and distance"
+section. </p>
+
+<pre>1.06 (3/3/97)</pre>
+
+<p>Correct typo in html version of HDG/GS formula. (minus sign)
+Definitions of a and b swapped in Tejen's fit to saturation vapor
+pressure. </p>
+
+<pre>1.05 (12/17/96) </pre>
+
+<p>Correct test for pole in formula for computing lat/long of a
+point a given radial and distance: lat=3D0 =3D&gt; cos(lat)=3D0 </p>
+
+<pre>1.04 (11/11/95) </pre>
+
+<p>Add formula for computing lat/long of a point a given radial
+and distance valid when the distance can exceed one quarter of
+the earth's circumference. </p>
+
+<p>Note that atan2(0,0) should return an error. </p>
+
+<p>Add rhumb line formulae and example. </p>
+
+<p>Change intersection calculation to only provide result when
+intersection of radials exists. </p>
+
+<dl>
+    <dt>Comments, corrections, suggestions to:</dt>
+    <dd>Ed Williams<br>
+        <a href=3D"http://williams.best.vwh.net/contact.html">click here fo=
+r address</a></dd>
+</dl>
+<form action=3D"https://www.paypal.com/cgi-bin/webscr" method=3D"post">
+  <input type=3D"hidden" name=3D"cmd" value=3D"_xclick">
+  <input type=3D"hidden" name=3D"business" value=3D"ed_williams@compuserve.=
+com">
+  <input type=3D"hidden" name=3D"item_name" value=3D"Aviation Formulary">
+  <input type=3D"hidden" name=3D"no_shipping" value=3D"1">
+  <input type=3D"hidden" name=3D"return" value=3D"http://williams.best.vwh.=
+net/avform.htm">
+  <input type=3D"image" src=3D"http://images.paypal.com/images/x-click-but0=
+4.gif" name=3D"submit" alt=3D"PayPal=97 Donate">
+</form>
+
+<p>The <a href=3D"http://www.digits.com/">web counter</a> says you are visi=
+tor
+number
+<img src=3D"http://counter.digits.com/wc/-d/4/aviationformulary" align=3D"m=
+iddle" width=3D"80" height=3D"20" border=3D"0" hspace=3D"4" vspace=3D"2">
+</p>
+<a href=3D"http://www.top100aviationsites.com/in.php?site=3D36">
+<img src=3D"http://www.top100aviationsites.com/button.php?site=3D36" border=
+=3D"0"></a>
+<p><a href=3D"http://williams.best.vwh.net/index.html">My home page </a></p=
+>
+
+
+</body></html>
+------=_NextPart_000_06DA_40D3B0D5.0A3EAA4B
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://images.paypal.com/images/x-click-but04.gif
+
+R0lGODlhPgAfAOYAAAAAAP////L1+SRIc9HV2jJXgSI2TU5ukmiDopSnvdni7N/l7AAzZg8/bxBA
+cCBNeTNmmTBZgz5vn0BwnztkjEp4pUBmjE15plWBrFmDrFBzlmGKsmaMs2CAoHOWuY2pxoiguJmy
+zI+lvJ+yxaS3yrLF2a+/z7/M2e/y9e7x9B1MeSxYgklwlVh9nmyTuGeJqHidvnCNqYCgv3+Zspq3
+0aW80rTE08zZ5c/Z4nWVsYOmxI6uyoOhupCux5KtxKXA1+Xs8qG6zbHK3dfh6a/G1rzT477S4Mjc
+6dPl8M3e6dvr89/u9ur3/Onp6bu7u////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5
+BAEAAE8ALAAAAAA+AB8AAAf/gAkkCYSFhoeIiYqLjIQgCAcgTJOUlZaXmJmam5YFIAGgoaKjpKWm
+p6ijAwgBnK6vsJgBTaulGha4uCIoqaYlHMDAMjeoAh4cHzVAKQS1lkYM0dIMDUqxlBsQ2tsQNJpC
+2jCTzLWjItERMx3SIgEn7yc4oO8LoQv02x8hF9oXAUA3At4QACqEthKgyLGyxCIaj0kUouVQMY3B
+CiXRVExK0iBaD20YJoHTRoObth9MskE4Mq4Zq1EPoslD4SDaCAYPcLGLEA3UOgYxDEKQAUqGtgwy
+JgDjB4FDAG0TQilsRSmJtBctOjJQocQIEyNEGjIIEpEBESLRqrkAqQPDNiFI/5ggKTJywxFtGyhN
+FXWzIoMIOE5o8Ltghk2eDEYEmGASwoQSApKaTKYthFSXVCe9yEiBQo4gTIKkbZEjIxMfGaOtYHIX
+7wYdP5YwcQsBww7aQmBoK6IXsyjEJkZZiBYcRzQN7iqeCFBCm4dRN7Q5DZBBmwCmBBNipoQx2qWy
+FF5ofdg9WotJurtZKqJNwm1tFZaArLR3HjpShqM5qMlAXgD+DvASAAfaKDCKAIz1o80wC4oyVSVn
+WXOJETn40BURXk2ygkOUzMXSJUv8QMMRSxTBGxMmWlJfL6f0FQGLMF7mzDWWKKEVETS+smKMouCA
+yww8xvhgjkQSuWOQSCI5ZJuRTMJyJCkARAlAKFKCMqWVVEZppZRTcpnKkpkAQImYYk5CZplojqmm
+mU76hsqVAXRJZZx0XsklnHhq+eV2m5TJBJlqopkmm4T+2WY5b1a5pZ1z0onlo3EqegqYTVaaCSgD
+HBBACk106umnoIYq6qikltrEEDYMUACqTrTq6quwxirrrLTW2moCBgwwgAG89urrr8AGK+ywxP4a
+CAA7
+------=_NextPart_000_06DA_40D3B0D5.0A3EAA4B--
