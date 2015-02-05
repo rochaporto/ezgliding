@@ -17,7 +17,7 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package util
+package spatial
 
 import (
 	"reflect"
@@ -25,45 +25,6 @@ import (
 
 	"github.com/rochaporto/ezgliding/common"
 )
-
-type DMS2DecimalTest struct {
-	t  string
-	in string
-	r  float64
-}
-
-var dms2DecimalTests = []DMS2DecimalTest{
-	{
-		"latitude north conversion",
-		"N323200",
-		32.53333333333333,
-	},
-	{
-		"latitude south conversion",
-		"S323200",
-		-32.53333333333333,
-	},
-	{
-		"longitude east conversion",
-		"E1002233",
-		100.37583333333333,
-	},
-	{
-		"longitude west conversion",
-		"W1002233",
-		-100.37583333333333,
-	},
-}
-
-func TestDMS2Decimal(t *testing.T) {
-	for _, test := range dms2DecimalTests {
-		result := DMS2Decimal(test.in)
-		if result != test.r {
-			t.Errorf("test %v failed, expected %v got %v", test.t, test.r, result)
-			continue
-		}
-	}
-}
 
 type Struct2GeoJSONTest struct {
 	t  string

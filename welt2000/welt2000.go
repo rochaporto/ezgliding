@@ -36,7 +36,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/spatial"
 	"github.com/rochaporto/rss"
 )
 
@@ -275,8 +275,8 @@ func (r *Release) parseAirfield(line string) error {
 	airfield.Frequency += decimal * 0.01
 	elevation := strings.Trim(line[41:45], " ")
 	airfield.Elevation, _ = strconv.Atoi(elevation)
-	airfield.Latitude = util.DMS2Decimal(line[45:52])
-	airfield.Longitude = util.DMS2Decimal(line[52:60])
+	airfield.Latitude = spatial.DMS2Decimal(line[45:52])
+	airfield.Longitude = spatial.DMS2Decimal(line[52:60])
 	airfield.Region = line[60:62]
 	r.Airfields = append(r.Airfields, airfield)
 	return nil
@@ -308,7 +308,7 @@ func (r *Release) parseWaypoint(line string) error {
 	waypoint := common.Waypoint{
 		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
 		Description: strings.Trim(line[7:41], " "),
-		Latitude:    util.DMS2Decimal(line[45:52]), Longitude: util.DMS2Decimal(line[52:60]),
+		Latitude:    spatial.DMS2Decimal(line[45:52]), Longitude: spatial.DMS2Decimal(line[52:60]),
 		Region: line[60:62], Update: r.Date,
 	}
 	elevation := strings.Trim(line[41:45], " ")

@@ -17,35 +17,14 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package util
+package spatial
 
 import (
 	"errors"
-	"strconv"
 
 	"github.com/paulmach/go.geojson"
 	"github.com/rochaporto/ezgliding/common"
 )
-
-// DMS2Decimal converts the given coordinates from DMS to decimal format.
-func DMS2Decimal(dms string) float64 {
-	var degrees, minutes, seconds float64
-	if len(dms) == 7 {
-		degrees, _ = strconv.ParseFloat(dms[1:3], 64)
-		minutes, _ = strconv.ParseFloat(dms[3:5], 64)
-		seconds, _ = strconv.ParseFloat(dms[5:], 64)
-	} else {
-		degrees, _ = strconv.ParseFloat(dms[1:4], 64)
-		minutes, _ = strconv.ParseFloat(dms[4:6], 64)
-		seconds, _ = strconv.ParseFloat(dms[6:], 64)
-	}
-	var r float64
-	r = degrees + (minutes / 60.0) + (seconds / 3600.0)
-	if dms[0] == 'S' || dms[0] == 'W' {
-		r = r * -1
-	}
-	return r
-}
 
 // Struct2GeoJSON returns a collection of GeoJSON objects from the given structs.
 // The given array can have distinct types (Airfield, Waypoint, Airspace) and the
@@ -147,6 +126,7 @@ func feature2Airfield(f *geojson.Feature) common.Airfield {
 	a.Latitude = f.Geometry.Point[1]
 	return a
 }
+
 func feature2Waypoint(f *geojson.Feature) common.Waypoint {
 	w := common.Waypoint{
 		ID: f.PropertyMustString("ID"), Description: f.PropertyMustString("Description"),
