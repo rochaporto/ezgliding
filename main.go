@@ -46,12 +46,15 @@ func main() {
 	}
 	airspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
 	airfield, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airfielder))
+	flight, err := plugin.NewPlugin(plugin.ID(cfg.Global.Flighter))
 	waypoint, err := plugin.NewPlugin(plugin.ID(cfg.Global.Waypointer))
 	airspace.Init(cfg)
 	airfield.Init(cfg)
+	flight.Init(cfg)
 	waypoint.Init(cfg)
 	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer),
-		airfield.(common.Airfielder), waypoint.(common.Waypointer))
+		airfield.(common.Airfielder), flight.(common.Flighter),
+		waypoint.(common.Waypointer))
 	if err != nil {
 		glog.Errorf("Failed to create context object :: %v", err)
 		exit(-1)
@@ -63,6 +66,7 @@ func main() {
 			cli.CmdAirfieldGet,
 			cli.CmdAirfieldPut,
 			cli.CmdAirspaceGet,
+			cli.CmdFlightGet,
 			cli.CmdWaypointGet,
 			cli.CmdWaypointPut,
 			cli.CmdWeb,

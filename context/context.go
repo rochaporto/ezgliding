@@ -42,11 +42,13 @@ type Context struct {
 	Config   config.Config
 	Airspace common.Airspacer
 	Airfield common.Airfielder
+	Flight   common.Flighter
 	Waypoint common.Waypointer
 }
 
 // NewContext returns a new Context object.
 func NewContext(cfg config.Config, airspace common.Airspacer, airfield common.Airfielder,
-	waypoint common.Waypointer) (Context, error) {
-	return Context{Config: cfg, Airspace: airspace, Airfield: airfield, Waypoint: waypoint}, nil
+	flight common.Flighter, waypoint common.Waypointer) (Context, error) {
+	return Context{Config: cfg, Airspace: airspace, Airfield: airfield,
+		Flight: flight, Waypoint: waypoint}, nil
 }

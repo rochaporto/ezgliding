@@ -43,6 +43,7 @@ import (
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/fusiontables"
 	"github.com/rochaporto/ezgliding/mock"
+	"github.com/rochaporto/ezgliding/netcoupe"
 	"github.com/rochaporto/ezgliding/soaringweb"
 	"github.com/rochaporto/ezgliding/welt2000"
 )
@@ -56,6 +57,7 @@ type Pluginer interface {
 var pluginRegistry = map[ID]Pluginer{
 	ID(fusiontables.ID): Pluginer(&fusiontables.FusionTables{}),
 	ID(mock.ID):         Pluginer(&mock.Mock{}),
+	ID(netcoupe.ID):     Pluginer(&netcoupe.Netcoupe{}),
 	ID(soaringweb.ID):   Pluginer(&soaringweb.SoaringWeb{}),
 	ID(welt2000.ID):     Pluginer(&welt2000.Welt2000{}),
 }

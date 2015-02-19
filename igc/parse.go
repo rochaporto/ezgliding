@@ -25,56 +25,59 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/util"
 )
 
-// Parse returns a Flight object corresponding to the given content.
+// Parse returns a common.Flight object corresponding to the given content.
 // content should be a text string in the IGC format.
-func Parse(content string) (Flight, error) {
-	flight := NewFlight()
+func Parse(content string) (common.Flight, error) {
+	f := common.NewFlight()
 	var err error
 	p := Parser{}
 	lines := strings.Split(content, "\n")
 	for i := range lines {
-		line := lines[i]
+		line := strings.TrimSpace(lines[i])
 		// ignore empty lines
 		if len(strings.Trim(line, " ")) < 1 {
 			continue
 		}
 		switch line[0] {
 		case 'A':
-			err = p.parseA(line, &flight)
+			err = p.parseA(line, &f)
 		case 'B':
-			err = p.parseB(line, &flight)
+			err = p.parseB(line, &f)
 		case 'C':
 			if !p.taskDone {
-				err = p.parseC(lines[i:], &flight)
+				err = p.parseC(lines[i:], &f)
 			}
 		case 'D':
-			err = p.parseD(line, &flight)
+			err = p.parseD(line, &f)
 		case 'E':
-			err = p.parseE(line, &flight)
+			err = p.parseE(line, &f)
 		case 'F':
-			err = p.parseF(line, &flight)
+			err = p.parseF(line, &f)
 		case 'G':
-			err = p.parseG(line, &flight)
+			err = p.parseG(line, &f)
 		case 'H':
-			err = p.parseH(line, &flight)
+			err = p.parseH(line, &f)
 		case 'I':
 			err = p.parseI(line)
 		case 'J':
 			err = p.parseJ(line)
 		case 'K':
-			err = p.parseK(line, &flight)
+			err = p.parseK(line, &f)
 		case 'L':
-			err = p.parseL(line, &flight)
+			err = p.parseL(line, &f)
+		default:
+			err = fmt.Errorf("invalid record :: %v", line)
 		}
 		if err != nil {
-			return flight, err
+			return f, err
 		}
 	}
 
-	return flight, nil
+	return f, nil
 }
 
 type field struct {
@@ -91,21 +94,21 @@ type Parser struct {
 	numSat   int
 }
 
-func (p *Parser) parseA(line string, flight *Flight) error {
+func (p *Parser) parseA(line string, f *common.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	flight.Header.Manufacturer = line[1:4]
-	flight.Header.UniqueID = line[4:7]
-	flight.Header.AdditionalData = line[7:]
+	f.Header.Manufacturer = line[1:4]
+	f.Header.UniqueID = line[4:7]
+	f.Header.AdditionalData = line[7:]
 	return nil
 }
 
-func (p *Parser) parseB(line string, flight *Flight) error {
+func (p *Parser) parseB(line string, f *common.Flight) error {
 	if len(line) < 37 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	pt := NewPoint()
+	pt := common.NewPoint()
 	var err error
 	pt.Time, err = time.Parse(TimeFormat, line[1:7])
 	if err != nil {
@@ -130,11 +133,11 @@ func (p *Parser) parseB(line string, flight *Flight) error {
 		pt.IData[f.tlc] = line[f.start-1 : f.end]
 	}
 	pt.NumSatellites = p.numSat
-	flight.Points = append(flight.Points, pt)
+	f.Points = append(f.Points, pt)
 	return nil
 }
 
-func (p *Parser) parseC(lines []string, flight *Flight) error {
+func (p *Parser) parseC(lines []string, f *common.Flight) error {
 	line := lines[0]
 	if len(line) < 25 {
 		return fmt.Errorf("wrong line size :: %v", line)
@@ -147,61 +150,61 @@ func (p *Parser) parseC(lines []string, flight *Flight) error {
 	if len(lines) < 5+nTP {
 		return fmt.Errorf("invalid number of C record lines :: %v", lines)
 	}
-	if flight.Task.DeclarationDate, err = time.Parse(DateFormat+TimeFormat, lines[0][1:13]); err != nil {
+	if f.Task.DeclarationDate, err = time.Parse(DateFormat+TimeFormat, lines[0][1:13]); err != nil {
+		f.Task.DeclarationDate = time.Time{}
+	}
+	if f.Task.FlightDate, err = time.Parse(DateFormat, lines[0][13:19]); err != nil {
+		f.Task.FlightDate = time.Time{}
+	}
+	if f.Task.Number, err = strconv.Atoi(line[19:23]); err != nil {
 		return err
 	}
-	if flight.Task.FlightDate, err = time.Parse(DateFormat, lines[0][13:19]); err != nil {
+	f.Task.Description = line[25:]
+	if f.Task.Takeoff, err = p.taskPoint(lines[1]); err != nil {
 		return err
 	}
-	if flight.Task.Number, err = strconv.Atoi(line[19:23]); err != nil {
-		return err
-	}
-	flight.Task.Description = line[25:]
-	if flight.Task.Takeoff, err = p.taskPoint(lines[1]); err != nil {
-		return err
-	}
-	if flight.Task.Start, err = p.taskPoint(lines[2]); err != nil {
+	if f.Task.Start, err = p.taskPoint(lines[2]); err != nil {
 		return err
 	}
 	for i := 0; i < nTP; i++ {
-		var tp Point
+		var tp common.Point
 		if tp, err = p.taskPoint(lines[3+i]); err != nil {
 			return err
 		}
-		flight.Task.Turnpoints = append(flight.Task.Turnpoints, tp)
+		f.Task.Turnpoints = append(f.Task.Turnpoints, tp)
 	}
-	if flight.Task.Finish, err = p.taskPoint(lines[3+nTP]); err != nil {
+	if f.Task.Finish, err = p.taskPoint(lines[3+nTP]); err != nil {
 		return err
 	}
-	if flight.Task.Landing, err = p.taskPoint(lines[4+nTP]); err != nil {
+	if f.Task.Landing, err = p.taskPoint(lines[4+nTP]); err != nil {
 		return err
 	}
 	p.taskDone = true
 	return nil
 }
 
-func (p *Parser) taskPoint(line string) (Point, error) {
+func (p *Parser) taskPoint(line string) (common.Point, error) {
 	if len(line) < 18 {
-		return Point{}, fmt.Errorf("line too short :: %v", line)
+		return common.Point{}, fmt.Errorf("line too short :: %v", line)
 	}
-	return Point{
+	return common.Point{
 		Latitude:    util.DMS2Decimal(line[1:9]),
 		Longitude:   util.DMS2Decimal(line[9:18]),
 		Description: line[18:],
 	}, nil
 }
 
-func (p *Parser) parseD(line string, flight *Flight) error {
+func (p *Parser) parseD(line string, f *common.Flight) error {
 	if len(line) < 6 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
 	if line[1] == '2' {
-		flight.DGPSStationID = line[2:6]
+		f.DGPSStationID = line[2:6]
 	}
 	return nil
 }
 
-func (p *Parser) parseE(line string, flight *Flight) error {
+func (p *Parser) parseE(line string, f *common.Flight) error {
 	if len(line) < 10 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -209,14 +212,14 @@ func (p *Parser) parseE(line string, flight *Flight) error {
 	if err != nil {
 		return err
 	}
-	if flight.Events[t] == nil {
-		flight.Events[t] = make(map[string]string)
+	if f.Events[t] == nil {
+		f.Events[t] = make(map[string]string)
 	}
-	flight.Events[t][line[7:10]] = line[10:]
+	f.Events[t][line[7:10]] = line[10:]
 	return nil
 }
 
-func (p *Parser) parseF(line string, flight *Flight) error {
+func (p *Parser) parseF(line string, f *common.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -224,26 +227,26 @@ func (p *Parser) parseF(line string, flight *Flight) error {
 	if err != nil {
 		return err
 	}
-	if flight.Satellites[t] == nil {
-		flight.Satellites[t] = []int{}
+	if f.Satellites[t] == nil {
+		f.Satellites[t] = []int{}
 	}
 	for i := 7; i < len(line)-1; i = i + 2 {
 		var n int
 		if n, err = strconv.Atoi(line[i : i+2]); err != nil {
 			return err
 		}
-		flight.Satellites[t] = append(flight.Satellites[t], n)
+		f.Satellites[t] = append(f.Satellites[t], n)
 	}
-	p.numSat = len(flight.Satellites[t])
+	p.numSat = len(f.Satellites[t])
 	return nil
 }
 
-func (p *Parser) parseG(line string, flight *Flight) error {
-	flight.Signature = flight.Signature + line[1:]
+func (p *Parser) parseG(line string, f *common.Flight) error {
+	f.Signature = f.Signature + line[1:]
 	return nil
 }
 
-func (p *Parser) parseH(line string, flight *Flight) error {
+func (p *Parser) parseH(line string, f *common.Flight) error {
 	var err error
 	if len(line) < 5 {
 		return fmt.Errorf("line too short :: %v", line)
@@ -254,39 +257,39 @@ func (p *Parser) parseH(line string, flight *Flight) error {
 		if len(line) < 11 {
 			return fmt.Errorf("line too short :: %v", line)
 		}
-		flight.Header.Date, err = time.Parse(DateFormat, line[5:11])
+		f.Header.Date, err = time.Parse(DateFormat, line[5:11])
 	case "FXA":
 		if len(line) < 8 {
 			return fmt.Errorf("line too short :: %v", line)
 		}
-		flight.Header.FixAccuracy, err = strconv.ParseInt(line[5:8], 10, 64)
+		f.Header.FixAccuracy, err = strconv.ParseInt(line[5:8], 10, 64)
 	case "PLT":
-		flight.Header.Pilot = line[5:]
+		f.Header.Pilot = line[5:]
 	case "CM2":
-		flight.Header.Crew = line[5:]
+		f.Header.Crew = line[5:]
 	case "GTY":
-		flight.Header.GliderType = line[5:]
+		f.Header.GliderType = line[5:]
 	case "GID":
-		flight.Header.GliderID = line[5:]
+		f.Header.GliderID = line[5:]
 	case "DTM":
 		if len(line) < 8 {
 			return fmt.Errorf("line too short :: %v", line)
 		}
-		flight.Header.GPSDatum = line[5:8]
+		f.Header.GPSDatum = line[5:8]
 	case "RFW":
-		flight.Header.FirmwareVersion = line[5:]
+		f.Header.FirmwareVersion = line[5:]
 	case "RHW":
-		flight.Header.HardwareVersion = line[5:]
+		f.Header.HardwareVersion = line[5:]
 	case "FTY":
-		flight.Header.FlightRecorder = line[5:]
+		f.Header.FlightRecorder = line[5:]
 	case "GPS":
-		flight.Header.GPS = line[5:]
+		f.Header.GPS = line[5:]
 	case "PRS":
-		flight.Header.PressureSensor = line[5:]
+		f.Header.PressureSensor = line[5:]
 	case "CID":
-		flight.Header.CompetitionID = line[5:]
+		f.Header.CompetitionID = line[5:]
 	case "CCL":
-		flight.Header.CompetitionClass = line[5:]
+		f.Header.CompetitionClass = line[5:]
 	default:
 		err = fmt.Errorf("unknown error record :: %v", line)
 	}
@@ -336,7 +339,7 @@ func (p *Parser) parseJ(line string) error {
 	return nil
 }
 
-func (p *Parser) parseK(line string, flight *Flight) error {
+func (p *Parser) parseK(line string, f *common.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -348,14 +351,14 @@ func (p *Parser) parseK(line string, flight *Flight) error {
 	for _, f := range p.JFields {
 		fields[f.tlc] = line[f.start-1 : f.end]
 	}
-	flight.K[t] = fields
+	f.K[t] = fields
 	return nil
 }
 
-func (p *Parser) parseL(line string, flight *Flight) error {
+func (p *Parser) parseL(line string, f *common.Flight) error {
 	if len(line) < 4 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	flight.Logbook = append(flight.Logbook, LogEntry{line[1:4], line[4:]})
+	f.Logbook = append(f.Logbook, common.LogEntry{Type: line[1:4], Text: line[4:]})
 	return nil
 }

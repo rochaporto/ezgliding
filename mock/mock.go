@@ -36,13 +36,17 @@ const (
 // Mock implements all interfaces (airfield, airspace, waypoint).
 // Use the struct fields to provide the function implementations.
 type Mock struct {
-	InitF        func(cfg config.Config) error
-	GetAirfieldF func(regions []string, updatedSince time.Time) ([]common.Airfield, error)
-	PutAirfieldF func(airfield []common.Airfield) error
-	GetAirspaceF func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
-	PutAirspaceF func(airspace []common.Airspace) error
-	GetWaypointF func(regions []string, updatedSince time.Time) ([]common.Waypoint, error)
-	PutWaypointF func(waypoint []common.Waypoint) error
+	InitF            func(cfg config.Config) error
+	GetAirfieldF     func(regions []string, updatedSince time.Time) ([]common.Airfield, error)
+	PutAirfieldF     func(airfield []common.Airfield) error
+	GetAirspaceF     func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
+	PutAirspaceF     func(airspace []common.Airspace) error
+	GetFlightF       func(regions []string, updatedSince time.Time) ([]common.Flight, error)
+	GetFlightFromIDF func(startID int, max int) ([]common.Flight, error)
+	GetFlightByIDF   func(id int) (common.Flight, error)
+	PutFlightF       func(flights []common.Flight) error
+	GetWaypointF     func(regions []string, updatedSince time.Time) ([]common.Waypoint, error)
+	PutWaypointF     func(waypoint []common.Waypoint) error
 }
 
 // Init is the mock implementation of common.Pluginer.Init.

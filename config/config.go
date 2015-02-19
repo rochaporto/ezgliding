@@ -71,10 +71,18 @@ type Welt2000 struct {
 	Releaseurl string
 }
 
+// Netcoupe holds all config information for the netcoupe plugin.
+type Netcoupe struct {
+	BaseURL         string
+	FlightDetailURL string
+	MaxIDGap        int
+}
+
 // Global holds all common information for all ezgliding plugins and apps.
 type Global struct {
 	Airspacer  string
 	Airfielder string
+	Flighter   string
 	Waypointer string
 }
 
@@ -82,6 +90,7 @@ type Global struct {
 type Config struct {
 	Global
 	FusionTables
+	Netcoupe
 	SoaringWeb
 	Web
 	Welt2000

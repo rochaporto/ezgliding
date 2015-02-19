@@ -30,7 +30,8 @@ import (
 func TestNewContext(t *testing.T) {
 	mock := mock.Mock{}
 	_, err := NewContext(config.Config{}, common.Airspacer(&mock),
-		common.Airfielder(&mock), common.Waypointer(&mock))
+		common.Airfielder(&mock), common.Flighter(&mock),
+		common.Waypointer(&mock))
 	if err != nil {
 		t.Errorf("Failed to get new context :: %v", err)
 	}
