@@ -28,6 +28,17 @@ squash ...
 git push -f
 ```
 
+### Profiling
+
+Go has excelent support for profiling the code. Example:
+```
+cd welt2000
+go test -cpuprofile=welt2000.pprof -bench . ./...
+go tool pprof welt2000.test welt2000.pprof
+top 20
+top 20 -cum
+```
+
 ### Merging a pull request
 
 To try to keep the git history clean, after rebasing the branch with master as

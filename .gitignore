@@ -2,3 +2,5 @@
 *.swo
 ezgliding
 *.cov
+*.test
+*.pprof

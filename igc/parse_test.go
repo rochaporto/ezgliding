@@ -20,6 +20,7 @@
 package igc
 
 import (
+	"io/ioutil"
 	"reflect"
 	"testing"
 	"time"
@@ -254,5 +255,17 @@ func TestParse(t *testing.T) {
 			t.Errorf("%v failed :: expected\n%+v\ngot\n%+v", test.t, test.r, result)
 			continue
 		}
+	}
+}
+
+func BenchmarkParse(b *testing.B) {
+	c, err := ioutil.ReadFile("t/sample-flight.igc")
+	if err != nil {
+		b.Errorf("failed to load sample flight :: %v", err)
+	}
+	content := string(c)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Parse(content)
 	}
 }

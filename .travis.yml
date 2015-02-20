@@ -2,6 +2,9 @@ language: go
 go:
         - tip
 sudo: false
+env:
+        - BUILDFLAVOR=goveralls
+        - BUILDFLAVOR=pprof
 services:
         - memcached
 before_install:
@@ -13,7 +16,7 @@ before_install:
 script:
         - $HOME/gopath/bin/golint .
         - go vet ./...
-        - ./scripts/goveralls.sh
+        - ./scripts/${BUILDFLAVOR}.sh
 deploy:
         provider: openshift
         user: rocha.porto@gmail.com
