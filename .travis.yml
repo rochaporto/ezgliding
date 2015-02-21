@@ -14,8 +14,6 @@ before_install:
         - go get golang.org/x/tools/cmd/cover
         - go get golang.org/x/tools/cmd/vet
 script:
-        - $HOME/gopath/bin/golint .
-        - go vet ./...
         - ./scripts/${BUILDFLAVOR}.sh
 deploy:
         provider: openshift
