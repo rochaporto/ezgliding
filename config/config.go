@@ -78,6 +78,10 @@ type Netcoupe struct {
 	MaxIDGap        int
 }
 
+// Montecarlo holds the montecarlo optimizer parameters.
+type Montecarlo struct {
+}
+
 // Global holds all common information for all ezgliding plugins and apps.
 type Global struct {
 	Airspacer  string
@@ -90,6 +94,7 @@ type Global struct {
 type Config struct {
 	Global
 	FusionTables
+	Montecarlo
 	Netcoupe
 	SoaringWeb
 	Web
@@ -116,4 +121,11 @@ func NewConfig(location string) (Config, error) {
 		}
 	}
 	return cfg, err
+}
+
+// GetConfig returns the currently loaded configuration.
+func GetConfig() Config {
+	cfg, _ := NewConfig("")
+	// FIXME:
+	return cfg
 }

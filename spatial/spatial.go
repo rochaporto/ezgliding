@@ -21,7 +21,21 @@
 // between formats.
 package spatial
 
-import "strconv"
+import (
+	"math"
+	"strconv"
+
+	"github.com/rochaporto/ezgliding/common"
+)
+
+const (
+	// EarthRadius is the defined earth radius (in meters)
+	EarthRadius = 6371000
+	// Deg2Rad defines a constant to easily convert from degrees to radians
+	Deg2Rad = math.Pi / 180
+	// Rad2Deg defines a constant to easily convert from radians to degrees
+	Rad2Deg = 180 / math.Pi
+)
 
 // DMS2Decimal converts the given coordinates from DMS to decimal format.
 func DMS2Decimal(dms string) float64 {
@@ -41,4 +55,35 @@ func DMS2Decimal(dms string) float64 {
 		r = r * -1
 	}
 	return r
+}
+
+// GCDistance returns the great circle distance between the two points (in meters).
+// It uses this formula:
+//   d=2*asin(sqrt((sin((lat1-lat2)/2))^2 + cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2))^2))
+//
+// Check EarthRadius in this pkg for the assumed earth radius.
+func GCDistance(p1 common.Point, p2 common.Point) float64 {
+	lat1 := p1.Latitude * Deg2Rad
+	lon1 := p1.Longitude * Deg2Rad
+	lat2 := p2.Latitude * Deg2Rad
+	lon2 := p2.Longitude * Deg2Rad
+	return (2 * math.Asin(
+		math.Sqrt(math.Pow(math.Sin((lat1-lat2)/2), 2)+
+			math.Cos(lat1)*math.Cos(lat2)*
+				math.Pow(math.Sin((lon1-lon2)/2), 2)))) * EarthRadius
+}
+
+// Bearing returns the true course from point1 to point2 (in degrees).
+// It uses the formula:
+//   mod(atan2(sin(lon1-lon2)*cos(lat2), cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2)), 2*pi)
+func Bearing(p1 common.Point, p2 common.Point) float64 {
+	lat1 := p1.Latitude * Deg2Rad
+	lon1 := p1.Longitude * Deg2Rad
+	lat2 := p2.Latitude * Deg2Rad
+	lon2 := p2.Longitude * Deg2Rad
+	return math.Mod(
+		math.Atan2(
+			math.Sin(lon1-lon2)*math.Cos(lat2),
+			math.Cos(lat1)*math.Sin(lat2)-math.Sin(lat1)*math.Cos(lat2)*math.Cos(lon1-lon2)),
+		2*math.Pi) * Rad2Deg
 }

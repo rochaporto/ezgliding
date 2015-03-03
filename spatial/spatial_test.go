@@ -19,7 +19,11 @@
 
 package spatial
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/rochaporto/ezgliding/common"
+)
 
 type DMS2DecimalTest struct {
 	t  string
@@ -57,5 +61,75 @@ func TestDMS2Decimal(t *testing.T) {
 			t.Errorf("test %v failed, expected %v got %v", test.t, test.r, result)
 			continue
 		}
+	}
+}
+
+type GCDistanceTest struct {
+	t  string
+	p1 common.Point
+	p2 common.Point
+	r  float64
+}
+
+var gcDistanceTests = []GCDistanceTest{
+	GCDistanceTest{
+		t:  "basic gc distance",
+		p1: common.Point{Latitude: 46.2697223, Longitude: 6.4633333},
+		p2: common.Point{Latitude: 43.6111111, Longitude: 6.6919444},
+		r:  296170.7842520111,
+	},
+}
+
+func TestGCDistance(t *testing.T) {
+	var result float64
+	for _, test := range gcDistanceTests {
+		result = GCDistance(test.p1, test.p2)
+		if result != test.r {
+			t.Errorf("%v :: expected %v but got %v", test.t, test.r, result)
+			continue
+		}
+	}
+}
+
+type BearingTest struct {
+	t  string
+	p1 common.Point
+	p2 common.Point
+	r  float64
+}
+
+var bearingTests = []BearingTest{
+	BearingTest{
+		t:  "basic bearing test",
+		p1: common.Point{Latitude: 46.2697223, Longitude: 6.4633333},
+		p2: common.Point{Latitude: 43.6111111, Longitude: 6.6919444},
+		r:  -176.43582068293497,
+	},
+}
+
+func TestBearing(t *testing.T) {
+	var result float64
+	for _, test := range bearingTests {
+		result = Bearing(test.p1, test.p2)
+		if result != test.r {
+			t.Errorf("%v :: expected %v but got %v", test.t, test.r, result)
+			continue
+		}
+	}
+}
+
+func BenchmarkDistance(b *testing.B) {
+	p1 := common.Point{Latitude: 46.2697223, Longitude: 6.4633333}
+	p2 := common.Point{Latitude: 43.6111111, Longitude: 6.6919444}
+	for i := 0; i < b.N; i++ {
+		_ = GCDistance(p1, p2)
+	}
+}
+
+func BenchmarkBearing(b *testing.B) {
+	p1 := common.Point{Latitude: 46.2697223, Longitude: 6.4633333}
+	p2 := common.Point{Latitude: 43.6111111, Longitude: 6.6919444}
+	for i := 0; i < b.N; i++ {
+		_ = Bearing(p1, p2)
 	}
 }

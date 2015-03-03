@@ -19,7 +19,11 @@
 
 package common
 
-import "time"
+import (
+	"time"
+
+	"github.com/rochaporto/ezgliding/config"
+)
 
 // Flighter is implemented by any data source which can provide or
 // receive flight information.
@@ -184,4 +188,50 @@ type Source struct {
 	Finish      string
 	Comment     string
 	DownloadURL string
+}
+
+// OptimizationType identifies a type of Optimization (out and return, 3 TPs, 4 TPs, ...)
+type OptimizationType int
+
+const (
+	// OutReturn is equivalent to 1 turnpoint
+	OutReturn OptimizationType = iota
+	// TP3 means 3 turnopoint optimization
+	TP3
+	// TP4 means 4 turnpoint optimization
+	TP4
+	// Triangle means 2 turnpoint
+	Triangle
+	// FAITriangle means a triangle with special conditions
+	FAITriangle
+)
+
+// Contest defines the interface to calculate points for a given contest.
+type Contest interface {
+	// Points returns the number of points for the given set of TPs for a contest.
+	Points(tps []Point, flags int) (Result, error)
+}
+
+// Contests holds all available online contests, keyed by their IDs.
+var Contests = map[string]Contest{
+	"netcoupe": Contest(NewNetcoupe(config.GetConfig())),
+}
+
+// Optimizer is the interface for flight optimization.
+type Optimizer interface {
+	// Optimize returns the number of points and optimization type for TPs of a contest.
+	Optimize(flight Flight, contest Contest) (Result, error)
+}
+
+// Optimizers holds a map of all available Optimizers, keyed on ID.
+var Optimizers = map[string]Optimizer{
+	"montecarlo": Optimizer(NewMontecarlo(config.GetConfig())),
+}
+
+// Result is a track/distance/points result for a given Optimizer run.
+type Result struct {
+	Type     OptimizationType
+	TPs      []Point
+	Distance float64
+	Points   float64
 }
