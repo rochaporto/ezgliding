@@ -25,12 +25,12 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/util"
 )
 
 // GetAirfield follows common.GetAirfield().
-func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 	glog.V(10).Infof("GetAirfield with regions %v and updatedSince %v", regions, updatedSince)
 
 	var qry string
@@ -47,12 +47,12 @@ func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([
 	}
 	glog.V(20).Infof("unparsed response :: %v", resp)
 
-	r, err := util.CSV2Struct(resp, reflect.ValueOf([]common.Airfield{}).Type(),
-		reflect.ValueOf(common.Airfield{}).Type())
+	r, err := util.CSV2Struct(resp, reflect.ValueOf([]airfield.Airfield{}).Type(),
+		reflect.ValueOf(airfield.Airfield{}).Type())
 	if err != nil {
 		return nil, err
 	}
-	result := r.Interface().([]common.Airfield)
+	result := r.Interface().([]airfield.Airfield)
 
 	glog.V(5).Infof("request %v returned %v results", qry, len(result))
 
@@ -60,7 +60,7 @@ func (ft *FusionTables) GetAirfield(regions []string, updatedSince time.Time) ([
 }
 
 // PutAirfield follows common.PutAirfield().
-func (ft *FusionTables) PutAirfield(airfields []common.Airfield) error {
+func (ft *FusionTables) PutAirfield(airfields []airfield.Airfield) error {
 	csv := util.Struct2CSV(airfields)
 	resp, err := ft.doImport(csv, ft.AirfieldTableID)
 	if err != nil {

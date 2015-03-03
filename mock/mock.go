@@ -24,6 +24,7 @@ package mock
 import (
 	"time"
 
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
@@ -38,8 +39,8 @@ const (
 // Use the struct fields to provide the function implementations.
 type Mock struct {
 	InitF            func(cfg config.Config) error
-	GetAirfieldF     func(regions []string, updatedSince time.Time) ([]common.Airfield, error)
-	PutAirfieldF     func(airfield []common.Airfield) error
+	GetAirfieldF     func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error)
+	PutAirfieldF     func(afield []airfield.Airfield) error
 	GetAirspaceF     func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
 	PutAirspaceF     func(airspace []common.Airspace) error
 	GetFlightF       func(regions []string, updatedSince time.Time) ([]flight.Flight, error)

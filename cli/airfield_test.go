@@ -25,7 +25,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
@@ -38,28 +38,28 @@ import (
 func ExampleAirfieldGet() {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				airfields := []common.Airfield{
-					common.Airfield{
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+				airfields := []airfield.Airfield{
+					airfield.Airfield{
 						ID: "MockID1", ShortName: "MockShortName",
 						Name: "MockName", Region: "FR", ICAO: "AAAA", Flags: 0,
 						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
 						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC)},
-					common.Airfield{
+					airfield.Airfield{
 						ID: "MockID2", ShortName: "MockShortName",
 						Name: "MockName", Region: "CH", ICAO: "AAAA", Flags: 0,
 						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
 						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC)},
-					common.Airfield{
+					airfield.Airfield{
 						ID: "MockID3", ShortName: "MockShortName",
 						Name: "MockName", Region: "CH", ICAO: "AAAA", Flags: 0,
 						Catalog: 11, Length: 1000, Elevation: 2000, Runway: "32R",
 						Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC)},
 				}
-				result := []common.Airfield{}
+				result := []airfield.Airfield{}
 				for _, airfield := range airfields {
 					b := false
 					for _, r := range regions {
@@ -87,7 +87,7 @@ func ExampleAirfieldGet() {
 func TestAirfieldGetFailed(t *testing.T) {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 				return nil, errors.New("mock testing get airfield failed")
 			},
 		},
@@ -101,7 +101,7 @@ func TestAirfieldGetFailed(t *testing.T) {
 func TestAirfieldGetBadAfter(t *testing.T) {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 				return nil, nil
 			},
 		},
@@ -117,9 +117,9 @@ func TestAirfieldGetBadAfter(t *testing.T) {
 func ExampleAirfieldPut() {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				return []common.Airfield{
-					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+				return []airfield.Airfield{
+					airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
 						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Time{}},
@@ -136,7 +136,7 @@ func ExampleAirfieldPut() {
 func TestAirfieldPutFailed(t *testing.T) {
 	err := plugin.Register(plugin.ID("afputfailed"), plugin.Pluginer(
 		&mock.Mock{
-			PutAirfieldF: func(airfields []common.Airfield) error {
+			PutAirfieldF: func(airfields []airfield.Airfield) error {
 				return errors.New("mock testing put airfield failed")
 			},
 		}))
@@ -145,8 +145,8 @@ func TestAirfieldPutFailed(t *testing.T) {
 	}
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				return []common.Airfield{common.Airfield{}}, nil
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+				return []airfield.Airfield{airfield.Airfield{}}, nil
 			},
 		},
 	}
@@ -157,7 +157,7 @@ func TestAirfieldPutFailed(t *testing.T) {
 func TestAirfieldPutBadGet(t *testing.T) {
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 				return nil, errors.New("mock testing get airfield failed")
 			},
 		},
@@ -186,8 +186,8 @@ func TestAirfieldPutFailInit(t *testing.T) {
 	}
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				return []common.Airfield{common.Airfield{}}, nil
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+				return []airfield.Airfield{airfield.Airfield{}}, nil
 			},
 		},
 	}

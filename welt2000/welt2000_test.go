@@ -28,6 +28,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 )
@@ -40,7 +41,7 @@ type GetAirfieldTest struct {
 	rss string
 	rg  string
 	d   time.Time
-	rs  []common.Airfield
+	rs  []airfield.Airfield
 	err bool
 }
 
@@ -50,10 +51,10 @@ var getAirfieldTests = []GetAirfieldTest{
 		"./t/test-releases-list.xml",
 		"FR",
 		time.Time{},
-		[]common.Airfield{
-			common.Airfield{
+		[]airfield.Airfield{
+			airfield.Airfield{
 				ID: "HABER", Name: "HABERE POC69", ShortName: "HABER", Region: "FR",
-				ICAO: "", Flags: common.GliderSite | common.Grass, Catalog: 0,
+				ICAO: "", Flags: airfield.GliderSite | airfield.Grass, Catalog: 0,
 				Length: 0, Elevation: 1113, Runway: "0119", Frequency: 122.5,
 				Latitude: 46.26972222222222, Longitude: 6.463333333333334,
 				Update: time.Date(2014, time.February, 24, 12, 0, 0, 0, GMT),
@@ -66,7 +67,7 @@ var getAirfieldTests = []GetAirfieldTest{
 		"./t/test-releases-list.xml",
 		"FR",
 		time.Date(2014, time.February, 25, 0, 0, 0, 0, time.UTC),
-		[]common.Airfield{},
+		[]airfield.Airfield{},
 		false,
 	},
 	{"get airfield missing rss",
@@ -74,7 +75,7 @@ var getAirfieldTests = []GetAirfieldTest{
 		"./t/missing-release-list.xml",
 		"FR",
 		time.Time{},
-		[]common.Airfield{},
+		[]airfield.Airfield{},
 		true,
 	},
 	{"get airfield missing release",
@@ -82,7 +83,7 @@ var getAirfieldTests = []GetAirfieldTest{
 		"./t/test-releases-list.xml",
 		"FR",
 		time.Time{},
-		[]common.Airfield{},
+		[]airfield.Airfield{},
 		true,
 	},
 	{"get airfield with 0 values for region",
@@ -90,7 +91,7 @@ var getAirfieldTests = []GetAirfieldTest{
 		"./t/test-releases-list.xml",
 		"ZZ",
 		time.Time{},
-		[]common.Airfield{},
+		[]airfield.Airfield{},
 		false,
 	},
 }
@@ -108,7 +109,7 @@ func TestGetAirfield(t *testing.T) {
 			continue
 		}
 
-		var airfields []common.Airfield
+		var airfields []airfield.Airfield
 		airfields, err = plugin.GetAirfield([]string{test.rg}, test.d)
 		if err != nil && test.err {
 			continue
@@ -372,22 +373,22 @@ func TestParseComment(t *testing.T) {
 func TestParseAirfield(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIA129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
+	afield := r.Airfields[0]
 
-	expected := common.Airfield{ID: "LFLI", ShortName: "ANNEM",
-		Name: "ANNEMASSE", ICAO: "LFLI", Flags: 0 | common.Asphalt,
+	expected := airfield.Airfield{ID: "LFLI", ShortName: "ANNEM",
+		Name: "ANNEMASSE", ICAO: "LFLI", Flags: 0 | airfield.Asphalt,
 		Length: 1290, Runway: "1230", Frequency: 125.87, Elevation: 494,
 		Latitude: 46.19194444444444, Longitude: 6.2683333333333335, Region: "FR"}
-	if airfield != expected {
-		t.Errorf("failed to parse airfield :: expected %v got %v", expected, airfield)
+	if afield != expected {
+		t.Errorf("failed to parse airfield :: expected %v got %v", expected, afield)
 	}
 }
 
 func TestParseUnclearAirstrip(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("AMBL21 AMBLETEUSE AERO #   ?G       1      32N504901E0013658FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.UnclearAirstrip != 1 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.UnclearAirstrip != 1 {
 		t.Errorf("Parse failed for unclear airstrip")
 	}
 }
@@ -396,14 +397,14 @@ func TestParseGliderSite(t *testing.T) {
 	r := Release{}
 	// case GLD#
 	r.Parse([]byte("CHALA1 CHALAIS      GLD#LFIHG 83072512350  88N451605E0000058FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.GliderSite == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.GliderSite == 0 {
 		t.Errorf("Parse failed for glider site")
 	}
 	// case GLD#GLD
 	r.Parse([]byte("HABER1 HABERE POC69 GLD#GLD!G 980119122501113N461611E0062748FRP3"))
-	airfield = r.Airfields[0]
-	if airfield.Flags&common.GliderSite == 0 {
+	afield = r.Airfields[0]
+	if afield.Flags&airfield.GliderSite == 0 {
 		t.Errorf("Parse failed for glider site")
 	}
 }
@@ -411,16 +412,16 @@ func TestParseGliderSite(t *testing.T) {
 func TestParseULMSite(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("CERVE2 CERVENS UL      *ULM!G 28052312350 619N461713E0062638FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.ULMSite == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.ULMSite == 0 {
 		t.Errorf("Parse failed for ulm site")
 	}
 }
 func TestParseAsphalt(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIA129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Asphalt == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Asphalt == 0 {
 		t.Errorf("Parse failed for asphalt airstrip")
 	}
 }
@@ -428,8 +429,8 @@ func TestParseAsphalt(t *testing.T) {
 func TestParseConcrete(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIC129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Concrete == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Concrete == 0 {
 		t.Errorf("Parse failed for concrete airstrip")
 	}
 }
@@ -437,8 +438,8 @@ func TestParseConcrete(t *testing.T) {
 func TestParseLoam(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIL129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Loam == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Loam == 0 {
 		t.Errorf("Parse failed for loam airstrip")
 	}
 }
@@ -446,8 +447,8 @@ func TestParseLoam(t *testing.T) {
 func TestParseSand(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIS129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Sand == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Sand == 0 {
 		t.Errorf("Parse failed for sand airstrip")
 	}
 }
@@ -455,8 +456,8 @@ func TestParseSand(t *testing.T) {
 func TestParseClay(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIY129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Clay == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Clay == 0 {
 		t.Errorf("Parse failed for asphalt airstrip")
 	}
 }
@@ -464,8 +465,8 @@ func TestParseClay(t *testing.T) {
 func TestParseGrass(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIG129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Grass == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Grass == 0 {
 		t.Errorf("Parse failed for grass airstrip")
 	}
 }
@@ -473,8 +474,8 @@ func TestParseGrass(t *testing.T) {
 func TestParseGravel(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIV129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Gravel == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Gravel == 0 {
 		t.Errorf("Parse failed for gravel airstrip")
 	}
 }
@@ -482,8 +483,8 @@ func TestParseGravel(t *testing.T) {
 func TestParseDirt(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLID129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags&common.Dirt == 0 {
+	afield := r.Airfields[0]
+	if afield.Flags&airfield.Dirt == 0 {
 		t.Errorf("Parse failed for dirt airstrip")
 	}
 }
@@ -491,8 +492,8 @@ func TestParseDirt(t *testing.T) {
 func TestParseUnknownRunwayType(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIO129123012587 494N461131E0061606FRQ0"))
-	airfield := r.Airfields[0]
-	if airfield.Flags != 0 {
+	afield := r.Airfields[0]
+	if afield.Flags != 0 {
 		t.Errorf("Parse failed for invalid runway type")
 	}
 }
@@ -500,8 +501,8 @@ func TestParseUnknownRunwayType(t *testing.T) {
 func TestParseCatalogNumber(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("BONVI2 BONNEVILLE      *FL53S 400523      450N460441E0062310FRP0"))
-	airfield := r.Airfields[0]
-	if airfield.Catalog != 53 || airfield.Flags&common.Outlanding == 0 {
+	afield := r.Airfields[0]
+	if afield.Catalog != 53 || afield.Flags&airfield.Outlanding == 0 {
 		t.Errorf("Parse failed for outlanding catalog number")
 	}
 }

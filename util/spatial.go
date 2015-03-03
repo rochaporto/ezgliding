@@ -24,6 +24,7 @@ import (
 	"strconv"
 
 	"github.com/paulmach/go.geojson"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 )
 
@@ -59,8 +60,8 @@ func Struct2GeoJSON(features []interface{}) (*geojson.FeatureCollection, error) 
 		switch e.(type) {
 		default:
 			return nil, errors.New("geojson convertion not supported")
-		case common.Airfield:
-			f = airfield2GeoJSON([]common.Airfield{e.(common.Airfield)})
+		case airfield.Airfield:
+			f = airfield2GeoJSON([]airfield.Airfield{e.(airfield.Airfield)})
 		case common.Waypoint:
 			f = waypoint2GeoJSON([]common.Waypoint{e.(common.Waypoint)})
 		}
@@ -70,7 +71,7 @@ func Struct2GeoJSON(features []interface{}) (*geojson.FeatureCollection, error) 
 }
 
 // airfield2GeoJSON converts the given airfield to GeoJSON format.
-func airfield2GeoJSON(airfields []common.Airfield) []*geojson.Feature {
+func airfield2GeoJSON(airfields []airfield.Airfield) []*geojson.Feature {
 	result := []*geojson.Feature{}
 	for _, airfield := range airfields {
 		g := geojson.NewPointFeature([]float64{airfield.Longitude, airfield.Latitude})
@@ -109,7 +110,7 @@ func waypoint2GeoJSON(waypoints []common.Waypoint) []*geojson.Feature {
 }
 
 // GeoJSON2Struct returns airfield, waypoint, etc objects from the given GeoJSON.
-// The resulting array contains distinct types (common.Airfield, common.Waypoint,
+// The resulting array contains distinct types (airfield.Airfield, common.Waypoint,
 // common.Airspace, ...) and the unmarshaling is done with the same rules as
 // described in Struct2GeoJSON.
 func GeoJSON2Struct(json string) ([]interface{}, error) {
@@ -134,8 +135,8 @@ func GeoJSON2Struct(json string) ([]interface{}, error) {
 	return result, nil
 }
 
-func feature2Airfield(f *geojson.Feature) common.Airfield {
-	a := common.Airfield{
+func feature2Airfield(f *geojson.Feature) airfield.Airfield {
+	a := airfield.Airfield{
 		ID: f.PropertyMustString("ID"), ShortName: f.PropertyMustString("ShortName"),
 		Name: f.PropertyMustString("Name"), Region: f.PropertyMustString("Region"),
 		ICAO: f.PropertyMustString("ICAO"), Flags: f.PropertyMustInt("Flags"),

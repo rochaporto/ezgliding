@@ -34,6 +34,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/util"
@@ -49,7 +50,7 @@ const (
 type Release struct {
 	Date      time.Time
 	Source    string
-	Airfields []common.Airfield
+	Airfields []airfield.Airfield
 	Waypoints []common.Waypoint
 }
 
@@ -79,9 +80,9 @@ func (wt *Welt2000) Init(cfg config.Config) error {
 	return nil
 }
 
-// GetAirfield follows common.GetAirfield().
+// GetAirfield follows airfield.GetAirfield().
 // FIXME: use region
-func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 	glog.V(10).Infof("GetAirfield with regions %v and updatedSince %v", regions, updatedSince)
 	releases, err := List(wt.rssURL)
 	if err != nil {
@@ -102,7 +103,7 @@ func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]com
 	for _, v := range regions {
 		m[v] = true
 	}
-	var filtered []common.Airfield
+	var filtered []airfield.Airfield
 	for _, a := range release.Airfields {
 		if _, ok := m[a.Region]; ok {
 			filtered = append(filtered, a)
@@ -115,12 +116,12 @@ func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]com
 	return release.Airfields, err
 }
 
-// PutAirfield follows common.PutAirfield().
-func (wt *Welt2000) PutAirfield(airfields []common.Airfield) error {
+// PutAirfield follows airfield.PutAirfield().
+func (wt *Welt2000) PutAirfield(airfields []airfield.Airfield) error {
 	return errors.New("not available for welt2000 plugin")
 }
 
-// GetWaypoint follows common.GetWaypoint().
+// GetWaypoint follows airfield.GetWaypoint().
 // FIXME: use region
 func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
 	glog.V(10).Infof("GetWaypoint with regions %v and updatedSince %v", regions, updatedSince)
@@ -156,7 +157,7 @@ func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]com
 	return release.Waypoints, err
 }
 
-// PutWaypoint follows common.PutWaypoint().
+// PutWaypoint follows airfield.PutWaypoint().
 func (wt *Welt2000) PutWaypoint(waypoints []common.Waypoint) error {
 	return errors.New("not available for welt2000 plugin")
 }
@@ -244,62 +245,62 @@ func (r *Release) Parse(content []byte) error {
 }
 
 func (r *Release) parseAirfield(line string) error {
-	airfield := common.Airfield{Update: r.Date}
+	afield := airfield.Airfield{Update: r.Date}
 	if line[4] == '2' { // unclear airstrip
-		airfield.Flags |= common.UnclearAirstrip
-		airfield.ShortName = strings.Trim(line[0:4], " ")
+		afield.Flags |= airfield.UnclearAirstrip
+		afield.ShortName = strings.Trim(line[0:4], " ")
 	} else { // regular airstrip
-		airfield.ShortName = strings.Trim(line[0:5], " ")
+		afield.ShortName = strings.Trim(line[0:5], " ")
 	}
-	airfield.Name = strings.Trim(line[7:20], " ")
+	afield.Name = strings.Trim(line[7:20], " ")
 	if line[23] == '#' && line[24] != ' ' && string(line[24:28]) != "GLD!" { // ICAO available
-		airfield.ICAO = line[24:28]
-		airfield.ID = airfield.ICAO
+		afield.ICAO = line[24:28]
+		afield.ID = afield.ICAO
 	} else {
-		airfield.ID = airfield.ShortName
+		afield.ID = afield.ShortName
 	}
 	if line[23:27] == "*ULM" { // ultralight site
-		airfield.Flags |= common.ULMSite
+		afield.Flags |= airfield.ULMSite
 	} else if line[5] == '2' { // outlanding
-		airfield.Flags |= common.Outlanding
-		airfield.Catalog, _ = strconv.Atoi(line[26:28])
+		afield.Flags |= airfield.Outlanding
+		afield.Catalog, _ = strconv.Atoi(line[26:28])
 	} else if line[20:24] == "GLD#" || line[23:28] == "#GLD" { // glider site
-		airfield.Flags |= common.GliderSite
+		afield.Flags |= airfield.GliderSite
 	}
-	airfield.Flags |= r.runwayType2Bit(line[28])
-	airfield.Length, _ = strconv.Atoi(line[29:32])
-	airfield.Length *= 10
-	airfield.Runway = line[32:36]
+	afield.Flags |= r.runwayType2Bit(line[28])
+	afield.Length, _ = strconv.Atoi(line[29:32])
+	afield.Length *= 10
+	afield.Runway = line[32:36]
 	decimal, _ := strconv.ParseFloat(line[39:41], 64)
-	airfield.Frequency, _ = strconv.ParseFloat(line[36:39], 64)
-	airfield.Frequency += decimal * 0.01
+	afield.Frequency, _ = strconv.ParseFloat(line[36:39], 64)
+	afield.Frequency += decimal * 0.01
 	elevation := strings.Trim(line[41:45], " ")
-	airfield.Elevation, _ = strconv.Atoi(elevation)
-	airfield.Latitude = util.DMS2Decimal(line[45:52])
-	airfield.Longitude = util.DMS2Decimal(line[52:60])
-	airfield.Region = line[60:62]
-	r.Airfields = append(r.Airfields, airfield)
+	afield.Elevation, _ = strconv.Atoi(elevation)
+	afield.Latitude = util.DMS2Decimal(line[45:52])
+	afield.Longitude = util.DMS2Decimal(line[52:60])
+	afield.Region = line[60:62]
+	r.Airfields = append(r.Airfields, afield)
 	return nil
 }
 
 func (r *Release) runwayType2Bit(t uint8) int {
 	switch t {
 	case 'A':
-		return common.Asphalt
+		return airfield.Asphalt
 	case 'C':
-		return common.Concrete
+		return airfield.Concrete
 	case 'L':
-		return common.Loam
+		return airfield.Loam
 	case 'S':
-		return common.Sand
+		return airfield.Sand
 	case 'Y':
-		return common.Clay
+		return airfield.Clay
 	case 'G':
-		return common.Grass
+		return airfield.Grass
 	case 'V':
-		return common.Gravel
+		return airfield.Gravel
 	case 'D':
-		return common.Dirt
+		return airfield.Dirt
 	}
 	return 0
 }

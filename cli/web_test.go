@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
@@ -35,9 +35,9 @@ func ExampleWeb() {
 	cfg.Web.Port = 7777
 	ctx := context.Context{
 		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
-				return []common.Airfield{
-					common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+				return []airfield.Airfield{
+					airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
 						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 				}, nil

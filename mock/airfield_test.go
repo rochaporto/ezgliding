@@ -24,15 +24,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 )
 
 func TestGetAirfield(t *testing.T) {
-	airfields := []common.Airfield{
-		common.Airfield{Name: "TestMockAirfield"},
+	airfields := []airfield.Airfield{
+		airfield.Airfield{Name: "TestMockAirfield"},
 	}
 	mock := Mock{
-		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 			return airfields, nil
 		},
 	}
@@ -57,12 +57,12 @@ func TestGetAirfieldNotImplemented(t *testing.T) {
 }
 
 func TestPutAirfield(t *testing.T) {
-	airfields := []common.Airfield{
-		common.Airfield{Name: "TestMockAirfield"},
+	airfields := []airfield.Airfield{
+		airfield.Airfield{Name: "TestMockAirfield"},
 	}
-	var result []common.Airfield
+	var result []airfield.Airfield
 	mock := Mock{
-		PutAirfieldF: func(a []common.Airfield) error {
+		PutAirfieldF: func(a []airfield.Airfield) error {
 			result = a
 			return nil
 		},

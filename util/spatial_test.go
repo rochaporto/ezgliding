@@ -23,6 +23,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 )
 
@@ -75,7 +76,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 	Struct2GeoJSONTest{
 		"simple airfield conversion",
 		[]interface{}{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "HHHH", Flags: 1032, Catalog: 69, Length: 900, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
@@ -94,7 +95,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 	Struct2GeoJSONTest{
 		"multiple type conversion",
 		[]interface{}{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "HHHH", Flags: 1032, Catalog: 69, Length: 900, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 			common.Waypoint{

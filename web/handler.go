@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 )
 
@@ -73,8 +74,8 @@ func (srv *Server) airspaceHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	airfield := srv.ctx.Airfield
-	airfields, err := airfield.(common.Airfielder).GetAirfield(params["region"], updated)
+	afield := srv.ctx.Airfield
+	airfields, err := afield.(airfield.Airfielder).GetAirfield(params["region"], updated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

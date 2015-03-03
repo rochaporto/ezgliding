@@ -28,7 +28,7 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/util"
@@ -49,7 +49,7 @@ Gets available airfield information according to the given parameters
 func runAirfieldGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
-	airfield := ctx.Airfield
+	afield := ctx.Airfield
 
 	tafter := time.Time{}
 	if *after != "" {
@@ -59,7 +59,7 @@ func runAirfieldGet(cmd *commander.Command, args []string) {
 			return
 		}
 	}
-	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), tafter)
+	airfields, err := afield.(airfield.Airfielder).GetAirfield(strings.Split(*region, ","), tafter)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v\n", err)
 		return
@@ -100,8 +100,8 @@ func runAirfieldPut(cmd *commander.Command, args []string) {
 		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
 		return
 	}
-	airfield := ctx.Airfield
-	airfields, err := airfield.(common.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
+	afield := ctx.Airfield
+	airfields, err := afield.(airfield.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get airfield :: %v\n", err)
 		return
@@ -109,7 +109,7 @@ func runAirfieldPut(cmd *commander.Command, args []string) {
 	glog.V(5).Infof("putting %v airfields", len(airfields))
 	glog.V(20).Infof("%v", airfields)
 	if len(airfields) > 0 {
-		err = destPlugin.(common.Airfielder).PutAirfield(airfields)
+		err = destPlugin.(airfield.Airfielder).PutAirfield(airfields)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to put airfields :: %v\n", err)
 			return

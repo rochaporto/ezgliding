@@ -22,19 +22,19 @@ package mock
 import (
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 )
 
-// GetAirfield is the mock implementation of common.Airfielder.GetAirfield.
-func (mk *Mock) GetAirfield(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+// GetAirfield is the mock implementation of airfield.Airfielder.GetAirfield.
+func (mk *Mock) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 	if mk.GetAirfieldF != nil {
 		return mk.GetAirfieldF(regions, updatedSince)
 	}
-	return []common.Airfield{}, nil
+	return []airfield.Airfield{}, nil
 }
 
-// PutAirfield is the mock implementation of common.Airfielder.PutAirfield.
-func (mk *Mock) PutAirfield(airfield []common.Airfield) error {
+// PutAirfield is the mock implementation of airfield.Airfielder.PutAirfield.
+func (mk *Mock) PutAirfield(airfield []airfield.Airfield) error {
 	if mk.PutAirfieldF != nil {
 		return mk.PutAirfieldF(airfield)
 	}

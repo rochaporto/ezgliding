@@ -28,7 +28,7 @@ import (
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/util"
@@ -50,8 +50,8 @@ func TestMemcacheBadServer(t *testing.T) {
 }
 
 func TestMemcache(t *testing.T) {
-	airfields := []common.Airfield{
-		common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+	airfields := []airfield.Airfield{
+		airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 			Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
 			Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 	}
@@ -63,7 +63,7 @@ func TestMemcache(t *testing.T) {
 
 	// using a mock object to return airfields
 	mock := &mock.Mock{
-		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 			return airfields, nil
 		},
 	}

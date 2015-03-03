@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/config"
 )
 
@@ -36,7 +36,7 @@ type GetAirfieldTest struct {
 	rg  []string
 	tm  time.Time
 	rp  string
-	rs  []common.Airfield
+	rs  []airfield.Airfield
 	err bool
 }
 
@@ -49,8 +49,8 @@ var getGetAirfieldTests = []GetAirfieldTest{
 ID,ShortName,Name,Region,RLICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
 HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 `,
-		[]common.Airfield{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+		[]airfield.Airfield{
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
@@ -64,7 +64,7 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
 HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463,a
 `,
-		[]common.Airfield{common.Airfield{}},
+		[]airfield.Airfield{airfield.Airfield{}},
 		true,
 	},
 	{
@@ -75,8 +75,8 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463,a
 ID,ShortName,Name,Region,ICAO,Flags,Catalog,Length,Elevation,Runway,Frequency,Latitude,Longitude
 HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.270,6.463
 `,
-		[]common.Airfield{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+		[]airfield.Airfield{
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 		},
@@ -151,7 +151,7 @@ func TestGetAirfieldWithMalformedURL(t *testing.T) {
 
 type PutAirfieldTest struct {
 	t   string
-	in  []common.Airfield
+	in  []airfield.Airfield
 	csv string
 	err bool
 }
@@ -159,8 +159,8 @@ type PutAirfieldTest struct {
 var putAirfieldTests = []PutAirfieldTest{
 	{
 		"simple update",
-		[]common.Airfield{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+		[]airfield.Airfield{
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463,
 				Update: time.Time{}},
@@ -172,8 +172,8 @@ HABER,HABER,HABERE POC69,FR,,1032,0,0,1113,0119,122.5,46.27,6.463,0001-01-01 00:
 	},
 	{
 		"simple failure",
-		[]common.Airfield{
-			common.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
+		[]airfield.Airfield{
+			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463,
 				Update: time.Time{}},
@@ -225,7 +225,7 @@ func TestPutAirfieldWithMissingLocation(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutAirfield([]common.Airfield{})
+	err = plugin.PutAirfield([]airfield.Airfield{})
 	if err == nil {
 		t.Errorf("expected error but was successful")
 	}
@@ -240,7 +240,7 @@ func TestPutAirfieldWithMalformedURL(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutAirfield([]common.Airfield{})
+	err = plugin.PutAirfield([]airfield.Airfield{})
 	if err == nil {
 		t.Errorf("expected error but was successful")
 	}
@@ -260,8 +260,8 @@ func TestPutAirfieldWithBadStatus(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutAirfield([]common.Airfield{
-		common.Airfield{ID: "aHABER", ShortName: "HABER", Name: "HABERE POC69",
+	err = plugin.PutAirfield([]airfield.Airfield{
+		airfield.Airfield{ID: "aHABER", ShortName: "HABER", Name: "HABERE POC69",
 			Region: "FR", ICAO: "", Flags: 1032, Catalog: 0, Length: 0, Elevation: 1113,
 			Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
 	})

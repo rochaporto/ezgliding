@@ -29,6 +29,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
@@ -50,7 +51,7 @@ var serverTests = []ServerTest{
 	{
 		"query airfield json",
 		[]interface{}{
-			common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+			airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 				Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
 				Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 		},
@@ -63,7 +64,7 @@ var serverTests = []ServerTest{
 	{
 		"query airfield json accept in querystring",
 		[]interface{}{
-			common.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+			airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
 				Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
 				Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 		},
@@ -158,18 +159,18 @@ var serverTests = []ServerTest{
 }
 
 func serverFromTest(test ServerTest) Server {
-	airfields := []common.Airfield{}
+	airfields := []airfield.Airfield{}
 	waypoints := []common.Waypoint{}
 	for _, a := range test.dt {
 		switch a.(type) {
-		case common.Airfield:
-			airfields = append(airfields, a.(common.Airfield))
+		case airfield.Airfield:
+			airfields = append(airfields, a.(airfield.Airfield))
 		case common.Waypoint:
 			waypoints = append(waypoints, a.(common.Waypoint))
 		}
 	}
 	mock := &mock.Mock{
-		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]common.Airfield, error) {
+		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 			return airfields, test.perr
 		},
 		GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {

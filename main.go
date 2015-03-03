@@ -24,6 +24,7 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
+	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/cli"
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
@@ -46,15 +47,15 @@ func main() {
 		exit(-1)
 	}
 	airspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
-	airfield, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airfielder))
+	afield, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airfielder))
 	fght, err := plugin.NewPlugin(plugin.ID(cfg.Global.Flighter))
 	waypoint, err := plugin.NewPlugin(plugin.ID(cfg.Global.Waypointer))
 	airspace.Init(cfg)
-	airfield.Init(cfg)
+	afield.Init(cfg)
 	fght.Init(cfg)
 	waypoint.Init(cfg)
 	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer),
-		airfield.(common.Airfielder), fght.(flight.Flighter),
+		afield.(airfield.Airfielder), fght.(flight.Flighter),
 		waypoint.(common.Waypointer))
 	if err != nil {
 		glog.Errorf("Failed to create context object :: %v", err)

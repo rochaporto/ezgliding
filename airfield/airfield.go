@@ -17,7 +17,8 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package common
+// Package airfield holds all airfield functionality and structures.
+package airfield
 
 import (
 	"time"
