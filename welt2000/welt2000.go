@@ -35,9 +35,9 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/waypoint"
 	"github.com/rochaporto/rss"
 )
 
@@ -51,7 +51,7 @@ type Release struct {
 	Date      time.Time
 	Source    string
 	Airfields []airfield.Airfield
-	Waypoints []common.Waypoint
+	Waypoints []waypoint.Waypoint
 }
 
 var rssURL = "http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml"
@@ -123,7 +123,7 @@ func (wt *Welt2000) PutAirfield(airfields []airfield.Airfield) error {
 
 // GetWaypoint follows airfield.GetWaypoint().
 // FIXME: use region
-func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 	glog.V(10).Infof("GetWaypoint with regions %v and updatedSince %v", regions, updatedSince)
 	releases, err := List(wt.rssURL)
 	if err != nil {
@@ -144,7 +144,7 @@ func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]com
 	for _, v := range regions {
 		m[v] = true
 	}
-	var filtered []common.Waypoint
+	var filtered []waypoint.Waypoint
 	for _, a := range release.Waypoints {
 		if _, ok := m[a.Region]; ok {
 			filtered = append(filtered, a)
@@ -157,8 +157,8 @@ func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]com
 	return release.Waypoints, err
 }
 
-// PutWaypoint follows airfield.PutWaypoint().
-func (wt *Welt2000) PutWaypoint(waypoints []common.Waypoint) error {
+// PutWaypoint follows waypoint.PutWaypoint().
+func (wt *Welt2000) PutWaypoint(waypoints []waypoint.Waypoint) error {
 	return errors.New("not available for welt2000 plugin")
 }
 
@@ -306,7 +306,7 @@ func (r *Release) runwayType2Bit(t uint8) int {
 }
 
 func (r *Release) parseWaypoint(line string) error {
-	waypoint := common.Waypoint{
+	waypoint := waypoint.Waypoint{
 		Name: strings.Trim(line[0:6], " "), ID: strings.Trim(line[0:6], " "),
 		Description: strings.Trim(line[7:41], " "),
 		Latitude:    util.DMS2Decimal(line[45:52]), Longitude: util.DMS2Decimal(line[52:60]),

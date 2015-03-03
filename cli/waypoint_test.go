@@ -25,11 +25,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/plugin"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // ExampleWaypointGet uses the mock waypoint implementation to query data and
@@ -38,28 +38,28 @@ import (
 func ExampleWaypointGet() {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-				waypoints := []common.Waypoint{
-					common.Waypoint{
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+				waypoints := []waypoint.Waypoint{
+					waypoint.Waypoint{
 						ID: "MockID1", Name: "MockName",
 						Description: "MockDescription", Region: "FR", Flags: 0,
 						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 01, 0, 0, 0, 0, time.UTC),
 					},
-					common.Waypoint{
+					waypoint.Waypoint{
 						ID: "MockID2", Name: "MockName",
 						Description: "MockDescription", Region: "CH", Flags: 0,
 						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC),
 					},
-					common.Waypoint{
+					waypoint.Waypoint{
 						ID: "MockID3", Name: "MockName",
 						Description: "MockDescription", Region: "CH", Flags: 0,
 						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
 						Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC),
 					},
 				}
-				result := []common.Waypoint{}
+				result := []waypoint.Waypoint{}
 				for _, waypoint := range waypoints {
 					b := false
 					for _, r := range regions {
@@ -87,7 +87,7 @@ func ExampleWaypointGet() {
 func TestWaypointGetFailed(t *testing.T) {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 				return nil, errors.New("mock testing get waypoint failed")
 			},
 		},
@@ -101,7 +101,7 @@ func TestWaypointGetFailed(t *testing.T) {
 func TestWaypointGetBadAfter(t *testing.T) {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 				return nil, nil
 			},
 		},
@@ -117,9 +117,9 @@ func TestWaypointGetBadAfter(t *testing.T) {
 func ExampleWaypointPut() {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-				return []common.Waypoint{
-					common.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+				return []waypoint.Waypoint{
+					waypoint.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
 						Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.576},
 				}, nil
 			},
@@ -134,7 +134,7 @@ func ExampleWaypointPut() {
 func TestWaypointPutFailed(t *testing.T) {
 	err := plugin.Register(plugin.ID("wpputfailed"), plugin.Pluginer(
 		&mock.Mock{
-			PutWaypointF: func(waypoints []common.Waypoint) error {
+			PutWaypointF: func(waypoints []waypoint.Waypoint) error {
 				return errors.New("mock testing put waypoint failed")
 			},
 		}))
@@ -143,8 +143,8 @@ func TestWaypointPutFailed(t *testing.T) {
 	}
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-				return []common.Waypoint{common.Waypoint{}}, nil
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+				return []waypoint.Waypoint{waypoint.Waypoint{}}, nil
 			},
 		},
 	}
@@ -155,7 +155,7 @@ func TestWaypointPutFailed(t *testing.T) {
 func TestWaypointPutBadGet(t *testing.T) {
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 				return nil, errors.New("mock testing get waypoint failed")
 			},
 		},
@@ -184,8 +184,8 @@ func TestWaypointPutFailInit(t *testing.T) {
 	}
 	ctx := context.Context{
 		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
-				return []common.Waypoint{common.Waypoint{}}, nil
+			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+				return []waypoint.Waypoint{waypoint.Waypoint{}}, nil
 			},
 		},
 	}

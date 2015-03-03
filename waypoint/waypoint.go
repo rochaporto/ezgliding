@@ -17,7 +17,8 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package common
+// Package waypoint holds all waypoint interfaces and types/structs.
+package waypoint
 
 import (
 	"time"

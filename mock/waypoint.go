@@ -22,21 +22,21 @@ package mock
 import (
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
-// GetWaypoint is the mock implementation of common.Waypointer.GetWaypoint.
-func (mk *Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+// GetWaypoint is the mock implementation of waypoint.Waypointer.GetWaypoint.
+func (mk *Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 	if mk.GetWaypointF != nil {
 		return mk.GetWaypointF(regions, updatedSince)
 	}
-	return []common.Waypoint{}, nil
+	return []waypoint.Waypoint{}, nil
 }
 
-// PutWaypoint is the mock implementation of common.Waypointr.PutWaypoint.
-func (mk *Mock) PutWaypoint(waypoint []common.Waypoint) error {
+// PutWaypoint is the mock implementation of waypoint.Waypointr.PutWaypoint.
+func (mk *Mock) PutWaypoint(wpoint []waypoint.Waypoint) error {
 	if mk.PutWaypointF != nil {
-		return mk.PutWaypointF(waypoint)
+		return mk.PutWaypointF(wpoint)
 	}
 	return nil
 }

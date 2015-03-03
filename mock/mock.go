@@ -28,6 +28,7 @@ import (
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 const (
@@ -47,8 +48,8 @@ type Mock struct {
 	GetFlightFromIDF func(startID int, max int) ([]flight.Flight, error)
 	GetFlightByIDF   func(id int) (flight.Flight, error)
 	PutFlightF       func(flights []flight.Flight) error
-	GetWaypointF     func(regions []string, updatedSince time.Time) ([]common.Waypoint, error)
-	PutWaypointF     func(waypoint []common.Waypoint) error
+	GetWaypointF     func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error)
+	PutWaypointF     func(waypoint []waypoint.Waypoint) error
 }
 
 // Init is the mock implementation of common.Pluginer.Init.

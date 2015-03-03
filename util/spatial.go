@@ -25,7 +25,7 @@ import (
 
 	"github.com/paulmach/go.geojson"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // DMS2Decimal converts the given coordinates from DMS to decimal format.
@@ -62,8 +62,8 @@ func Struct2GeoJSON(features []interface{}) (*geojson.FeatureCollection, error) 
 			return nil, errors.New("geojson convertion not supported")
 		case airfield.Airfield:
 			f = airfield2GeoJSON([]airfield.Airfield{e.(airfield.Airfield)})
-		case common.Waypoint:
-			f = waypoint2GeoJSON([]common.Waypoint{e.(common.Waypoint)})
+		case waypoint.Waypoint:
+			f = waypoint2GeoJSON([]waypoint.Waypoint{e.(waypoint.Waypoint)})
 		}
 		result.AddFeature(f[0])
 	}
@@ -93,7 +93,7 @@ func airfield2GeoJSON(airfields []airfield.Airfield) []*geojson.Feature {
 }
 
 // waypoint2GeoJSON converts the given waypoint to GeoJSON format.
-func waypoint2GeoJSON(waypoints []common.Waypoint) []*geojson.Feature {
+func waypoint2GeoJSON(waypoints []waypoint.Waypoint) []*geojson.Feature {
 	result := []*geojson.Feature{}
 	for _, waypoint := range waypoints {
 		g := geojson.NewPointFeature([]float64{waypoint.Longitude, waypoint.Latitude})
@@ -110,7 +110,7 @@ func waypoint2GeoJSON(waypoints []common.Waypoint) []*geojson.Feature {
 }
 
 // GeoJSON2Struct returns airfield, waypoint, etc objects from the given GeoJSON.
-// The resulting array contains distinct types (airfield.Airfield, common.Waypoint,
+// The resulting array contains distinct types (airfield.Airfield, waypoint.Waypoint,
 // common.Airspace, ...) and the unmarshaling is done with the same rules as
 // described in Struct2GeoJSON.
 func GeoJSON2Struct(json string) ([]interface{}, error) {
@@ -148,8 +148,8 @@ func feature2Airfield(f *geojson.Feature) airfield.Airfield {
 	a.Latitude = f.Geometry.Point[1]
 	return a
 }
-func feature2Waypoint(f *geojson.Feature) common.Waypoint {
-	w := common.Waypoint{
+func feature2Waypoint(f *geojson.Feature) waypoint.Waypoint {
+	w := waypoint.Waypoint{
 		ID: f.PropertyMustString("ID"), Description: f.PropertyMustString("Description"),
 		Name: f.PropertyMustString("Name"), Region: f.PropertyMustString("Region"),
 		Flags: f.PropertyMustInt("Flags"), Elevation: f.PropertyMustInt("Elevation"),

@@ -24,15 +24,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 func TestGetWaypoint(t *testing.T) {
-	waypoints := []common.Waypoint{
-		common.Waypoint{Name: "TestMockWaypoint"},
+	waypoints := []waypoint.Waypoint{
+		waypoint.Waypoint{Name: "TestMockWaypoint"},
 	}
 	mock := Mock{
-		GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 			return waypoints, nil
 		},
 	}
@@ -57,12 +57,12 @@ func TestGetWaypointNotImplemented(t *testing.T) {
 }
 
 func TestPutWaypoint(t *testing.T) {
-	waypoints := []common.Waypoint{
-		common.Waypoint{Name: "TestMockWaypoint"},
+	waypoints := []waypoint.Waypoint{
+		waypoint.Waypoint{Name: "TestMockWaypoint"},
 	}
-	var result []common.Waypoint
+	var result []waypoint.Waypoint
 	mock := Mock{
-		PutWaypointF: func(w []common.Waypoint) error {
+		PutWaypointF: func(w []waypoint.Waypoint) error {
 			result = w
 			return nil
 		},

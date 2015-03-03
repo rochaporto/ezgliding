@@ -29,8 +29,8 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 var GMT, _ = time.LoadLocation("GMT")
@@ -154,7 +154,7 @@ type GetWaypointTest struct {
 	rss string
 	rg  string
 	d   time.Time
-	rs  []common.Waypoint
+	rs  []waypoint.Waypoint
 	err bool
 }
 
@@ -164,8 +164,8 @@ var getWaypointTests = []GetWaypointTest{
 		"./t/test-releases-list.xml",
 		"CH",
 		time.Time{},
-		[]common.Waypoint{
-			common.Waypoint{
+		[]waypoint.Waypoint{
+			waypoint.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.57277777777778, Longitude: 8.415277777777778, Region: "CH",
 				Update: time.Date(2014, time.February, 24, 12, 0, 0, 0, GMT),
@@ -178,7 +178,7 @@ var getWaypointTests = []GetWaypointTest{
 		"./t/test-releases-list.xml",
 		"CH",
 		time.Date(2014, time.February, 25, 0, 0, 0, 0, time.UTC),
-		[]common.Waypoint{},
+		[]waypoint.Waypoint{},
 		false,
 	},
 	{"get waypoint missing rss",
@@ -186,7 +186,7 @@ var getWaypointTests = []GetWaypointTest{
 		"./t/missing-release-list.xml",
 		"CH",
 		time.Time{},
-		[]common.Waypoint{},
+		[]waypoint.Waypoint{},
 		true,
 	},
 	{"get waypoint missing release",
@@ -194,7 +194,7 @@ var getWaypointTests = []GetWaypointTest{
 		"./t/test-releases-list.xml",
 		"CH",
 		time.Time{},
-		[]common.Waypoint{},
+		[]waypoint.Waypoint{},
 		true,
 	},
 	{"get waypoint with 0 values for region",
@@ -202,7 +202,7 @@ var getWaypointTests = []GetWaypointTest{
 		"./t/test-releases-list.xml",
 		"ZZ",
 		time.Time{},
-		[]common.Waypoint{},
+		[]waypoint.Waypoint{},
 		false,
 	},
 }
@@ -220,7 +220,7 @@ func TestGetWaypoint(t *testing.T) {
 			t.Errorf("Failed to initialize plugin :: %v", err)
 		}
 
-		var waypoints []common.Waypoint
+		var waypoints []waypoint.Waypoint
 		waypoints, err = plugin.GetWaypoint([]string{test.rg}, test.d)
 		if err != nil && test.err {
 			continue
@@ -510,13 +510,13 @@ func TestParseCatalogNumber(t *testing.T) {
 func TestParseWaypoint(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("FURKAP FURKAPASS PASSHOEHE               2432N463422E0082455CHQ6"))
-	waypoint := r.Waypoints[0]
-	expected := common.Waypoint{
+	wpoint := r.Waypoints[0]
+	expected := waypoint.Waypoint{
 		Name: "FURKAP", ID: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 		Latitude: 46.57277777777778, Longitude: 8.415277777777778, Elevation: 2432, Region: "CH",
 	}
-	if waypoint != expected {
-		t.Errorf("Parse failed for waypoint: got %v instead of %v", waypoint, expected)
+	if wpoint != expected {
+		t.Errorf("Parse failed for waypoint: got %v instead of %v", wpoint, expected)
 	}
 }
 

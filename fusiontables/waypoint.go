@@ -25,12 +25,12 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // GetWaypoint follows common.GetWaypoint().
-func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 	glog.V(10).Infof("GetWaypoint with regions %v and updatedSince %v", regions, updatedSince)
 
 	var qry string
@@ -47,19 +47,19 @@ func (ft *FusionTables) GetWaypoint(regions []string, updatedSince time.Time) ([
 	}
 	glog.V(20).Infof("unparsed response :: %v", resp)
 
-	r, err := util.CSV2Struct(resp, reflect.ValueOf([]common.Waypoint{}).Type(),
-		reflect.ValueOf(common.Waypoint{}).Type())
+	r, err := util.CSV2Struct(resp, reflect.ValueOf([]waypoint.Waypoint{}).Type(),
+		reflect.ValueOf(waypoint.Waypoint{}).Type())
 	if err != nil {
 		return nil, err
 	}
-	result := r.Interface().([]common.Waypoint)
+	result := r.Interface().([]waypoint.Waypoint)
 	glog.V(5).Infof("request %v returned %v results", qry, len(result))
 
 	return result, nil
 }
 
 // PutWaypoint follows common.PutWaypoint().
-func (ft *FusionTables) PutWaypoint(waypoints []common.Waypoint) error {
+func (ft *FusionTables) PutWaypoint(waypoints []waypoint.Waypoint) error {
 	csv := util.Struct2CSV(waypoints)
 	resp, err := ft.doImport(csv, ft.WaypointTableID)
 	if err != nil {

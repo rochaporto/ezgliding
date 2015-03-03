@@ -28,10 +28,10 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // CmdWaypointGet command gets waypoint information and outputs the result.
@@ -49,7 +49,7 @@ Gets waypoint information according to the given parameters.
 func runWaypointGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
-	waypoint := ctx.Waypoint
+	wpoint := ctx.Waypoint
 
 	tafter := time.Time{}
 	if *after != "" {
@@ -59,7 +59,7 @@ func runWaypointGet(cmd *commander.Command, args []string) {
 			return
 		}
 	}
-	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), tafter)
+	waypoints, err := wpoint.(waypoint.Waypointer).GetWaypoint(strings.Split(*region, ","), tafter)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get waypoint :: %v", err)
 		// FIXME: must return -1, but no way now to check this in test
@@ -99,8 +99,8 @@ func runWaypointPut(cmd *commander.Command, args []string) {
 		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
 		return
 	}
-	waypoint := ctx.Waypoint
-	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
+	wpoint := ctx.Waypoint
+	waypoints, err := wpoint.(waypoint.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get waypoint :: %v\n", err)
 		return
@@ -108,7 +108,7 @@ func runWaypointPut(cmd *commander.Command, args []string) {
 	glog.V(5).Infof("putting %v waypoints", len(waypoints))
 	glog.V(20).Infof("%v", waypoints)
 	if len(waypoints) > 0 {
-		err = destPlugin.(common.Waypointer).PutWaypoint(waypoints)
+		err = destPlugin.(waypoint.Waypointer).PutWaypoint(waypoints)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to put waypoints :: %v\n", err)
 			return

@@ -27,8 +27,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 type GetWaypointTest struct {
@@ -36,7 +36,7 @@ type GetWaypointTest struct {
 	rg  []string
 	tm  time.Time
 	rp  string
-	rs  []common.Waypoint
+	rs  []waypoint.Waypoint
 	err bool
 }
 
@@ -49,8 +49,8 @@ var getGetWaypointTests = []GetWaypointTest{
 ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
 FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
-		[]common.Waypoint{
-			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+		[]waypoint.Waypoint{
+			waypoint.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
 				Latitude: 46.270, Longitude: 6.463},
 		},
@@ -64,7 +64,7 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +00
 ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
 FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC,a
 `,
-		[]common.Waypoint{common.Waypoint{}},
+		[]waypoint.Waypoint{waypoint.Waypoint{}},
 		true,
 	},
 	{
@@ -75,8 +75,8 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +00
 ID,Name,Description,Region,Flags,Elevation,Latitude,Longitude,Update
 FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.270,6.463,0001-01-01 00:00:00 +0000 UTC
 `,
-		[]common.Waypoint{
-			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+		[]waypoint.Waypoint{
+			waypoint.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
 				Latitude: 46.270, Longitude: 6.463},
 		},
@@ -151,7 +151,7 @@ func TestGetWaypointWithMalformedURL(t *testing.T) {
 
 type PutWaypointTest struct {
 	t   string
-	in  []common.Waypoint
+	in  []waypoint.Waypoint
 	csv string
 	err bool
 }
@@ -159,8 +159,8 @@ type PutWaypointTest struct {
 var putWaypointTests = []PutWaypointTest{
 	{
 		"simple update",
-		[]common.Waypoint{
-			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+		[]waypoint.Waypoint{
+			waypoint.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
 				Latitude: 46.270, Longitude: 6.463},
 		},
@@ -171,8 +171,8 @@ FURKAP,FURKAP,FURKAPASS PASSHOEHE,CH,0,2432,46.27,6.463,0001-01-01 00:00:00 +000
 	},
 	{
 		"simple failure",
-		[]common.Waypoint{
-			common.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+		[]waypoint.Waypoint{
+			waypoint.Waypoint{ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 				Region: "CH", Flags: 0, Elevation: 2432,
 				Latitude: 46.270, Longitude: 6.463},
 		},
@@ -223,7 +223,7 @@ func TestPutWaypointWithMissingLocation(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutWaypoint([]common.Waypoint{})
+	err = plugin.PutWaypoint([]waypoint.Waypoint{})
 	if err == nil {
 		t.Errorf("expected error but was successful")
 	}
@@ -238,7 +238,7 @@ func TestPutWaypointWithMalformedURL(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutWaypoint([]common.Waypoint{})
+	err = plugin.PutWaypoint([]waypoint.Waypoint{})
 	if err == nil {
 		t.Errorf("expected error but was successful")
 	}
@@ -258,8 +258,8 @@ func TestPutWaypointWithBadStatus(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to initialize plugin :: %v", err)
 	}
-	err = plugin.PutWaypoint([]common.Waypoint{
-		common.Waypoint{ID: "aFURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
+	err = plugin.PutWaypoint([]waypoint.Waypoint{
+		waypoint.Waypoint{ID: "aFURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
 			Region: "CH", Flags: 0, Elevation: 2432,
 			Latitude: 46.270, Longitude: 6.463},
 	})

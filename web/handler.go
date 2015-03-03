@@ -28,7 +28,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // makeHandler is a common wrapper for all handlers.
@@ -106,8 +106,8 @@ func (srv *Server) waypointHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	waypoint := srv.ctx.Waypoint
-	waypoints, err := waypoint.(common.Waypointer).GetWaypoint(params["region"], updated)
+	wpoint := srv.ctx.Waypoint
+	waypoints, err := wpoint.(waypoint.Waypointer).GetWaypoint(params["region"], updated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

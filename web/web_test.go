@@ -30,11 +30,11 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 type ServerTest struct {
@@ -77,7 +77,7 @@ var serverTests = []ServerTest{
 	{
 		"query waypoint json",
 		[]interface{}{
-			common.Waypoint{
+			waypoint.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
@@ -91,7 +91,7 @@ var serverTests = []ServerTest{
 	{
 		"query waypoint json zipped",
 		[]interface{}{
-			common.Waypoint{
+			waypoint.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
@@ -160,20 +160,20 @@ var serverTests = []ServerTest{
 
 func serverFromTest(test ServerTest) Server {
 	airfields := []airfield.Airfield{}
-	waypoints := []common.Waypoint{}
+	waypoints := []waypoint.Waypoint{}
 	for _, a := range test.dt {
 		switch a.(type) {
 		case airfield.Airfield:
 			airfields = append(airfields, a.(airfield.Airfield))
-		case common.Waypoint:
-			waypoints = append(waypoints, a.(common.Waypoint))
+		case waypoint.Waypoint:
+			waypoints = append(waypoints, a.(waypoint.Waypoint))
 		}
 	}
 	mock := &mock.Mock{
 		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 			return airfields, test.perr
 		},
-		GetWaypointF: func(regions []string, updatedSince time.Time) ([]common.Waypoint, error) {
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 			return waypoints, test.perr
 		},
 	}

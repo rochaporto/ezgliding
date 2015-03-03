@@ -24,7 +24,7 @@ import (
 	"testing"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 type DMS2DecimalTest struct {
@@ -85,7 +85,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 	Struct2GeoJSONTest{
 		"simple waypoint conversion",
 		[]interface{}{
-			common.Waypoint{
+			waypoint.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
@@ -98,7 +98,7 @@ var struct2GeoJSONTests = []Struct2GeoJSONTest{
 			airfield.Airfield{ID: "HABER", ShortName: "HABER", Name: "HABERE POC69",
 				Region: "FR", ICAO: "HHHH", Flags: 1032, Catalog: 69, Length: 900, Elevation: 1113,
 				Runway: "0119", Frequency: 122.5, Latitude: 46.270, Longitude: 6.463},
-			common.Waypoint{
+			waypoint.Waypoint{
 				ID: "FURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE", Elevation: 2432,
 				Latitude: 46.572, Longitude: 8.415, Region: "CH", Flags: 0,
 			},
