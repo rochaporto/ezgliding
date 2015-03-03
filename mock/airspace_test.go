@@ -24,15 +24,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 )
 
 func TestGetAirspace(t *testing.T) {
-	airspaces := []common.Airspace{
-		common.Airspace{Name: "TestMockAirspace"},
+	airspaces := []airspace.Airspace{
+		airspace.Airspace{Name: "TestMockAirspace"},
 	}
 	mock := Mock{
-		GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+		GetAirspaceF: func(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
 			return airspaces, nil
 		},
 	}
@@ -57,12 +57,12 @@ func TestGetAirspaceNotImplemented(t *testing.T) {
 }
 
 func TestPutAirspace(t *testing.T) {
-	airspaces := []common.Airspace{
-		common.Airspace{Name: "TestMockAirspace"},
+	airspaces := []airspace.Airspace{
+		airspace.Airspace{Name: "TestMockAirspace"},
 	}
-	var result []common.Airspace
+	var result []airspace.Airspace
 	mock := Mock{
-		PutAirspaceF: func(a []common.Airspace) error {
+		PutAirspaceF: func(a []airspace.Airspace) error {
 			result = a
 			return nil
 		},

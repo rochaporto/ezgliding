@@ -25,8 +25,8 @@ import (
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/airfield"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/cli"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/flight"
@@ -47,15 +47,15 @@ func main() {
 		glog.Errorf("Failed to load config :: %v", err)
 		exit(-1)
 	}
-	airspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
+	aspace, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airspacer))
 	afield, err := plugin.NewPlugin(plugin.ID(cfg.Global.Airfielder))
 	fght, err := plugin.NewPlugin(plugin.ID(cfg.Global.Flighter))
 	wpoint, err := plugin.NewPlugin(plugin.ID(cfg.Global.Waypointer))
-	airspace.Init(cfg)
+	aspace.Init(cfg)
 	afield.Init(cfg)
 	fght.Init(cfg)
 	wpoint.Init(cfg)
-	ctx, err := context.NewContext(cfg, airspace.(common.Airspacer),
+	ctx, err := context.NewContext(cfg, aspace.(airspace.Airspacer),
 		afield.(airfield.Airfielder), fght.(flight.Flighter),
 		wpoint.(waypoint.Waypointer))
 	if err != nil {

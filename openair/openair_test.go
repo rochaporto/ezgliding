@@ -20,7 +20,6 @@
 package openair
 
 import (
-	"github.com/rochaporto/ezgliding/common"
 	"image/color"
 	"io"
 	"io/ioutil"
@@ -28,12 +27,14 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+
+	"github.com/rochaporto/ezgliding/airspace"
 )
 
 type ParseTest struct {
 	t string
 	c string
-	r []common.Airspace
+	r []airspace.Airspace
 }
 
 var parseTests = []ParseTest{
@@ -52,26 +53,26 @@ DB 45:55:41 N 005:54:39 E,46:10:24 N 005:39:42 E
 DP 46:10:24 N 005:39:42 E
 DC 1.35
 DA 10,270,290`,
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'A', Name: "TMA GENEVE partie  2",
 				Floor: "5500FT AMSL", Ceiling: "FL 185",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Coordinate1: "45:55:41 N 005:54:39 E",
 						Coordinate2: "46:10:24 N 005:39:42 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+					airspace.Segment{
+						Type: airspace.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Coordinate1: "46:10:24 N 005:39:42 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Circle, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+					airspace.Segment{
+						Type: airspace.Circle, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Radius: 1.35,
 					},
-					common.AirspaceSegment{
-						Type: common.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+					airspace.Segment{
+						Type: airspace.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Radius: 10, AngleStart: 270, AngleEnd: 290,
 					},
 				},
@@ -88,18 +89,18 @@ V X=46:03:03 N 005:47:12 E
 DB 45:55:41 N 005:54:39 E,46:10:24 N 005:39:42 E
 DP 46:10:24 N 005:39:42 E
 *`,
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'A', Name: "TMA GENEVE partie  2",
 				Floor: "5500FT AMSL", Ceiling: "FL 185",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Coordinate1: "45:55:41 N 005:54:39 E",
 						Coordinate2: "46:10:24 N 005:39:42 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: true,
+					airspace.Segment{
+						Type: airspace.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: true,
 						Coordinate1: "46:10:24 N 005:39:42 E",
 					},
 				},
@@ -122,28 +123,28 @@ V D=-
 V X=46:03:03 N 005:47:12 E
 DB 45:55:41 N 005:54:39 E,46:10:24 N 005:39:42 E
 DP 46:10:24 N 005:39:42 E`,
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "TMA GENEVE partie  1",
 				Floor: "3500FT AMSL", Ceiling: "FL 195",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Clockwise: false,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Clockwise: false,
 						Coordinate1: "46:22:03 N 006:33:04 E",
 					},
 				},
 			},
-			common.Airspace{
+			airspace.Airspace{
 				Class: 'A', Name: "TMA GENEVE partie  2",
 				Floor: "5500FT AMSL", Ceiling: "FL 185",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: false,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Arc, X: "46:03:03 N 005:47:12 E", Clockwise: false,
 						Coordinate1: "45:55:41 N 005:54:39 E",
 						Coordinate2: "46:10:24 N 005:39:42 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: false,
+					airspace.Segment{
+						Type: airspace.Polygon, X: "46:03:03 N 005:47:12 E", Clockwise: false,
 						Coordinate1: "46:10:24 N 005:39:42 E",
 					},
 				},
@@ -161,18 +162,18 @@ AH FL 195
 AL 3500FT AMSL
 DP 46:22:03 N 006:33:04 E
 `,
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "TMA GENEVE partie  1",
 				Floor: "3500FT AMSL", Ceiling: "FL 195",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Clockwise: false,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Clockwise: false,
 						Coordinate1: "46:22:03 N 006:33:04 E",
 					},
 				},
-				Pen: common.Pen{
-					Style: common.Solid, Width: 2,
+				Pen: airspace.Pen{
+					Style: airspace.Solid, Width: 2,
 					Color:       color.RGBA64{R: 0, G: 0, B: 255, A: 1.0},
 					InsideColor: color.RGBA64{},
 				},
@@ -247,16 +248,16 @@ func TestFetchEmpty(t *testing.T) {
 }
 
 func TestStyleToAirspace(t *testing.T) {
-	if styleToAirspace(0) != common.Solid {
+	if styleToAirspace(0) != airspace.Solid {
 		t.Errorf("Failed to return proper Solid pen style")
 	}
-	if styleToAirspace(1) != common.Dash {
+	if styleToAirspace(1) != airspace.Dash {
 		t.Errorf("Failed to return proper Dash pen style")
 	}
-	if styleToAirspace(5) != common.None {
+	if styleToAirspace(5) != airspace.None {
 		t.Errorf("Failed to return proper None pen style")
 	}
-	if styleToAirspace(-1) != common.None {
+	if styleToAirspace(-1) != airspace.None {
 		t.Errorf("Failed to return proper unknown pen style")
 	}
 }

@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/waypoint"
@@ -42,8 +42,8 @@ type Mock struct {
 	InitF            func(cfg config.Config) error
 	GetAirfieldF     func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error)
 	PutAirfieldF     func(afield []airfield.Airfield) error
-	GetAirspaceF     func(regions []string, updatedSince time.Time) ([]common.Airspace, error)
-	PutAirspaceF     func(airspace []common.Airspace) error
+	GetAirspaceF     func(regions []string, updatedSince time.Time) ([]airspace.Airspace, error)
+	PutAirspaceF     func(aspace []airspace.Airspace) error
 	GetFlightF       func(regions []string, updatedSince time.Time) ([]flight.Flight, error)
 	GetFlightFromIDF func(startID int, max int) ([]flight.Flight, error)
 	GetFlightByIDF   func(id int) (flight.Flight, error)

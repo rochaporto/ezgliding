@@ -34,7 +34,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/openair"
 	"golang.org/x/net/html"
@@ -95,8 +95,8 @@ func (sw *SoaringWeb) Init(cfg config.Config) error {
 }
 
 // GetAirspace follows Airspace.GetAirspace().
-func (sw *SoaringWeb) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-	var result []common.Airspace
+func (sw *SoaringWeb) GetAirspace(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
+	var result []airspace.Airspace
 
 	releases, err := sw.list(sw.BaseURL, regions)
 	if err != nil {
@@ -105,7 +105,7 @@ func (sw *SoaringWeb) GetAirspace(regions []string, updatedSince time.Time) ([]c
 	for r := range releases {
 		release := releases[r]
 		if release.Date.After(updatedSince) {
-			var airspaces []common.Airspace
+			var airspaces []airspace.Airspace
 			airspaces, err = openair.Fetch(release.Location)
 			if err != nil {
 				// retry by prefixing the base url
@@ -122,7 +122,7 @@ func (sw *SoaringWeb) GetAirspace(regions []string, updatedSince time.Time) ([]c
 }
 
 // PutAirspace follows Airspacer.PutAirspace().
-func (sw *SoaringWeb) PutAirspace(airspace []common.Airspace) error {
+func (sw *SoaringWeb) PutAirspace(airspace []airspace.Airspace) error {
 	return nil
 }
 

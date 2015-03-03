@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 )
@@ -35,9 +35,9 @@ import (
 func ExampleAirspaceGet() {
 	ctx := context.Context{
 		Airspace: &mock.Mock{
-			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
-				return []common.Airspace{
-					common.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName",
+			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
+				return []airspace.Airspace{
+					airspace.Airspace{ID: "MockID", Date: time.Time{}, Class: 'C', Name: "MockName",
 						Ceiling: "1000FT AMSL", Floor: "500FT AMSL", Update: time.Time{}},
 				}, nil
 			},
@@ -51,7 +51,7 @@ func ExampleAirspaceGet() {
 func TestAirspaceGetFailed(t *testing.T) {
 	ctx := context.Context{
 		Airspace: &mock.Mock{
-			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+			GetAirspaceF: func(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
 				return nil, errors.New("mock testing get airspace failed")
 			},
 		},

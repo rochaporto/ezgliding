@@ -27,7 +27,7 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/context"
 )
 
@@ -49,8 +49,8 @@ Example:
 func runAirspaceGet(cmd *commander.Command, args []string) {
 	var err error
 	ctx := context.Ctx
-	airspace := ctx.Airspace
-	airspaces, err := airspace.(common.Airspacer).GetAirspace(strings.Split(*region, ","), time.Time{})
+	aspace := ctx.Airspace
+	airspaces, err := aspace.(airspace.Airspacer).GetAirspace(strings.Split(*region, ","), time.Time{})
 	if err != nil {
 		glog.Errorf("Failed to get airspace :: %v", err)
 		// FIXME: must return -1, but no way now to check this in test

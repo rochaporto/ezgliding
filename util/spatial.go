@@ -111,7 +111,7 @@ func waypoint2GeoJSON(waypoints []waypoint.Waypoint) []*geojson.Feature {
 
 // GeoJSON2Struct returns airfield, waypoint, etc objects from the given GeoJSON.
 // The resulting array contains distinct types (airfield.Airfield, waypoint.Waypoint,
-// common.Airspace, ...) and the unmarshaling is done with the same rules as
+// airspace.Airspace, ...) and the unmarshaling is done with the same rules as
 // described in Struct2GeoJSON.
 func GeoJSON2Struct(json string) ([]interface{}, error) {
 	result := []interface{}{}

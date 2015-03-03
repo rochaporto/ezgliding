@@ -22,19 +22,19 @@ package mock
 import (
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 )
 
-// GetAirspace is the mock implementation of common.Airspacer.GetAirspace.
-func (mk *Mock) GetAirspace(regions []string, updatedSince time.Time) ([]common.Airspace, error) {
+// GetAirspace is the mock implementation of airspace.Airspacer.GetAirspace.
+func (mk *Mock) GetAirspace(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
 	if mk.GetAirspaceF != nil {
 		return mk.GetAirspaceF(regions, updatedSince)
 	}
-	return []common.Airspace{}, nil
+	return []airspace.Airspace{}, nil
 }
 
-// PutAirspace is the mock implementation of common.Airspacer.PutAirspace.
-func (mk *Mock) PutAirspace(airspace []common.Airspace) error {
+// PutAirspace is the mock implementation of airspace.Airspacer.PutAirspace.
+func (mk *Mock) PutAirspace(airspace []airspace.Airspace) error {
 	if mk.PutAirspaceF != nil {
 		return mk.PutAirspaceF(airspace)
 	}

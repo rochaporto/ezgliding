@@ -17,11 +17,8 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// Package common provides common functionality and interfaces.
-//
-// It includes methods to manage airfield, airspace and waypoint
-// data, as well as other utility libraries.
-package common
+// Package airspace provides airspace related interfaces and types.//
+package airspace
 
 import (
 	"image/color"
@@ -51,12 +48,12 @@ type Airspace struct {
 	Ceiling  string
 	Floor    string
 	Label    []string
-	Segments []AirspaceSegment
+	Segments []Segment
 	Pen      Pen
 	Update   time.Time
 }
 
-// AirspaceSegment is one of polygon, arc, circle.
+// Segment is one of polygon, arc, circle.
 //
 // Clockwise indicates direction for building arcs.
 //
@@ -67,8 +64,8 @@ type Airspace struct {
 //   Arc: radius, start, end || coordinate1, coordinate2 (center in X)
 //   Circle: radius (from X)
 //
-type AirspaceSegment struct {
-	Type        AirspaceSegmentType
+type Segment struct {
+	Type        SegmentType
 	Clockwise   bool
 	X           string
 	W           int
@@ -79,12 +76,12 @@ type AirspaceSegment struct {
 	Coordinate2 string
 }
 
-// AirspaceSegmentType is an int for an AirspaceSegment.
-type AirspaceSegmentType int
+// SegmentType is an int for an AirspaceSegment.
+type SegmentType int
 
 // Constants for airspace record types
 const (
-	Polygon AirspaceSegmentType = iota
+	Polygon SegmentType = iota
 	Arc
 	Circle
 )

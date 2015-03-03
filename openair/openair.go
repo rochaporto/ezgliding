@@ -33,16 +33,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 )
 
 // Local temporary storage for airspace pen/brush types
 // Key is the airspace class, value in the Pen object
-var airspacePens = map[byte]common.Pen{}
+var airspacePens = map[byte]airspace.Pen{}
 
 // Fetch gets and returns the airspace definitions at the given location
 // Both http URIs and local (relative or absolute) paths are supported.
-func Fetch(location string) ([]common.Airspace, error) {
+func Fetch(location string) ([]airspace.Airspace, error) {
 	var content []byte
 
 	resp, err := http.Get(location)
@@ -61,9 +61,9 @@ func Fetch(location string) ([]common.Airspace, error) {
 
 // Parse parses the content given, retrieving the corresponding array
 // of Airspace objects.
-func Parse(content []byte) ([]common.Airspace, error) {
+func Parse(content []byte) ([]airspace.Airspace, error) {
 	items := strings.Split(string(content), "*\n")
-	result := []common.Airspace{}
+	result := []airspace.Airspace{}
 	for i := range items {
 		airspace, found, err := parseSingle([]byte(items[i]))
 		if err != nil {
@@ -77,25 +77,25 @@ func Parse(content []byte) ([]common.Airspace, error) {
 }
 
 // styleToAirspace converts the given value to the corresponding enum
-// value in common.PenStyle.
+// value in airspace.PenStyle.
 // Supported values are 0 (Solid), 1 (Dash), 5 (None). Any other value
 // will also return None.
-func styleToAirspace(value int) common.PenStyle {
+func styleToAirspace(value int) airspace.PenStyle {
 	switch value {
 	case 0:
-		return common.Solid
+		return airspace.Solid
 	case 1:
-		return common.Dash
+		return airspace.Dash
 	default:
-		return common.None
+		return airspace.None
 	}
 }
 
 // parseSingle expects a single airspace definition in the content object,
 // returning the corresponding Airspace object.
 // It is usually called by Parse.
-func parseSingle(content []byte) (common.Airspace, bool, error) {
-	var airspace common.Airspace
+func parseSingle(content []byte) (airspace.Airspace, bool, error) {
+	var aspace airspace.Airspace
 	var x string
 	var clockwise bool
 	found := false
@@ -110,36 +110,36 @@ func parseSingle(content []byte) (common.Airspace, bool, error) {
 		key, value := elems[0], elems[1]
 		switch key {
 		case "AC":
-			airspace.Class = value[0]
-			airspace.Pen = airspacePens[airspace.Class]
+			aspace.Class = value[0]
+			aspace.Pen = airspacePens[aspace.Class]
 		case "AN":
 			found = true
-			airspace.Name = strings.Trim(value, " ")
+			aspace.Name = strings.Trim(value, " ")
 		case "AL":
-			airspace.Floor = value
+			aspace.Floor = value
 		case "AH":
-			airspace.Ceiling = value
+			aspace.Ceiling = value
 		case "DA":
 			values := strings.Split(value, ",")
 			angleStart, _ := strconv.ParseFloat(values[1], 64)
 			angleEnd, _ := strconv.ParseFloat(values[2], 64)
 			radius, _ := strconv.ParseFloat(values[0], 64)
-			airspace.Segments = append(airspace.Segments,
-				common.AirspaceSegment{Type: common.Arc, X: x, Clockwise: clockwise,
+			aspace.Segments = append(aspace.Segments,
+				airspace.Segment{Type: airspace.Arc, X: x, Clockwise: clockwise,
 					Radius: radius, AngleStart: angleStart, AngleEnd: angleEnd})
 		case "DB":
 			values := strings.Split(value, ",")
-			airspace.Segments = append(airspace.Segments,
-				common.AirspaceSegment{Type: common.Arc, X: x, Clockwise: clockwise,
+			aspace.Segments = append(aspace.Segments,
+				airspace.Segment{Type: airspace.Arc, X: x, Clockwise: clockwise,
 					Coordinate1: values[0], Coordinate2: values[1]})
 		case "DC":
 			radius, _ := strconv.ParseFloat(value, 64)
-			airspace.Segments = append(airspace.Segments,
-				common.AirspaceSegment{Type: common.Circle, X: x, Clockwise: clockwise,
+			aspace.Segments = append(aspace.Segments,
+				airspace.Segment{Type: airspace.Circle, X: x, Clockwise: clockwise,
 					Radius: radius})
 		case "DP":
-			airspace.Segments = append(airspace.Segments,
-				common.AirspaceSegment{Type: common.Polygon, X: x, Clockwise: clockwise, Coordinate1: value})
+			aspace.Segments = append(aspace.Segments,
+				airspace.Segment{Type: airspace.Polygon, X: x, Clockwise: clockwise, Coordinate1: value})
 		case "V":
 			splitequals := strings.Split(value, "=")
 			varkey := splitequals[0]
@@ -156,8 +156,8 @@ func parseSingle(content []byte) (common.Airspace, bool, error) {
 			r, _ := strconv.Atoi(split[2])
 			g, _ := strconv.Atoi(split[3])
 			b, _ := strconv.Atoi(split[4])
-			airspacePens[airspace.Class] = common.Pen{
-				Style: common.Solid, Width: width,
+			airspacePens[aspace.Class] = airspace.Pen{
+				Style: airspace.Solid, Width: width,
 				Color:       color.RGBA64{R: uint16(r), G: uint16(g), B: uint16(b), A: 1.0},
 				InsideColor: color.RGBA64{},
 			}
@@ -168,9 +168,9 @@ func parseSingle(content []byte) (common.Airspace, bool, error) {
 			//b, _ := strconv.Atoi(split[2])
 			//airspacePens[airspace.Class].InsideColor = color.RGBA64{}
 		default:
-			return common.Airspace{}, false, fmt.Errorf("Unrecognized key '%v' in '%v'", key, line)
+			return airspace.Airspace{}, false, fmt.Errorf("Unrecognized key '%v' in '%v'", key, line)
 		}
 	}
 
-	return airspace, found, nil
+	return aspace, found, nil
 }

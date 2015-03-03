@@ -20,8 +20,6 @@
 package soaringweb
 
 import (
-	"github.com/rochaporto/ezgliding/common"
-	"github.com/rochaporto/ezgliding/config"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -29,6 +27,9 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/rochaporto/ezgliding/airspace"
+	"github.com/rochaporto/ezgliding/config"
 )
 
 type ParseTest struct {
@@ -205,7 +206,7 @@ type GetAirspaceTest struct {
 	b  string
 	rg string
 	d  time.Time
-	r  []common.Airspace
+	r  []airspace.Airspace
 }
 
 var getAirspaceTests = []GetAirspaceTest{
@@ -213,40 +214,40 @@ var getAirspaceTests = []GetAirspaceTest{
 		"./t",
 		"FR",
 		time.Time{},
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "CTR Annecy 118.2",
 				Floor: "SFC", Ceiling: "3500FT AMSL",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "46:02:56 N 006:09:33 E",
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "46:02:56 N 006:09:33 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:59:06 N 006:14:32 E",
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:59:06 N 006:14:32 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:48:36 N 006:02:30 E",
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:48:36 N 006:02:30 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Arc, X: "45:55:40 N 006:05:41 E", Clockwise: false,
+					airspace.Segment{
+						Type: airspace.Arc, X: "45:55:40 N 006:05:41 E", Clockwise: false,
 						Coordinate1: "45:48:36 N 006:02:30 E", Coordinate2: "45:55:57 N 005:55:05 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, X: "45:55:40 N 006:05:41 E",
+					airspace.Segment{
+						Type: airspace.Polygon, X: "45:55:40 N 006:05:41 E",
 						Coordinate1: "45:55:57 N 005:55:05 E",
 					},
 				},
 			},
-			common.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "Geneve9 C 126.35",
 				Floor: "FL115", Ceiling: "FL195",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Clockwise: false,
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Clockwise: false,
 						Coordinate1: "45:52:25 N 006:07:45 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, Clockwise: false,
+					airspace.Segment{
+						Type: airspace.Polygon, Clockwise: false,
 						Coordinate1: "45:50:38 N 006:06:05 E",
 					},
 				},
@@ -257,16 +258,16 @@ var getAirspaceTests = []GetAirspaceTest{
 		"./t",
 		"MP",
 		time.Date(2014, time.August, 25, 0, 0, 0, 0, time.UTC),
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "CTR Chambery2 118.3",
 				Floor: "1160FT AMSL", Ceiling: "3500FT AMSL",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
 					},
 				},
 			},
@@ -276,16 +277,16 @@ var getAirspaceTests = []GetAirspaceTest{
 		"./t/wb",
 		"PT",
 		time.Time{},
-		[]common.Airspace{
-			common.Airspace{
+		[]airspace.Airspace{
+			airspace.Airspace{
 				Class: 'C', Name: "CTR Chambery2 118.3",
 				Floor: "1160FT AMSL", Ceiling: "3500FT AMSL",
-				Segments: []common.AirspaceSegment{
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
+				Segments: []airspace.Segment{
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:39:35 N 005:55:48 E",
 					},
-					common.AirspaceSegment{
-						Type: common.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
+					airspace.Segment{
+						Type: airspace.Polygon, Coordinate1: "45:36:28 N 005:56:03 E",
 					},
 				},
 			},
@@ -305,7 +306,7 @@ func TestGetAirspace(t *testing.T) {
 			t.Errorf("Failed to initialize plugin :: %v", err)
 		}
 
-		var airspaces []common.Airspace
+		var airspaces []airspace.Airspace
 		airspaces, err = plugin.GetAirspace([]string{test.rg}, test.d)
 		if err != nil {
 			t.Errorf("Failed to get airspace :: %v", err)
@@ -316,11 +317,11 @@ func TestGetAirspace(t *testing.T) {
 		}
 
 		for i := range airspaces {
-			var airspace = airspaces[i]
+			var aspace = airspaces[i]
 			var expected = test.r[i]
-			airspace.Pen = common.Pen{}
-			if !reflect.DeepEqual(airspace, expected) {
-				t.Errorf("Got wrong airspace. %v instead of %v", airspace, expected)
+			aspace.Pen = airspace.Pen{}
+			if !reflect.DeepEqual(aspace, expected) {
+				t.Errorf("Got wrong airspace. %v instead of %v", aspace, expected)
 			}
 		}
 	}
@@ -335,7 +336,7 @@ func TestGetAirspaceEmptyRegion(t *testing.T) {
 		t.Errorf("Failed to initialize plugin :: %v", err)
 	}
 
-	var airspaces []common.Airspace
+	var airspaces []airspace.Airspace
 	airspaces, err = plugin.GetAirspace([]string{}, time.Time{})
 	if err != nil {
 		t.Errorf("Got error when retrieving airspace with empty regions :: %v", err)

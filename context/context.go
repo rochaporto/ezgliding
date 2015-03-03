@@ -27,7 +27,7 @@ package context
 
 import (
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/waypoint"
@@ -43,14 +43,14 @@ var Ctx Context
 // Context holds all information required between multiple calls.
 type Context struct {
 	Config   config.Config
-	Airspace common.Airspacer
+	Airspace airspace.Airspacer
 	Airfield airfield.Airfielder
 	Flight   flight.Flighter
 	Waypoint waypoint.Waypointer
 }
 
 // NewContext returns a new Context object.
-func NewContext(cfg config.Config, airspace common.Airspacer, airfield airfield.Airfielder,
+func NewContext(cfg config.Config, airspace airspace.Airspacer, airfield airfield.Airfielder,
 	flight flight.Flighter, waypoint waypoint.Waypointer) (Context, error) {
 	return Context{Config: cfg, Airspace: airspace, Airfield: airfield,
 		Flight: flight, Waypoint: waypoint}, nil

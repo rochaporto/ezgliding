@@ -23,7 +23,7 @@ import (
 	"testing"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/mock"
@@ -32,7 +32,7 @@ import (
 
 func TestNewContext(t *testing.T) {
 	mock := mock.Mock{}
-	_, err := NewContext(config.Config{}, common.Airspacer(&mock),
+	_, err := NewContext(config.Config{}, airspace.Airspacer(&mock),
 		airfield.Airfielder(&mock), flight.Flighter(&mock),
 		waypoint.Waypointer(&mock))
 	if err != nil {
