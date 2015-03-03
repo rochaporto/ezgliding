@@ -28,6 +28,7 @@ package context
 import (
 	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/flight"
 )
 
 // FIXME(rocha): This should really go away.
@@ -42,13 +43,13 @@ type Context struct {
 	Config   config.Config
 	Airspace common.Airspacer
 	Airfield common.Airfielder
-	Flight   common.Flighter
+	Flight   flight.Flighter
 	Waypoint common.Waypointer
 }
 
 // NewContext returns a new Context object.
 func NewContext(cfg config.Config, airspace common.Airspacer, airfield common.Airfielder,
-	flight common.Flighter, waypoint common.Waypointer) (Context, error) {
+	flight flight.Flighter, waypoint common.Waypointer) (Context, error) {
 	return Context{Config: cfg, Airspace: airspace, Airfield: airfield,
 		Flight: flight, Waypoint: waypoint}, nil
 }

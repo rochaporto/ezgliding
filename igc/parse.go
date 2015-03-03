@@ -25,14 +25,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/util"
 )
 
-// Parse returns a common.Flight object corresponding to the given content.
+// Parse returns a flight.Flight object corresponding to the given content.
 // content should be a text string in the IGC format.
-func Parse(content string) (common.Flight, error) {
-	f := common.NewFlight()
+func Parse(content string) (flight.Flight, error) {
+	f := flight.NewFlight()
 	var err error
 	p := Parser{}
 	lines := strings.Split(content, "\n")
@@ -94,7 +94,7 @@ type Parser struct {
 	numSat   int
 }
 
-func (p *Parser) parseA(line string, f *common.Flight) error {
+func (p *Parser) parseA(line string, f *flight.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -104,11 +104,11 @@ func (p *Parser) parseA(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseB(line string, f *common.Flight) error {
+func (p *Parser) parseB(line string, f *flight.Flight) error {
 	if len(line) < 37 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	pt := common.NewPoint()
+	pt := flight.NewPoint()
 	var err error
 	pt.Time, err = time.Parse(TimeFormat, line[1:7])
 	if err != nil {
@@ -137,7 +137,7 @@ func (p *Parser) parseB(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseC(lines []string, f *common.Flight) error {
+func (p *Parser) parseC(lines []string, f *flight.Flight) error {
 	line := lines[0]
 	if len(line) < 25 {
 		return fmt.Errorf("wrong line size :: %v", line)
@@ -167,7 +167,7 @@ func (p *Parser) parseC(lines []string, f *common.Flight) error {
 		return err
 	}
 	for i := 0; i < nTP; i++ {
-		var tp common.Point
+		var tp flight.Point
 		if tp, err = p.taskPoint(lines[3+i]); err != nil {
 			return err
 		}
@@ -183,18 +183,18 @@ func (p *Parser) parseC(lines []string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) taskPoint(line string) (common.Point, error) {
+func (p *Parser) taskPoint(line string) (flight.Point, error) {
 	if len(line) < 18 {
-		return common.Point{}, fmt.Errorf("line too short :: %v", line)
+		return flight.Point{}, fmt.Errorf("line too short :: %v", line)
 	}
-	return common.Point{
+	return flight.Point{
 		Latitude:    util.DMS2Decimal(line[1:9]),
 		Longitude:   util.DMS2Decimal(line[9:18]),
 		Description: line[18:],
 	}, nil
 }
 
-func (p *Parser) parseD(line string, f *common.Flight) error {
+func (p *Parser) parseD(line string, f *flight.Flight) error {
 	if len(line) < 6 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -204,7 +204,7 @@ func (p *Parser) parseD(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseE(line string, f *common.Flight) error {
+func (p *Parser) parseE(line string, f *flight.Flight) error {
 	if len(line) < 10 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -219,7 +219,7 @@ func (p *Parser) parseE(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseF(line string, f *common.Flight) error {
+func (p *Parser) parseF(line string, f *flight.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -241,12 +241,12 @@ func (p *Parser) parseF(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseG(line string, f *common.Flight) error {
+func (p *Parser) parseG(line string, f *flight.Flight) error {
 	f.Signature = f.Signature + line[1:]
 	return nil
 }
 
-func (p *Parser) parseH(line string, f *common.Flight) error {
+func (p *Parser) parseH(line string, f *flight.Flight) error {
 	var err error
 	if len(line) < 5 {
 		return fmt.Errorf("line too short :: %v", line)
@@ -339,7 +339,7 @@ func (p *Parser) parseJ(line string) error {
 	return nil
 }
 
-func (p *Parser) parseK(line string, f *common.Flight) error {
+func (p *Parser) parseK(line string, f *flight.Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -355,10 +355,10 @@ func (p *Parser) parseK(line string, f *common.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseL(line string, f *common.Flight) error {
+func (p *Parser) parseL(line string, f *flight.Flight) error {
 	if len(line) < 4 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	f.Logbook = append(f.Logbook, common.LogEntry{Type: line[1:4], Text: line[4:]})
+	f.Logbook = append(f.Logbook, flight.LogEntry{Type: line[1:4], Text: line[4:]})
 	return nil
 }

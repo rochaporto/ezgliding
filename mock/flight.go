@@ -22,37 +22,37 @@ package mock
 import (
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/flight"
 )
 
-// GetFlight is the mock implementation of common.Flighter.GetFlight.
-func (mk *Mock) GetFlight(regions []string, updatedSince time.Time) ([]common.Flight, error) {
+// GetFlight is the mock implementation of flight.Flighter.GetFlight.
+func (mk *Mock) GetFlight(regions []string, updatedSince time.Time) ([]flight.Flight, error) {
 	if mk.GetFlightF != nil {
 		return mk.GetFlightF(regions, updatedSince)
 	}
-	return []common.Flight{}, nil
+	return []flight.Flight{}, nil
 }
 
-// GetFlightFromID is the mock implementation of common.Flighter.GetFlightFromID.
-func (mk *Mock) GetFlightFromID(startID int, max int) ([]common.Flight, error) {
+// GetFlightFromID is the mock implementation of flight.Flighter.GetFlightFromID.
+func (mk *Mock) GetFlightFromID(startID int, max int) ([]flight.Flight, error) {
 	if mk.GetFlightFromIDF != nil {
 		return mk.GetFlightFromIDF(startID, max)
 	}
-	return []common.Flight{}, nil
+	return []flight.Flight{}, nil
 }
 
-// GetFlightByID is the mock implementation of common.Flighter.GetFlightByID.
-func (mk *Mock) GetFlightByID(id int) (common.Flight, error) {
+// GetFlightByID is the mock implementation of flight.Flighter.GetFlightByID.
+func (mk *Mock) GetFlightByID(id int) (flight.Flight, error) {
 	if mk.GetFlightByIDF != nil {
 		return mk.GetFlightByIDF(id)
 	}
-	return common.Flight{}, nil
+	return flight.Flight{}, nil
 }
 
-// PutFlight is the mock implementation of common.Flighter.PutFlight.
-func (mk *Mock) PutFlight(flight []common.Flight) error {
+// PutFlight is the mock implementation of flight.Flighter.PutFlight.
+func (mk *Mock) PutFlight(f []flight.Flight) error {
 	if mk.PutFlightF != nil {
-		return mk.PutFlightF(flight)
+		return mk.PutFlightF(f)
 	}
 	return nil
 }

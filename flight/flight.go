@@ -17,7 +17,10 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package common
+// Package flight holds types and structures related to flight information.
+// This includes the interfaces implemented by flight crawlers as well
+// as all structs used by flight parsers and optimizers.
+package flight
 
 import "time"
 

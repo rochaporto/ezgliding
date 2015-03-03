@@ -25,8 +25,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/mock"
 )
 
@@ -36,15 +36,15 @@ import (
 func ExampleFlightGetByID() {
 	ctx := context.Context{
 		Flight: &mock.Mock{
-			GetFlightByIDF: func(id int) (common.Flight, error) {
-				flight := common.Flight{
-					Header: common.Header{
+			GetFlightByIDF: func(id int) (flight.Flight, error) {
+				f := flight.Flight{
+					Header: flight.Header{
 						Date:       time.Date(2015, 1, 10, 0, 0, 0, 0, time.UTC),
 						Pilot:      "MOCK PILOT 1",
 						GliderType: "MOCK GLIDER 1", GliderID: "MOCK ID 1",
 					},
-					Sources: map[string]common.Source{
-						"netcoupe": common.Source{
+					Sources: map[string]flight.Source{
+						"netcoupe": flight.Source{
 							Name:     "MOCK NAME 1",
 							Category: "MOCK CATEGORY 1",
 							Club:     "MOCK CLUB 1",
@@ -54,7 +54,7 @@ func ExampleFlightGetByID() {
 						},
 					},
 				}
-				return flight, nil
+				return f, nil
 			},
 		},
 	}
@@ -78,8 +78,8 @@ func ExampleFlightGetBadID() {
 func ExampleFlightGetMissingID() {
 	ctx := context.Context{
 		Flight: &mock.Mock{
-			GetFlightByIDF: func(id int) (common.Flight, error) {
-				return common.Flight{}, errors.New("given id does not exist")
+			GetFlightByIDF: func(id int) (flight.Flight, error) {
+				return flight.Flight{}, errors.New("given id does not exist")
 			},
 		},
 	}
@@ -94,16 +94,16 @@ func ExampleFlightGetMissingID() {
 func ExampleFlightGetFromID() {
 	ctx := context.Context{
 		Flight: &mock.Mock{
-			GetFlightFromIDF: func(startID int, max int) ([]common.Flight, error) {
-				flights := []common.Flight{
-					common.Flight{
-						Header: common.Header{
+			GetFlightFromIDF: func(startID int, max int) ([]flight.Flight, error) {
+				flights := []flight.Flight{
+					flight.Flight{
+						Header: flight.Header{
 							Date:       time.Date(2015, 1, 10, 0, 0, 0, 0, time.UTC),
 							Pilot:      "MOCK PILOT 1",
 							GliderType: "MOCK GLIDER 1", GliderID: "MOCK ID 1",
 						},
-						Sources: map[string]common.Source{
-							"netcoupe": common.Source{
+						Sources: map[string]flight.Source{
+							"netcoupe": flight.Source{
 								Name:     "MOCK NAME 1",
 								Category: "MOCK CATEGORY 1",
 								Club:     "MOCK CLUB 1",
@@ -113,14 +113,14 @@ func ExampleFlightGetFromID() {
 							},
 						},
 					},
-					common.Flight{
-						Header: common.Header{
+					flight.Flight{
+						Header: flight.Header{
 							Date:       time.Date(2015, 1, 11, 0, 0, 0, 0, time.UTC),
 							Pilot:      "MOCK PILOT 2",
 							GliderType: "MOCK GLIDER 2", GliderID: "MOCK ID 2",
 						},
-						Sources: map[string]common.Source{
-							"netcoupe": common.Source{
+						Sources: map[string]flight.Source{
+							"netcoupe": flight.Source{
 								Name:     "MOCK NAME 2",
 								Category: "MOCK CATEGORY 2",
 								Club:     "MOCK CLUB 2",
@@ -164,8 +164,8 @@ func ExampleFlightGetBadStartID() {
 func ExampleFlightGetMissingStartID() {
 	ctx := context.Context{
 		Flight: &mock.Mock{
-			GetFlightFromIDF: func(startID int, max int) ([]common.Flight, error) {
-				return []common.Flight{}, errors.New("given startID does not exist")
+			GetFlightFromIDF: func(startID int, max int) ([]flight.Flight, error) {
+				return []flight.Flight{}, errors.New("given startID does not exist")
 			},
 		},
 	}
@@ -186,8 +186,8 @@ func ExampleFlightGetBadMax() {
 func TestFlightGetFailed(t *testing.T) {
 	ctx := context.Context{
 		Flight: &mock.Mock{
-			GetFlightByIDF: func(id int) (common.Flight, error) {
-				return common.Flight{}, errors.New("mock testing get flight failed")
+			GetFlightByIDF: func(id int) (flight.Flight, error) {
+				return flight.Flight{}, errors.New("mock testing get flight failed")
 			},
 		},
 	}

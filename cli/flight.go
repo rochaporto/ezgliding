@@ -26,8 +26,8 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/flight"
 
 	commander "code.google.com/p/go-commander"
 )
@@ -55,7 +55,7 @@ func runFlightGet(cmd *commander.Command, args []string) {
 	f := ctx.Flight
 	glog.V(20).Infof("flight plugin instance ::  %v", f)
 
-	var flights []common.Flight
+	var flights []flight.Flight
 	if *startID != "" {
 		vmax := -1
 		// query for flights with ID higher than startID
@@ -72,7 +72,7 @@ func runFlightGet(cmd *commander.Command, args []string) {
 			}
 		}
 		glog.V(10).Infof("querying from start id %v, max %v", sid, vmax)
-		flights, err = f.(common.Flighter).GetFlightFromID(sid, vmax)
+		flights, err = f.(flight.Flighter).GetFlightFromID(sid, vmax)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to get flight :: %v\n", err)
 			return
@@ -85,7 +85,7 @@ func runFlightGet(cmd *commander.Command, args []string) {
 			return
 		}
 		glog.V(10).Infof("querying id %v", sid)
-		flight, err := f.(common.Flighter).GetFlightByID(sid)
+		flight, err := f.(flight.Flighter).GetFlightByID(sid)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to get flight :: %v\n", err)
 			return
@@ -95,10 +95,10 @@ func runFlightGet(cmd *commander.Command, args []string) {
 	}
 	glog.V(5).Infof("flight get with args '%v' got %d results", args, len(flights))
 	glog.V(20).Infof("%+v", flights)
-	for _, flight := range flights {
-		fmt.Printf("%v,%v,%v,%v\n", flight.Header.Date.Format("02/01/2006"),
-			flight.Header.Pilot, flight.Header.GliderType, flight.Header.GliderID)
-		for sourceID, source := range flight.Sources {
+	for _, f := range flights {
+		fmt.Printf("%v,%v,%v,%v\n", f.Header.Date.Format("02/01/2006"),
+			f.Header.Pilot, f.Header.GliderType, f.Header.GliderID)
+		for sourceID, source := range f.Sources {
 			fmt.Printf("\t%v,%v,%v,%v,%v,%v,%v,%v\n", sourceID, source.Name,
 				source.Category, source.Club, source.Country, source.Region,
 				source.Distance, source.Points)

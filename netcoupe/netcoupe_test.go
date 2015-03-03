@@ -29,8 +29,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/flight"
 )
 
 func TestInit(t *testing.T) {
@@ -75,19 +75,19 @@ func TestInitDefault(t *testing.T) {
 type GetFlightByIDTest struct {
 	t   string
 	id  int
-	r   common.Source
+	r   flight.Source
 	err bool
 }
 
 var getFlightByIDTests = []GetFlightByIDTest{
 	GetFlightByIDTest{t: "basic get flight by id", id: 1, r: getSource(1), err: false},
-	GetFlightByIDTest{t: "non existing get flight by id", id: 999, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "bad date get flight by id", id: 300, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "bad distance get flight by id", id: 301, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "bad points get flight by id", id: 302, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "bad speed get flight by id", id: 303, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "malformed flight get flight by id", id: 305, r: common.Source{}, err: true},
-	GetFlightByIDTest{t: "bad location get flight by id", id: 306, r: common.Source{}, err: true},
+	GetFlightByIDTest{t: "non existing get flight by id", id: 999, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "bad date get flight by id", id: 300, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "bad distance get flight by id", id: 301, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "bad points get flight by id", id: 302, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "bad speed get flight by id", id: 303, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "malformed flight get flight by id", id: 305, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "bad location get flight by id", id: 306, r: flight.Source{}, err: true},
 }
 
 func TestGetFlightByID(t *testing.T) {
@@ -100,7 +100,7 @@ func TestGetFlightByID(t *testing.T) {
 		return
 	}
 	for _, test := range getFlightByIDTests {
-		var flight common.Flight
+		var flight flight.Flight
 		var err error
 		flight, err = nc.GetFlightByID(test.id)
 		if err != nil && test.err {
@@ -173,19 +173,19 @@ type GetFlightFromIDTest struct {
 	t   string
 	sid int
 	max int
-	r   []common.Source
+	r   []flight.Source
 	err bool
 }
 
 var getFlightFromIDTests = []GetFlightFromIDTest{
 	GetFlightFromIDTest{
-		t: "basic get flight from id", sid: 2, max: -1, r: []common.Source{getSource(2), getSource(5)}, err: false,
+		t: "basic get flight from id", sid: 2, max: -1, r: []flight.Source{getSource(2), getSource(5)}, err: false,
 	},
 	GetFlightFromIDTest{
-		t: "get flight from id with max", sid: 2, max: 1, r: []common.Source{getSource(2)}, err: false,
+		t: "get flight from id with max", sid: 2, max: 1, r: []flight.Source{getSource(2)}, err: false,
 	},
 	GetFlightFromIDTest{
-		t: "get flight from id with max 0", sid: 2, max: 0, r: []common.Source{}, err: false,
+		t: "get flight from id with max 0", sid: 2, max: 0, r: []flight.Source{}, err: false,
 	},
 }
 
@@ -206,7 +206,7 @@ func TestGetFlightFromID(t *testing.T) {
 			t.Errorf("failed to get flight from id :: %v", err)
 			return
 		}
-		sources := []common.Source{}
+		sources := []flight.Source{}
 		for _, flight := range flights {
 			sources = append(sources, flight.Sources[ID])
 		}
@@ -235,26 +235,26 @@ func TestPutFlightNotImplemented(t *testing.T) {
 		t.Errorf("init failed :: %v", err)
 		return
 	}
-	if err := nc.PutFlight([]common.Flight{}); err == nil {
+	if err := nc.PutFlight([]flight.Flight{}); err == nil {
 		t.Errorf("expected error but got success")
 		return
 	}
 
 }
 
-func getSource(id int) common.Source {
+func getSource(id int) flight.Source {
 	sid := strconv.Itoa(id)
-	return common.Source{
+	return flight.Source{
 		Name: "PILOT " + sid, Category: "CATEGORY " + sid, Club: "CLUB " + sid,
 		Region: "REGION " + sid, Country: "COUNTRY " + sid,
 		Date:    time.Date(2015, time.Month(id), id, 0, 0, 0, 0, time.UTC),
 		Takeoff: "TAKEOFF " + sid, Distance: 100.10 + float64(id), Points: 100.20 + float64(id),
 		Type: "TYPE " + sid, CircuitType: "CIRCUIT TYPE " + sid,
 		Speed: 100.30 + float64(id), Start: "START " + sid, Finish: "FINISH " + sid,
-		Turnpoints: []common.Point{
-			common.Point{Description: "POINT1 " + sid},
-			common.Point{Description: "POINT2 " + sid},
-			common.Point{Description: "POINT3 " + sid},
+		Turnpoints: []flight.Point{
+			flight.Point{Description: "POINT1 " + sid},
+			flight.Point{Description: "POINT2 " + sid},
+			flight.Point{Description: "POINT3 " + sid},
 		},
 		Comment:     "COMMENTS " + sid,
 		DownloadURL: "/Results/DownloadIGC.aspx?FileID=" + sid,

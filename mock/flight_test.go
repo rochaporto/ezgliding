@@ -24,15 +24,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
+	"github.com/rochaporto/ezgliding/flight"
 )
 
 func TestGetFlight(t *testing.T) {
-	flights := []common.Flight{
-		common.Flight{Header: common.Header{UniqueID: "MockUniqueID"}},
+	flights := []flight.Flight{
+		flight.Flight{Header: flight.Header{UniqueID: "MockUniqueID"}},
 	}
 	mock := Mock{
-		GetFlightF: func(regions []string, updatedSince time.Time) ([]common.Flight, error) {
+		GetFlightF: func(regions []string, updatedSince time.Time) ([]flight.Flight, error) {
 			return flights, nil
 		},
 	}
@@ -57,11 +57,11 @@ func TestGetFlightNotImplemented(t *testing.T) {
 }
 
 func TestGetFlightFromID(t *testing.T) {
-	flights := []common.Flight{
-		common.Flight{Header: common.Header{UniqueID: "MockUniqueID"}},
+	flights := []flight.Flight{
+		flight.Flight{Header: flight.Header{UniqueID: "MockUniqueID"}},
 	}
 	mock := Mock{
-		GetFlightFromIDF: func(startID int, max int) ([]common.Flight, error) {
+		GetFlightFromIDF: func(startID int, max int) ([]flight.Flight, error) {
 			return flights, nil
 		},
 	}
@@ -86,18 +86,18 @@ func TestGetFlightFromIDNotImplemented(t *testing.T) {
 }
 
 func TestGetFlightByID(t *testing.T) {
-	flight := common.Flight{Header: common.Header{UniqueID: "MockUniqueID"}}
+	f := flight.Flight{Header: flight.Header{UniqueID: "MockUniqueID"}}
 	mock := Mock{
-		GetFlightByIDF: func(id int) (common.Flight, error) {
-			return flight, nil
+		GetFlightByIDF: func(id int) (flight.Flight, error) {
+			return f, nil
 		},
 	}
 	result, err := mock.GetFlightByID(10)
 	if err != nil {
 		t.Errorf("failed to query mock flights")
 	}
-	if !reflect.DeepEqual(result, flight) {
-		t.Errorf("got %v but expected %v", result, flight)
+	if !reflect.DeepEqual(result, f) {
+		t.Errorf("got %v but expected %v", result, f)
 	}
 }
 
@@ -107,19 +107,19 @@ func TestGetFlightByIDNotImplemented(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to get flight :: %v", err)
 	}
-	flight := common.Flight{}
-	if !reflect.DeepEqual(result, flight) {
+	f := flight.Flight{}
+	if !reflect.DeepEqual(result, f) {
 		t.Errorf("expected empty flight but got %v", result)
 	}
 }
 
 func TestPutFlight(t *testing.T) {
-	flights := []common.Flight{
-		common.Flight{Header: common.Header{UniqueID: "MockUniqueID"}},
+	flights := []flight.Flight{
+		flight.Flight{Header: flight.Header{UniqueID: "MockUniqueID"}},
 	}
-	var result []common.Flight
+	var result []flight.Flight
 	mock := Mock{
-		PutFlightF: func(a []common.Flight) error {
+		PutFlightF: func(a []flight.Flight) error {
 			result = a
 			return nil
 		},

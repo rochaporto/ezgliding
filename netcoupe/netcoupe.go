@@ -26,7 +26,6 @@ package netcoupe
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -34,8 +33,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rochaporto/ezgliding/common"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/igc"
 )
 
@@ -102,38 +101,37 @@ func (nc *Netcoupe) Init(cfg config.Config) error {
 }
 
 // GetFlight implements flight.GetFlight().
-func (nc *Netcoupe) GetFlight(regions []string, updatedSince time.Time) ([]common.Flight, error) {
+func (nc *Netcoupe) GetFlight(regions []string, updatedSince time.Time) ([]flight.Flight, error) {
 	return nil, errors.New("Not implemented")
 }
 
 // GetFlightByID implements flight.GetFlightByID().
-func (nc *Netcoupe) GetFlightByID(id int) (common.Flight, error) {
+func (nc *Netcoupe) GetFlightByID(id int) (flight.Flight, error) {
 	var err error
 	html, err := nc.fetch(nc.detailURL(id))
 	if err != nil {
-		return common.Flight{}, err
+		return flight.Flight{}, err
 	}
 	source, err := nc.parseDetails(html)
 	if err != nil {
-		return common.Flight{}, err
+		return flight.Flight{}, err
 	}
 	content, err := nc.fetch(nc.BaseURL + source.DownloadURL)
 	if err != nil {
-		return common.Flight{}, err
+		return flight.Flight{}, err
 	}
-	flight, err := igc.Parse(content)
+	f, err := igc.Parse(content)
 	if err != nil {
-		fmt.Printf("AAA\n")
-		return common.Flight{}, err
+		return flight.Flight{}, err
 	}
-	flight.Sources[ID] = source
-	return flight, nil
+	f.Sources[ID] = source
+	return f, nil
 }
 
 // GetFlightFromID implements flight.GetFlightFromID().
-func (nc *Netcoupe) GetFlightFromID(startID int, max int) ([]common.Flight, error) {
+func (nc *Netcoupe) GetFlightFromID(startID int, max int) ([]flight.Flight, error) {
 	var missed int
-	result := []common.Flight{}
+	result := []flight.Flight{}
 	for cid := startID; missed < nc.MaxIDGap && (max < 0 || len(result) < max); cid++ {
 		flight, err := nc.GetFlightByID(cid)
 		if err != nil {
@@ -146,42 +144,42 @@ func (nc *Netcoupe) GetFlightFromID(startID int, max int) ([]common.Flight, erro
 }
 
 // PutFlight implements flight.PutFlight().
-func (nc *Netcoupe) PutFlight(flights []common.Flight) error {
+func (nc *Netcoupe) PutFlight(flights []flight.Flight) error {
 	return errors.New("Not implemented")
 }
 
-func (nc *Netcoupe) parseDetails(html string) (common.Source, error) {
+func (nc *Netcoupe) parseDetails(html string) (flight.Source, error) {
 	var err error
-	sourceData := common.Source{}
+	sourceData := flight.Source{}
 	sourceData.Name = nc.getRegexpField(reNom, html)
 	sourceData.Category = nc.getRegexpField(reCategorie, html)
 	sourceData.Club = nc.getRegexpField(reClub, html)
 	dateStr := nc.getRegexpField(reDate, html)
 	if sourceData.Date, err = time.Parse("02/01/2006", dateStr); err != nil {
-		return common.Source{}, err
+		return flight.Source{}, err
 	}
 	sourceData.Takeoff = nc.getRegexpField(reDepart, html)
 	sourceData.Region = nc.getRegexpField(reRegion, html)
 	sourceData.Country = nc.getRegexpField(rePays, html)
 	distance := nc.getRegexpField(reDistance, html)
 	if sourceData.Distance, err = strconv.ParseFloat(strings.Replace(distance, ",", ".", 1), 64); err != nil {
-		return common.Source{}, err
+		return flight.Source{}, err
 	}
 	points := nc.getRegexpField(rePoints, html)
 	if sourceData.Points, err = strconv.ParseFloat(strings.Replace(points, ",", ".", 1), 64); err != nil {
-		return common.Source{}, err
+		return flight.Source{}, err
 	}
 	sourceData.Type = nc.getRegexpField(rePlaneur, html)
 	sourceData.CircuitType = nc.getRegexpField(reTypeCircuit, html)
 	speed := nc.getRegexpField(reVitesse, html)
 	if sourceData.Speed, err = strconv.ParseFloat(strings.Replace(speed, ",", ".", 1), 64); err != nil {
-		return common.Source{}, err
+		return flight.Source{}, err
 	}
 	sourceData.Start = nc.getRegexpField(rePointDepart, html)
-	sourceData.Turnpoints = make([]common.Point, 3)
-	sourceData.Turnpoints[0] = common.Point{Description: nc.getRegexpField(rePointVirage1, html)}
-	sourceData.Turnpoints[1] = common.Point{Description: nc.getRegexpField(rePointVirage2, html)}
-	sourceData.Turnpoints[2] = common.Point{Description: nc.getRegexpField(rePointVirage3, html)}
+	sourceData.Turnpoints = make([]flight.Point, 3)
+	sourceData.Turnpoints[0] = flight.Point{Description: nc.getRegexpField(rePointVirage1, html)}
+	sourceData.Turnpoints[1] = flight.Point{Description: nc.getRegexpField(rePointVirage2, html)}
+	sourceData.Turnpoints[2] = flight.Point{Description: nc.getRegexpField(rePointVirage3, html)}
 	sourceData.Finish = nc.getRegexpField(rePointArrivee, html)
 	sourceData.Comment = nc.getRegexpField(reCommentaires, html)
 	sourceData.DownloadURL = nc.getRegexpField(reFichierIGC, html)
