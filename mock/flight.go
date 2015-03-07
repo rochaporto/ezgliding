@@ -26,7 +26,7 @@ import (
 )
 
 // GetFlight is the mock implementation of flight.Flighter.GetFlight.
-func (mk *Mock) GetFlight(regions []string, updatedSince time.Time) ([]flight.Flight, error) {
+func (mk Mock) GetFlight(regions []string, updatedSince time.Time) ([]flight.Flight, error) {
 	if mk.GetFlightF != nil {
 		return mk.GetFlightF(regions, updatedSince)
 	}
@@ -34,7 +34,7 @@ func (mk *Mock) GetFlight(regions []string, updatedSince time.Time) ([]flight.Fl
 }
 
 // GetFlightFromID is the mock implementation of flight.Flighter.GetFlightFromID.
-func (mk *Mock) GetFlightFromID(startID int, max int) ([]flight.Flight, error) {
+func (mk Mock) GetFlightFromID(startID int, max int) ([]flight.Flight, error) {
 	if mk.GetFlightFromIDF != nil {
 		return mk.GetFlightFromIDF(startID, max)
 	}
@@ -42,7 +42,7 @@ func (mk *Mock) GetFlightFromID(startID int, max int) ([]flight.Flight, error) {
 }
 
 // GetFlightByID is the mock implementation of flight.Flighter.GetFlightByID.
-func (mk *Mock) GetFlightByID(id int) (flight.Flight, error) {
+func (mk Mock) GetFlightByID(id int) (flight.Flight, error) {
 	if mk.GetFlightByIDF != nil {
 		return mk.GetFlightByIDF(id)
 	}
@@ -50,7 +50,7 @@ func (mk *Mock) GetFlightByID(id int) (flight.Flight, error) {
 }
 
 // PutFlight is the mock implementation of flight.Flighter.PutFlight.
-func (mk *Mock) PutFlight(f []flight.Flight) error {
+func (mk Mock) PutFlight(f []flight.Flight) error {
 	if mk.PutFlightF != nil {
 		return mk.PutFlightF(f)
 	}

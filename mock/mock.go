@@ -26,7 +26,6 @@ import (
 
 	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/airspace"
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/waypoint"
 )
@@ -36,10 +35,13 @@ const (
 	ID string = "mock"
 )
 
+// Config holds the Mock configuration.
+type Config struct{}
+
 // Mock implements all interfaces (airfield, airspace, waypoint).
 // Use the struct fields to provide the function implementations.
 type Mock struct {
-	InitF            func(cfg config.Config) error
+	Config
 	GetAirfieldF     func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error)
 	PutAirfieldF     func(afield []airfield.Airfield) error
 	GetAirspaceF     func(regions []string, updatedSince time.Time) ([]airspace.Airspace, error)
@@ -52,10 +54,8 @@ type Mock struct {
 	PutWaypointF     func(waypoint []waypoint.Waypoint) error
 }
 
-// Init is the mock implementation of common.Pluginer.Init.
-func (mk *Mock) Init(cfg config.Config) error {
-	if mk.InitF != nil {
-		return mk.InitF(cfg)
-	}
-	return nil
+// New returns a new instance of Mock.
+func New(cfg Config) (*Mock, error) {
+	mk := Mock{}
+	return &mk, nil
 }

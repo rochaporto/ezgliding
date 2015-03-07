@@ -29,17 +29,13 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/util"
 )
 
 func TestMemcacheBadServer(t *testing.T) {
-	srv := Server{}
-	ctx := context.Context{}
-	ctx.Config.Web.Memcache = "nonexisting:10000"
-	ctx.Config.Web.Static = "/tmp"
-	err := srv.Init(ctx)
+	cfg := Config{Memcache: "nonexisting:10000", Static: "/tmp"}
+	_, err := NewServer(cfg)
 	if err == nil {
 		t.Errorf("expected error got success")
 		return
@@ -69,11 +65,8 @@ func TestMemcache(t *testing.T) {
 	}
 
 	// use a local memcached server
-	ctx := context.Context{Airfield: mock, Waypoint: mock}
-	ctx.Config.Web.Static = "/tmp"
-	ctx.Config.Web.Memcache = "localhost:11211"
-	srv := Server{}
-	err := srv.Init(ctx)
+	cfg := Config{Airfielder: mock, Waypointer: mock, Static: "/tmp", Memcache: "localhost:11211"}
+	srv, err := NewServer(cfg)
 	if err != nil {
 		t.Errorf("failed to init server with memcache :: %v", err)
 		return
@@ -96,7 +89,7 @@ func TestMemcache(t *testing.T) {
 	}
 
 	// then we compare the value in memcache with the expected json
-	mclient := memcache.New(ctx.Config.Web.Memcache)
+	mclient := memcache.New(cfg.Memcache)
 	a, err := mclient.Get(NewCacheResponseWriter(nil, nil, nil).requestKey(req))
 	if err != nil {
 		t.Errorf("failed to contact memcache :: %v", err)

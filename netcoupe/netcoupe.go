@@ -33,7 +33,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/igc"
 )
@@ -72,32 +71,31 @@ var rePointArrivee = regexp.MustCompile("(?s)Point d.arriv.e&nbsp;:</b>\\s*</div
 var reCommentaires = regexp.MustCompile("(?s)Commentaires&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
 var reFichierIGC = regexp.MustCompile("(?s)Fichier .IGC&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*<a href=\"([\\S]*)\">")
 
-// Netcoupe gives functionality to fetch and parse information regarding
-// flights from the netcoupe online gliding competition.
-type Netcoupe struct {
+// Config holds the netcoupe configuration.
+type Config struct {
 	BaseURL         string
 	FlightDetailURL string
 	MaxIDGap        int
 }
 
-// Init follows the plugin.Plugin interface (see plugin.Pluginer).
-func (nc *Netcoupe) Init(cfg config.Config) error {
-	if cfg.Netcoupe.BaseURL != "" {
-		nc.BaseURL = cfg.Netcoupe.BaseURL
-	} else {
-		nc.BaseURL = baseURL
+// Netcoupe gives functionality to fetch and parse information regarding
+// flights from the netcoupe online gliding competition.
+type Netcoupe struct {
+	Config
+}
+
+// New returns a new instance of Netcoupe, with the given Config.
+func New(config Config) (*Netcoupe, error) {
+	if config.MaxIDGap == 0 {
+		config.MaxIDGap = maxIDGap
 	}
-	if cfg.Netcoupe.FlightDetailURL != "" {
-		nc.FlightDetailURL = cfg.Netcoupe.FlightDetailURL
-	} else {
-		nc.FlightDetailURL = flightDetailURL
+	if config.FlightDetailURL == "" {
+		config.FlightDetailURL = flightDetailURL
 	}
-	if cfg.Netcoupe.MaxIDGap != 0 {
-		nc.MaxIDGap = cfg.Netcoupe.MaxIDGap
-	} else {
-		nc.MaxIDGap = maxIDGap
+	if config.BaseURL == "" {
+		config.BaseURL = baseURL
 	}
-	return nil
+	return &Netcoupe{config}, nil
 }
 
 // GetFlight implements flight.GetFlight().

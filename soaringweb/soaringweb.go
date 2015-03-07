@@ -35,7 +35,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airspace"
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/openair"
 	"golang.org/x/net/html"
 )
@@ -60,8 +59,10 @@ type Release struct {
 	Date     time.Time
 }
 
-// baseURL is the default base URL to parse airspace releases from.
-var baseURL = "http://soaringweb.org/Airspace"
+const (
+	// baseURL is the default base URL to parse airspace releases from.
+	baseURL = "http://soaringweb.org/Airspace"
+)
 
 // timeFormats are the supported formats for dates in soaringweb page.
 var timeFormats = []string{"02 January 2006", "02 January, 2006"}
@@ -76,22 +77,27 @@ var reLocation = regexp.MustCompile(`.*txt.*`)
 // FIXME: we should not need this, it's mainly a replacement for nil compare
 var testDate time.Time
 
+// Config holds all config information for the soaringweb plugin.
+type Config struct {
+	BaseURL string
+}
+
 // SoaringWeb is the plugin implementation to collect soaringweb.org info.
 //
 // BaseURL is the prefix to add 'region' to get the URL of the releases page
 // ( eg. soaringweb.org/Airspace, which is the default ).
 type SoaringWeb struct {
-	BaseURL string
+	Config
 }
 
-// Init follows the plugin.Plugin interface (see plugin.Pluginer).
-func (sw *SoaringWeb) Init(cfg config.Config) error {
-	if cfg.SoaringWeb.Baseurl != "" {
-		sw.BaseURL = cfg.SoaringWeb.Baseurl
-	} else {
-		sw.BaseURL = baseURL
+// New returns a new SoaringWeb instance.
+func New(cfg Config) (*SoaringWeb, error) {
+	sw := SoaringWeb{}
+	if cfg.BaseURL == "" {
+		cfg.BaseURL = baseURL
 	}
-	return nil
+	sw.Config = cfg
+	return &sw, nil
 }
 
 // GetAirspace follows Airspace.GetAirspace().

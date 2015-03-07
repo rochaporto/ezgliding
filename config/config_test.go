@@ -20,9 +20,38 @@
 package config
 
 import (
+	"reflect"
 	"testing"
 )
 
+func TestConfigGetDefault(t *testing.T) {
+	e := Config{Global: Global{
+		Airspacer: "airspacerdefault", Airfielder: "airfielderdefault", Waypointer: "waypointerdefault",
+	}}
+	result, err := Get()
+	if err != nil {
+		t.Errorf("failed to get config :: %v", err)
+		return
+	}
+	if !reflect.DeepEqual(result, e) {
+		t.Errorf("expected\n%v\ngot\n%v", e, result)
+		return
+	}
+}
+
+func TestConfigGet(t *testing.T) {
+	cfg := Config{Global: Global{Airspacer: "airspacerconfigget"}}
+	Set(cfg)
+	result, err := Get()
+	if err != nil {
+		t.Errorf("failed to get config :: %v", err)
+		return
+	}
+	if !reflect.DeepEqual(result, cfg) {
+		t.Errorf("expected\n%v\ngot\n%v", cfg, result)
+		return
+	}
+}
 func TestNewConfig(t *testing.T) {
 	e := Config{}
 	e.Global.Airspacer = "airspacer"

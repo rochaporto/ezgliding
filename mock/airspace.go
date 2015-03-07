@@ -26,7 +26,7 @@ import (
 )
 
 // GetAirspace is the mock implementation of airspace.Airspacer.GetAirspace.
-func (mk *Mock) GetAirspace(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
+func (mk Mock) GetAirspace(regions []string, updatedSince time.Time) ([]airspace.Airspace, error) {
 	if mk.GetAirspaceF != nil {
 		return mk.GetAirspaceF(regions, updatedSince)
 	}
@@ -34,7 +34,7 @@ func (mk *Mock) GetAirspace(regions []string, updatedSince time.Time) ([]airspac
 }
 
 // PutAirspace is the mock implementation of airspace.Airspacer.PutAirspace.
-func (mk *Mock) PutAirspace(airspace []airspace.Airspace) error {
+func (mk Mock) PutAirspace(airspace []airspace.Airspace) error {
 	if mk.PutAirspaceF != nil {
 		return mk.PutAirspaceF(airspace)
 	}

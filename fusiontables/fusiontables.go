@@ -17,7 +17,7 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-// Package fusiontables provides the Airspace, Airfield and Waypoint plugin
+// Package fusiontables provides the Airspace, Airfield and Waypoint ft
 // implementation for a fusion tables backend.
 //
 // It includes functionality for both pushing and retrieving information,
@@ -36,14 +36,13 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
 )
 
 const (
-	// ID for this plugin implementation.
+	// ID for this ft implementation.
 	ID string = "fusiontables"
 	// BaseURL is the default base path for fusion tables REST queries
 	BaseURL string = "https://www.googleapis.com/fusiontables/v2"
@@ -51,9 +50,8 @@ const (
 	UploadURL string = "https://www.googleapis.com/upload/fusiontables/v2"
 )
 
-// FusionTables is the plugin implementation for a google fusion
-// tables based backend.
-type FusionTables struct {
+// Config holds all the required configuration for fusion tables.
+type Config struct {
 	BaseURL         string
 	UploadURL       string
 	AirspaceTableID string
@@ -62,39 +60,32 @@ type FusionTables struct {
 	APIKey          string
 	OAuthEmail      string
 	OAuthKey        string
+}
+
+// FusionTables is the ft implementation for a google fusion
+// tables based backend.
+type FusionTables struct {
+	Config
 	oAuthKeyContent []byte
 }
 
-// Init follows the plugin.Plugin interface (see plugin.Pluginer).
-func (ft *FusionTables) Init(cfg config.Config) error {
-	glog.V(10).Infof("Init with config %+v", cfg.FusionTables)
-	if cfg.FusionTables.BaseURL != "" {
-		ft.BaseURL = cfg.FusionTables.BaseURL
-	} else {
+// New returns a new instance of FusionTables with the given config.
+func New(cfg Config) (*FusionTables, error) {
+	ft := FusionTables{Config: cfg}
+	if ft.BaseURL == "" {
 		ft.BaseURL = BaseURL
 	}
-	if cfg.FusionTables.UploadURL != "" {
-		ft.UploadURL = cfg.FusionTables.UploadURL
-	} else {
+	if ft.UploadURL == "" {
 		ft.UploadURL = UploadURL
 	}
-	ft.AirfieldTableID = cfg.FusionTables.AirfieldTableID
-	ft.AirspaceTableID = cfg.FusionTables.AirspaceTableID
-	ft.WaypointTableID = cfg.FusionTables.WaypointTableID
-	ft.OAuthEmail = cfg.FusionTables.OAuthEmail
-	ft.OAuthKey = cfg.FusionTables.OAuthKey
-	ft.APIKey = cfg.FusionTables.APIKey
-
-	// Load the private key contents if oauthkey location was given
-	glog.V(10).Infof("plugin fusiontables initialized :: %v", ft)
-	if ft.OAuthKey != "" {
+	if ft.Config.OAuthKey != "" {
 		var err error
 		ft.oAuthKeyContent, err = ioutil.ReadFile(ft.OAuthKey)
 		if err != nil {
-			return err
+			return &ft, err
 		}
 	}
-	return nil
+	return &ft, nil
 }
 
 // doGet wraps the given sql query into a REST call to fusion tables.

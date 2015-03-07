@@ -23,15 +23,7 @@ import (
 	"flag"
 	"strings"
 	"testing"
-
-	"github.com/rochaporto/ezgliding/context"
 )
-
-// FIXME: should go away when we start passing the context explicitly
-// to the runAirfield* functions.
-func setupContext(ctx context.Context) {
-	context.Ctx = ctx
-}
 
 func TestHelpFlags(t *testing.T) {
 	e := "param=defaultvalue"

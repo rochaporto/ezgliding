@@ -26,8 +26,9 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
+	"github.com/rochaporto/ezgliding/plugin"
 
 	commander "code.google.com/p/go-commander"
 )
@@ -51,8 +52,8 @@ var CmdFlightGet = &commander.Command{
 
 // runFlightGet invokes the configured plugin and outputs flight data.
 func runFlightGet(cmd *commander.Command, args []string) {
-	ctx := context.Ctx
-	f := ctx.Flight
+	cfg, _ := config.Get()
+	f, _ := plugin.GetFlighter("", cfg)
 	glog.V(20).Infof("flight plugin instance ::  %v", f)
 
 	var flights []flight.Flight

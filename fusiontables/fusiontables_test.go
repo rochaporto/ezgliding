@@ -21,64 +21,59 @@ package fusiontables
 import (
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
-
-	"github.com/rochaporto/ezgliding/config"
 )
 
-func TestInit(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables = config.FusionTables{
+func TestNew(t *testing.T) {
+	cfg := Config{
 		BaseURL: "some.random/location", AirfieldTableID: "1234",
 		AirspaceTableID: "5678", WaypointTableID: "4321",
 		APIKey: "myapikey", OAuthEmail: "oauthemail", OAuthKey: "oauthkey.test",
 	}
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
 	}
 
-	result := config.FusionTables{BaseURL: plugin.BaseURL, AirspaceTableID: plugin.AirspaceTableID,
+	result := Config{BaseURL: plugin.BaseURL, AirspaceTableID: plugin.AirspaceTableID,
 		AirfieldTableID: plugin.AirfieldTableID, WaypointTableID: plugin.WaypointTableID,
 		APIKey: plugin.APIKey, OAuthEmail: plugin.OAuthEmail, OAuthKey: plugin.OAuthKey}
-	if result != cfg.FusionTables {
-		t.Errorf("Expected cfg %v but got %v", cfg.FusionTables, result)
+	if !reflect.DeepEqual(result, cfg) {
+		t.Errorf("expected\n%v\ngot\n%v", cfg, result)
+		return
 	}
 
 	if string(plugin.oAuthKeyContent) != "oauthkey test\n" {
-		t.Errorf("expected %v got %v", "oauthkey test", string(plugin.oAuthKeyContent))
+		t.Errorf("expected\n%v\ngot\n%v", "oauthkey test", string(plugin.oAuthKeyContent))
+		return
 	}
 }
 
-func TestInitDefault(t *testing.T) {
-	plugin := FusionTables{}
-	err := plugin.Init(config.Config{})
+func TestNewDefault(t *testing.T) {
+	plugin, err := New(Config{})
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get new plugin :: %v", err)
 	}
 
 	if plugin.BaseURL != BaseURL {
-		t.Errorf("Expected baseurl '%v' but got '%v'", BaseURL, plugin.BaseURL)
+		t.Errorf("expected baseurl '%v' but got '%v'", BaseURL, plugin.BaseURL)
 	}
 }
 
-func TestInitBadOAuthKeyLocation(t *testing.T) {
-	plugin := FusionTables{}
-	cfg := config.Config{}
-	cfg.FusionTables = config.FusionTables{OAuthEmail: "myemail", OAuthKey: "nonexisting.file"}
-	err := plugin.Init(cfg)
+func TestNewBadOAuthKeyLocation(t *testing.T) {
+	cfg := Config{OAuthEmail: "myemail", OAuthKey: "nonexisting.file"}
+	_, err := New(cfg)
 	if err == nil {
 		t.Errorf("expected error got success")
 	}
 }
 
 func TestDoGetError(t *testing.T) {
-	plugin := FusionTables{}
-	cfg := config.Config{}
-	cfg.FusionTables = config.FusionTables{
+	cfg := Config{
 		OAuthEmail: "myemail", OAuthKey: "nonexisting.file", BaseURL: "%%%.."}
-	err := plugin.Init(cfg)
+	plugin, err := New(cfg)
 	_, err = plugin.doGet("")
 	if err == nil {
 		t.Errorf("expected error got success")
@@ -86,11 +81,9 @@ func TestDoGetError(t *testing.T) {
 }
 
 func TestDoImportError(t *testing.T) {
-	plugin := FusionTables{}
-	cfg := config.Config{}
-	cfg.FusionTables = config.FusionTables{
+	cfg := Config{
 		OAuthEmail: "myemail", OAuthKey: "nonexisting.file", UploadURL: "%%%.."}
-	err := plugin.Init(cfg)
+	plugin, err := New(cfg)
 	_, err = plugin.doImport("", "")
 	if err == nil {
 		t.Errorf("expected error got success")
@@ -102,15 +95,14 @@ func TestDoOAuth(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	plugin := FusionTables{}
-	cfg := config.Config{}
-	cfg.FusionTables = config.FusionTables{
+	cfg := Config{
 		AirfieldTableID: "testairfieldid", UploadURL: ts.URL,
 		OAuthEmail: "myemail", OAuthKey: "oauthkey.test"}
-	err := plugin.Init(cfg)
+	plugin, err := New(cfg)
 	if err != nil {
 		t.Errorf("Failed to initialize plugin :: %v", err)
+		return
 	}
-	_, err = plugin.doImport("", cfg.FusionTables.AirfieldTableID)
+	_, err = plugin.doImport("", cfg.AirfieldTableID)
 	// FIXME: figure how to test oauth here
 }

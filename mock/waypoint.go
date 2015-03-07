@@ -26,7 +26,7 @@ import (
 )
 
 // GetWaypoint is the mock implementation of waypoint.Waypointer.GetWaypoint.
-func (mk *Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+func (mk Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 	if mk.GetWaypointF != nil {
 		return mk.GetWaypointF(regions, updatedSince)
 	}
@@ -34,7 +34,7 @@ func (mk *Mock) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoin
 }
 
 // PutWaypoint is the mock implementation of waypoint.Waypointr.PutWaypoint.
-func (mk *Mock) PutWaypoint(wpoint []waypoint.Waypoint) error {
+func (mk Mock) PutWaypoint(wpoint []waypoint.Waypoint) error {
 	if mk.PutWaypointF != nil {
 		return mk.PutWaypointF(wpoint)
 	}

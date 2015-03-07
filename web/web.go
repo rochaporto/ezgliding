@@ -21,15 +21,13 @@
 package web
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/airfield"
+	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 const (
@@ -39,34 +37,38 @@ const (
 	Static = "web/static"
 )
 
-// Server is a web server implementation, serving ezgliding data.
-type Server struct {
-	ctx      context.Context
-	mux      *http.ServeMux
-	memcache *memcache.Client
-	Port     int
-	Static   string
-	Memcache string
+// Config holds all the web server configuration.
+type Config struct {
+	Port       int
+	Static     string
+	Memcache   string
+	Airfielder airfield.Airfielder
+	Waypointer waypoint.Waypointer
 }
 
-// Init prepares the web server to be started.
-func (srv *Server) Init(ctx context.Context) error {
-	var z context.Context
-	if ctx == z {
-		return errors.New("got a zero value Context, cannot handle this")
+// Server is a web server implementation, serving ezgliding data.
+type Server struct {
+	Config
+	mux      *http.ServeMux
+	memcache *memcache.Client
+}
+
+// NewServer returns a new instance of a web.Server.
+func NewServer(cfg Config) (*Server, error) {
+	// set defaults if appropriate
+	if cfg.Port == 0 {
+		cfg.Port = Port
 	}
-	srv.ctx = ctx
-	// handle config
-	err := srv.setConfig(srv.ctx.Config)
-	if err != nil {
-		return fmt.Errorf("failed to init with config :: %v", err)
+	if cfg.Static == "" {
+		cfg.Static = Static
 	}
+	srv := Server{Config: cfg}
 	// init the memcache client if appropriate
 	if srv.Memcache != "" {
 		srv.memcache = memcache.New(srv.Memcache)
 		_, err := srv.memcache.Get("nonexistingitem")
 		if err != nil && err != memcache.ErrCacheMiss {
-			return err
+			return &srv, err
 		}
 	}
 	// set handlers
@@ -74,29 +76,11 @@ func (srv *Server) Init(ctx context.Context) error {
 	srv.mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(srv.Static))))
 	srv.mux.HandleFunc("/airfield/", srv.makeHandler(srv.airspaceHandler))
 	srv.mux.HandleFunc("/waypoint/", srv.makeHandler(srv.waypointHandler))
-	return nil
+	return &srv, nil
 }
 
 // Start starts the http server instance.
 func (srv *Server) Start() {
 	glog.V(0).Infof("starting web server :: %v", *srv)
 	http.ListenAndServe(fmt.Sprintf(":%v", srv.Port), srv.mux)
-}
-
-func (srv *Server) setConfig(cfg config.Config) error {
-	if cfg.Web.Port == 0 {
-		srv.Port = Port
-	} else {
-		srv.Port = cfg.Web.Port
-	}
-	if cfg.Web.Static == "" {
-		srv.Static = Static
-	} else {
-		srv.Static = cfg.Web.Static
-	}
-	if _, err := os.Stat(srv.Static); os.IsNotExist(err) {
-		return fmt.Errorf("static location %v does not exist", srv.Static)
-	}
-	srv.Memcache = cfg.Web.Memcache
-	return nil
 }

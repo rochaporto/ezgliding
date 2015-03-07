@@ -35,7 +35,6 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/util"
 	"github.com/rochaporto/ezgliding/waypoint"
 	"github.com/rochaporto/rss"
@@ -54,37 +53,43 @@ type Release struct {
 	Waypoints []waypoint.Waypoint
 }
 
-var rssURL = "http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml"
+const (
+	// RSSURL is the default location of the welt2000 RSS feed
+	RSSURL = "http://www.segelflug.de/vereine/welt2000/content/en/news/updates.xml"
+	// ReleaseURL is the default location for the welt2000 latest release
+	ReleaseURL = "http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT"
+)
 
-var releaseURL = "http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT"
+// Config holds all config information for the welt2000 plugin.
+type Config struct {
+	RSSURL     string
+	ReleaseURL string
+}
 
 // Welt2000 is the plugin implementation to collect welt2000 data,
 // for airfields and waypoints.
 type Welt2000 struct {
-	rssURL     string
-	releaseURL string
+	Config
 }
 
-// Init follows the plugin.Plugin interface (see plugin.Pluginer).
-func (wt *Welt2000) Init(cfg config.Config) error {
-	glog.V(10).Infof("Init with config %+v", cfg.Welt2000)
-	wt.rssURL = rssURL
-	if cfg.Welt2000.Rssurl != "" {
-		wt.rssURL = cfg.Welt2000.Rssurl
+// New returns a new instance of Welt2000.
+func New(cfg Config) (*Welt2000, error) {
+	if cfg.RSSURL == "" {
+		cfg.RSSURL = RSSURL
 	}
-	wt.releaseURL = releaseURL
-	if cfg.Welt2000.Releaseurl != "" {
-		wt.releaseURL = cfg.Welt2000.Releaseurl
+	if cfg.ReleaseURL == "" {
+		cfg.ReleaseURL = ReleaseURL
 	}
+	wt := Welt2000{Config: cfg}
 	glog.V(20).Infof("Plugin welt2000 initialized :: %+v", wt)
-	return nil
+	return &wt, nil
 }
 
 // GetAirfield follows airfield.GetAirfield().
 // FIXME: use region
 func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 	glog.V(10).Infof("GetAirfield with regions %v and updatedSince %v", regions, updatedSince)
-	releases, err := List(wt.rssURL)
+	releases, err := List(wt.RSSURL)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +100,7 @@ func (wt *Welt2000) GetAirfield(regions []string, updatedSince time.Time) ([]air
 
 	// We 'update' the release source as the rss feed points to an update
 	// summary page, not the actually release source.
-	release.Source = wt.releaseURL
+	release.Source = wt.ReleaseURL
 	err = release.Fetch()
 	// Filter out entries not in the regions.
 	// This could be done more efficiently, but for now we go with post-filter.
@@ -125,7 +130,7 @@ func (wt *Welt2000) PutAirfield(airfields []airfield.Airfield) error {
 // FIXME: use region
 func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
 	glog.V(10).Infof("GetWaypoint with regions %v and updatedSince %v", regions, updatedSince)
-	releases, err := List(wt.rssURL)
+	releases, err := List(wt.RSSURL)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +141,7 @@ func (wt *Welt2000) GetWaypoint(regions []string, updatedSince time.Time) ([]way
 
 	// We 'update' the release source as the rss feed points to an update
 	// summary page, not the actually release source.
-	release.Source = wt.releaseURL
+	release.Source = wt.ReleaseURL
 	err = release.Fetch()
 	// Filter out entries not in the regions.
 	// This could be done more efficiently, but for now we go with post-filter.

@@ -25,45 +25,32 @@ import (
 
 	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
+	"github.com/rochaporto/ezgliding/plugin"
 )
 
 // ExampleWeb .
 func ExampleWeb() {
 	cfg := config.Config{}
 	cfg.Web.Port = 7777
-	ctx := context.Context{
-		Airfield: &mock.Mock{
-			GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
-				return []airfield.Airfield{
-					airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
-						Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
-						Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
-				}, nil
-			},
+	plugin.Register("airfielder", mock.Mock{
+		GetAirfieldF: func(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+			return []airfield.Airfield{
+				airfield.Airfield{ID: "MockID", ShortName: "MockShortName", Name: "MockName",
+					Region: "FR", ICAO: "AAAA", Flags: 0, Catalog: 11, Length: 1000, Elevation: 2000,
+					Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
+			}, nil
 		},
-		Config: cfg,
-	}
-	setupContext(ctx)
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Airspacer: "airfielder"}})
 	go runWeb(CmdWeb, []string{})
 	// Output:
 }
 
-func TestWebFailInit(t *testing.T) {
-	ctx := context.Context{}
-	setupContext(ctx)
-	go runWeb(CmdWeb, []string{})
-	// Output:
-	// failed to init web server :: got a zero value Context, cannot handle this
-}
 func TestWebFailStart(t *testing.T) {
 	cfg := config.Config{}
 	cfg.Web.Port = 80
-	ctx := context.Context{
-		Config: cfg,
-	}
-	setupContext(ctx)
 	go runWeb(CmdWeb, []string{})
 	// Output:
 	// failed to start web server :: listen tcp:80: bind: permission denied

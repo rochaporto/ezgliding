@@ -38,44 +38,26 @@ import (
 	"os"
 	"os/user"
 
+	"github.com/rochaporto/ezgliding/fusiontables"
+	"github.com/rochaporto/ezgliding/mock"
+	"github.com/rochaporto/ezgliding/netcoupe"
+	"github.com/rochaporto/ezgliding/soaringweb"
+	"github.com/rochaporto/ezgliding/web"
+	"github.com/rochaporto/ezgliding/welt2000"
 	"github.com/scalingdata/gcfg"
 )
 
-// FusionTables holds all config information for the google fusiontables plugin.
-type FusionTables struct {
-	AirfieldTableID string
-	AirspaceTableID string
-	WaypointTableID string
-	BaseURL         string
-	UploadURL       string
-	APIKey          string
-	OAuthEmail      string
-	OAuthKey        string
-}
+var empty = Config{}
 
-// SoaringWeb holds all config information for the soaringweb plugin.
-type SoaringWeb struct {
-	Baseurl string
-}
+var singleton Config
 
-// Web holds all config information for the web server.
-type Web struct {
-	Port     int
-	Static   string
-	Memcache string
-}
-
-// Welt2000 holds all config information for the welt2000 plugin.
-type Welt2000 struct {
-	Rssurl     string
-	Releaseurl string
-}
-
-// Netcoupe holds all config information for the netcoupe plugin.
-type Netcoupe struct {
-	BaseURL         string
-	FlightDetailURL string
-	MaxIDGap        int
+// Get returns the current config object
+// FIXME: need to have a way to pass an alternative config location
+func Get() (Config, error) {
+	if singleton == empty {
+		singleton, _ = NewConfig("")
+	}
+	return singleton, nil
 }
 
 // Global holds all common information for all ezgliding plugins and apps.
@@ -88,12 +70,13 @@ type Global struct {
 
 // Config holds all the config information for ezgliding plugins and apps.
 type Config struct {
-	Global
-	FusionTables
-	Netcoupe
-	SoaringWeb
-	Web
-	Welt2000
+	Global       Global
+	FusionTables fusiontables.Config
+	Mock         mock.Config
+	Netcoupe     netcoupe.Config
+	SoaringWeb   soaringweb.Config
+	Web          web.Config
+	Welt2000     welt2000.Config
 }
 
 // NewConfig returns a new Config based on given location (or default).
@@ -116,4 +99,9 @@ func NewConfig(location string) (Config, error) {
 		}
 	}
 	return cfg, err
+}
+
+// Set sets the current configuration to the given one.
+func Set(cfg Config) {
+	singleton = cfg
 }

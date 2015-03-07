@@ -30,8 +30,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/util"
 	"github.com/rochaporto/ezgliding/waypoint"
@@ -158,7 +156,7 @@ var serverTests = []ServerTest{
 	},
 }
 
-func serverFromTest(test ServerTest) Server {
+func serverFromTest(test ServerTest) *Server {
 	airfields := []airfield.Airfield{}
 	waypoints := []waypoint.Waypoint{}
 	for _, a := range test.dt {
@@ -177,10 +175,8 @@ func serverFromTest(test ServerTest) Server {
 			return waypoints, test.perr
 		},
 	}
-	ctx := context.Context{Airfield: mock, Waypoint: mock}
-	ctx.Config.Web.Static = "/tmp"
-	srv := Server{}
-	srv.Init(ctx)
+	cfg := Config{Static: "/tmp", Airfielder: mock, Waypointer: mock}
+	srv, _ := NewServer(cfg)
 	return srv
 }
 
@@ -229,50 +225,36 @@ func TestServer(t *testing.T) {
 	}
 }
 
-func TestServerInitDefault(t *testing.T) {
-	srv := Server{}
-	ctx := context.Context{}
-	ctx.Config.Global.Airfielder = "randomairfield" // just to have non zero value ctx
-	_ = srv.Init(ctx)
+func TestServerNewDefault(t *testing.T) {
+	srv, _ := NewServer(Config{})
 	if srv.Port != Port || srv.Static != Static {
 		t.Errorf("unexpected web config :: %v %v", srv.Port, srv.Static)
 		return
 	}
 }
 
-func TestServerInitBadContext(t *testing.T) {
-	srv := Server{Port: 7777, Static: "/tmp"}
-	err := srv.Init(context.Context{})
-	if err == nil {
-		t.Errorf("expected error got success")
-	}
-}
-
-type InitTest struct {
+type NewTest struct {
 	t   string
-	cfg config.Web
+	cfg Config
 	err bool
 }
 
-var initTests = []InitTest{
+var newTests = []NewTest{
 	{
 		"simple config",
-		config.Web{Port: 8888, Static: "/tmp"},
+		Config{Port: 8888, Static: "/tmp"},
 		false,
 	},
 	{
 		"config bad static",
-		config.Web{Port: 8888, Static: "/does/not/exist"},
+		Config{Port: 8888, Static: "/does/not/exist"},
 		true,
 	},
 }
 
-func TestServerInitConfig(t *testing.T) {
-	for _, test := range initTests {
-		srv := Server{}
-		ctx := context.Context{}
-		ctx.Config.Web = test.cfg
-		err := srv.Init(ctx)
+func TestServerNewConfig(t *testing.T) {
+	for _, test := range newTests {
+		srv, err := NewServer(test.cfg)
 		if err != nil && test.err {
 			continue
 		}
@@ -280,36 +262,36 @@ func TestServerInitConfig(t *testing.T) {
 			t.Errorf("%v failed to init server :: %v", test.t, err)
 			continue
 		}
-		result := context.Context{}
-		result.Config.Web.Port = srv.Port
-		result.Config.Web.Static = srv.Static
-		if !reflect.DeepEqual(result.Config.Web, ctx.Config.Web) {
-			t.Errorf("%v failed :: expected %v got %v", test.t, test.cfg, result.Config.Web)
+		result := Config{}
+		result.Port = srv.Port
+		result.Static = srv.Static
+		if !reflect.DeepEqual(result, test.cfg) {
+			t.Errorf("%v failed :: expected %v got %v", test.t, test.cfg, result)
 			continue
 		}
 	}
 }
 
 func TestServerStart(t *testing.T) {
-	srv := Server{}
-	ctx := context.Context{}
-	ctx.Config.Web.Port = 7777
-	ctx.Config.Web.Static = "/tmp"
-	err := srv.Init(ctx)
+	cfg := Config{}
+	cfg.Port = 7777
+	cfg.Static = "/tmp"
+	srv, err := NewServer(cfg)
 	if err != nil {
 		t.Errorf("failed to init server :: %v", err)
+		return
 	}
 	go srv.Start()
 }
 
 func TestServerStartBadPort(t *testing.T) {
-	srv := Server{}
-	ctx := context.Context{}
-	ctx.Config.Web.Port = 1
-	ctx.Config.Web.Static = "/tmp"
-	err := srv.Init(ctx)
+	cfg := Config{}
+	cfg.Port = 1
+	cfg.Static = "/tmp"
+	srv, err := NewServer(cfg)
 	if err != nil {
 		t.Errorf("failed to init server :: %v", err)
+		return
 	}
 	srv.Start()
 }

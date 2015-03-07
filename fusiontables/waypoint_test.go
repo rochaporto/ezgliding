@@ -27,7 +27,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/waypoint"
 )
 
@@ -92,13 +91,13 @@ func TestGetWaypoint(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		cfg := config.Config{}
-		cfg.FusionTables.BaseURL = ts.URL
-		cfg.FusionTables.WaypointTableID = "testwaypointid"
-		plugin := FusionTables{}
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.BaseURL = ts.URL
+		cfg.WaypointTableID = "testwaypointid"
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("Failed to initialize plugin :: %v", err)
+			t.Errorf("Failed to get new plugin :: %v", err)
+			continue
 		}
 		waypoints, err := plugin.GetWaypoint(at.rg, at.tm)
 		if err != nil && at.err {
@@ -120,13 +119,12 @@ func TestGetWaypoint(t *testing.T) {
 }
 
 func TestGetWaypointWithMissingLocation(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "http://doesnotexist"
-	cfg.FusionTables.WaypointTableID = "testwaypointid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "http://doesnotexist"
+	cfg.WaypointTableID = "testwaypointid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("Failed to get new plugin :: %v", err)
 	}
 	_, err = plugin.GetWaypoint([]string{"CH"}, time.Time{})
 	if err == nil {
@@ -135,13 +133,12 @@ func TestGetWaypointWithMissingLocation(t *testing.T) {
 }
 
 func TestGetWaypointWithMalformedURL(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "wrong%url"
-	cfg.FusionTables.WaypointTableID = "testwaypointid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "wrong%url"
+	cfg.WaypointTableID = "testwaypointid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("Failed to get new plugin :: %v", err)
 	}
 	_, err = plugin.GetWaypoint([]string{"CH"}, time.Time{})
 	if err == nil {
@@ -197,13 +194,13 @@ func TestPutWaypoint(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		cfg := config.Config{}
-		cfg.FusionTables.UploadURL = ts.URL
-		cfg.FusionTables.WaypointTableID = "testwaypointid"
-		plugin := FusionTables{}
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.UploadURL = ts.URL
+		cfg.WaypointTableID = "testwaypointid"
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("%v failed to initialize plugin :: %v", test.t, err)
+			t.Errorf("%v failed to get new plugin :: %v", test.t, err)
+			continue
 		}
 		err = plugin.PutWaypoint(test.in)
 		if err != nil && test.err {
@@ -215,13 +212,13 @@ func TestPutWaypoint(t *testing.T) {
 }
 
 func TestPutWaypointWithMissingLocation(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "http://thisurlreallydoesnotexist.pt"
-	cfg.FusionTables.WaypointTableID = "testwaypointid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "http://thisurlreallydoesnotexist.pt"
+	cfg.WaypointTableID = "testwaypointid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("Failed to get new plugin :: %v", err)
+		return
 	}
 	err = plugin.PutWaypoint([]waypoint.Waypoint{})
 	if err == nil {
@@ -230,17 +227,18 @@ func TestPutWaypointWithMissingLocation(t *testing.T) {
 }
 
 func TestPutWaypointWithMalformedURL(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "wrong%url"
-	cfg.FusionTables.WaypointTableID = "testwaypointid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "wrong%url"
+	cfg.WaypointTableID = "testwaypointid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("Failed to get new plugin :: %v", err)
+		return
 	}
 	err = plugin.PutWaypoint([]waypoint.Waypoint{})
 	if err == nil {
 		t.Errorf("expected error but was successful")
+		return
 	}
 }
 
@@ -250,13 +248,13 @@ func TestPutWaypointWithBadStatus(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = ts.URL
-	cfg.FusionTables.WaypointTableID = "testwaypointid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = ts.URL
+	cfg.WaypointTableID = "testwaypointid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
 	}
 	err = plugin.PutWaypoint([]waypoint.Waypoint{
 		waypoint.Waypoint{ID: "aFURKAP", Name: "FURKAP", Description: "FURKAPASS PASSHOEHE",
@@ -265,5 +263,6 @@ func TestPutWaypointWithBadStatus(t *testing.T) {
 	})
 	if err == nil {
 		t.Errorf("expected error but got success")
+		return
 	}
 }

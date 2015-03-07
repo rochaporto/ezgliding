@@ -19,28 +19,11 @@
 
 package mock
 
-import (
-	"testing"
+import "testing"
 
-	"github.com/rochaporto/ezgliding/config"
-)
-
-func TestInit(t *testing.T) {
-	mock := Mock{
-		InitF: func(cfg config.Config) error {
-			return nil
-		},
-	}
-	err := mock.Init(config.Config{})
+func TestNew(t *testing.T) {
+	_, err := New(Config{})
 	if err != nil {
-		t.Errorf("Failed to call init on mock waypoint")
-	}
-}
-
-func TestInitNotImplemented(t *testing.T) {
-	mock := Mock{}
-	err := mock.Init(config.Config{})
-	if err != nil {
-		t.Errorf("failed to init plugin :: %v", err)
+		t.Errorf("failed to get a new mock :: %v", err)
 	}
 }

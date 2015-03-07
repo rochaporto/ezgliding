@@ -29,7 +29,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/waypoint"
 )
 
@@ -99,13 +98,12 @@ var getAirfieldTests = []GetAirfieldTest{
 func TestGetAirfield(t *testing.T) {
 	for _, test := range getAirfieldTests {
 
-		plugin := Welt2000{}
-		cfg := config.Config{}
-		cfg.Welt2000.Rssurl = test.rss
-		cfg.Welt2000.Releaseurl = test.r
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.RSSURL = test.rss
+		cfg.ReleaseURL = test.r
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("Failed to initialize plugin :: %v", err)
+			t.Errorf("failed to initialize plugin :: %v", err)
 			continue
 		}
 
@@ -114,12 +112,12 @@ func TestGetAirfield(t *testing.T) {
 		if err != nil && test.err {
 			continue
 		} else if err != nil {
-			t.Errorf("Failed to get airfield :: %v", err)
+			t.Errorf("failed to get airfield :: %v", err)
 			continue
 		}
 
 		if len(airfields) != len(test.rs) {
-			t.Errorf("Got %v airfields but expected %v in test '%v'", len(airfields), len(test.rs), test.t)
+			t.Errorf("got %v airfields but expected %v in test '%v'", len(airfields), len(test.rs), test.t)
 			continue
 		}
 
@@ -135,11 +133,10 @@ func TestGetAirfield(t *testing.T) {
 }
 
 func TestPutAirfield(t *testing.T) {
-	plugin := Welt2000{}
-	cfg := config.Config{}
-	err := plugin.Init(cfg)
+	plugin, err := New(Config{})
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	err = plugin.PutAirfield(nil)
@@ -211,13 +208,12 @@ func TestGetWaypoint(t *testing.T) {
 	for i := range getWaypointTests {
 		test := getWaypointTests[i]
 
-		plugin := Welt2000{}
-		cfg := config.Config{}
-		cfg.Welt2000.Rssurl = test.rss
-		cfg.Welt2000.Releaseurl = test.r
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.RSSURL = test.rss
+		cfg.ReleaseURL = test.r
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("Failed to initialize plugin :: %v", err)
+			t.Errorf("failed to initialize plugin :: %v", err)
 		}
 
 		var waypoints []waypoint.Waypoint
@@ -225,12 +221,12 @@ func TestGetWaypoint(t *testing.T) {
 		if err != nil && test.err {
 			continue
 		} else if err != nil {
-			t.Errorf("Failed to get waypoint :: %v", err)
+			t.Errorf("failed to get waypoint :: %v", err)
 			continue
 		}
 
 		if len(waypoints) != len(test.rs) {
-			t.Errorf("Got %v waypoints but expected %v in test '%v'", len(waypoints), len(test.rs), test.t)
+			t.Errorf("got %v waypoints but expected %v in test '%v'", len(waypoints), len(test.rs), test.t)
 			continue
 		}
 
@@ -238,7 +234,7 @@ func TestGetWaypoint(t *testing.T) {
 			var waypoint = waypoints[i]
 			var expected = test.rs[i]
 			if !reflect.DeepEqual(waypoint, expected) {
-				t.Errorf("Got wrong waypoint. %v instead of %v", waypoint, expected)
+				t.Errorf("got wrong waypoint. %v instead of %v", waypoint, expected)
 				continue
 			}
 		}
@@ -246,26 +242,25 @@ func TestGetWaypoint(t *testing.T) {
 }
 
 func TestPutWaypoint(t *testing.T) {
-	plugin := Welt2000{}
-	cfg := config.Config{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
 	}
 
 	err = plugin.PutWaypoint(nil)
 	if err == nil {
-		t.Errorf("Put waypoint should returned error for welt2000")
+		t.Errorf("put waypoint should returned error for welt2000")
 	}
 }
 
 func TestListLocal(t *testing.T) {
 	releases, err := List("./t/test-releases-list.xml")
 	if err != nil {
-		t.Errorf("Failed to list releases :: %v", err)
+		t.Errorf("failed to list releases :: %v", err)
 	}
 	if len(releases) < 1 {
-		t.Errorf("Got wrong number of releases :: %v", len(releases))
+		t.Errorf("got wrong number of releases :: %v", len(releases))
 	}
 }
 
@@ -278,41 +273,41 @@ func TestListHTTP(t *testing.T) {
 
 	releases, err := List(ts.URL)
 	if err != nil {
-		t.Errorf("Failed to list releases from http endpoint :: %v", err)
+		t.Errorf("failed to list releases from http endpoint :: %v", err)
 	}
 	if len(releases) < 1 {
-		t.Errorf("Got wrong number of releases :: %v", len(releases))
+		t.Errorf("got wrong number of releases :: %v", len(releases))
 	}
 }
 
 func TestListEmpty(t *testing.T) {
 	_, err := List("")
 	if err == nil {
-		t.Errorf("List empty string should give error")
+		t.Errorf("list empty string should give error")
 	}
 }
 
 func TestListMissing(t *testing.T) {
 	_, err := List("./nonexisting.file")
 	if err == nil {
-		t.Errorf("List non existing file should give error")
+		t.Errorf("list non existing file should give error")
 	}
 }
 
 func TestListBrokenFeed(t *testing.T) {
 	_, err := List("./t/test-releases-broken.xml")
 	if err == nil {
-		t.Errorf("Parsing a broken rss feed should have failed")
+		t.Errorf("parsing a broken rss feed should have failed")
 	}
 }
 
 func TestFetchLocal(t *testing.T) {
 	release, err := Fetch("./t/test-release-basic.txt")
 	if err != nil {
-		t.Errorf("Failed to fetch release from local :: %v", err)
+		t.Errorf("failed to fetch release from local :: %v", err)
 	}
 	if len(release.Airfields) < 1 || len(release.Waypoints) < 1 {
-		t.Errorf("Got wrong number of airfields (%v) or waypoints (%v)", len(release.Airfields), len(release.Waypoints))
+		t.Errorf("got wrong number of airfields (%v) or waypoints (%v)", len(release.Airfields), len(release.Waypoints))
 	}
 }
 
@@ -325,24 +320,24 @@ func TestFetchHTTP(t *testing.T) {
 
 	release, err := Fetch(ts.URL)
 	if err != nil {
-		t.Errorf("Failed to fetch release from http endpoint :: %v", err)
+		t.Errorf("failed to fetch release from http endpoint :: %v", err)
 	}
 	if len(release.Airfields) < 1 || len(release.Waypoints) < 1 {
-		t.Errorf("Got wrong number of airfields or waypoints :: %v :: %v", len(release.Airfields), len(release.Waypoints))
+		t.Errorf("got wrong number of airfields or waypoints :: %v :: %v", len(release.Airfields), len(release.Waypoints))
 	}
 }
 
 func TestFetchEmpty(t *testing.T) {
 	_, err := Fetch("")
 	if err == nil {
-		t.Errorf("Fetching an empty string should return error")
+		t.Errorf("fetching an empty string should return error")
 	}
 }
 
 func TestFetchMissing(t *testing.T) {
 	_, err := Fetch("nonexisting.release")
 	if err == nil {
-		t.Errorf("Fetching a non existing release should return error")
+		t.Errorf("fetching a non existing release should return error")
 	}
 }
 
@@ -350,7 +345,7 @@ func TestParseNil(t *testing.T) {
 	r := Release{}
 	err := r.Parse(nil)
 	if err == nil {
-		t.Errorf("Parsing a nil value should return error")
+		t.Errorf("parsing a nil value should return error")
 	}
 }
 
@@ -358,7 +353,7 @@ func TestParseEmpty(t *testing.T) {
 	r := Release{}
 	err := r.Parse([]byte{})
 	if err == nil {
-		t.Errorf("Parsing an empty value should return an error")
+		t.Errorf("parsing an empty value should return an error")
 	}
 }
 
@@ -366,7 +361,7 @@ func TestParseComment(t *testing.T) {
 	r := Release{}
 	r.Parse([]byte("$ this is a comment line"))
 	if len(r.Airfields) > 0 || len(r.Waypoints) > 0 {
-		t.Errorf("Parsing a comment line should fill up airfields or waypoints")
+		t.Errorf("parsing a comment line should fill up airfields or waypoints")
 	}
 }
 
@@ -389,7 +384,7 @@ func TestParseUnclearAirstrip(t *testing.T) {
 	r.Parse([]byte("AMBL21 AMBLETEUSE AERO #   ?G       1      32N504901E0013658FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.UnclearAirstrip != 1 {
-		t.Errorf("Parse failed for unclear airstrip")
+		t.Errorf("parse failed for unclear airstrip")
 	}
 }
 
@@ -399,13 +394,13 @@ func TestParseGliderSite(t *testing.T) {
 	r.Parse([]byte("CHALA1 CHALAIS      GLD#LFIHG 83072512350  88N451605E0000058FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.GliderSite == 0 {
-		t.Errorf("Parse failed for glider site")
+		t.Errorf("parse failed for glider site")
 	}
 	// case GLD#GLD
 	r.Parse([]byte("HABER1 HABERE POC69 GLD#GLD!G 980119122501113N461611E0062748FRP3"))
 	afield = r.Airfields[0]
 	if afield.Flags&airfield.GliderSite == 0 {
-		t.Errorf("Parse failed for glider site")
+		t.Errorf("parse failed for glider site")
 	}
 }
 
@@ -414,7 +409,7 @@ func TestParseULMSite(t *testing.T) {
 	r.Parse([]byte("CERVE2 CERVENS UL      *ULM!G 28052312350 619N461713E0062638FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.ULMSite == 0 {
-		t.Errorf("Parse failed for ulm site")
+		t.Errorf("parse failed for ulm site")
 	}
 }
 func TestParseAsphalt(t *testing.T) {
@@ -422,7 +417,7 @@ func TestParseAsphalt(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIA129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Asphalt == 0 {
-		t.Errorf("Parse failed for asphalt airstrip")
+		t.Errorf("parse failed for asphalt airstrip")
 	}
 }
 
@@ -431,7 +426,7 @@ func TestParseConcrete(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIC129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Concrete == 0 {
-		t.Errorf("Parse failed for concrete airstrip")
+		t.Errorf("parse failed for concrete airstrip")
 	}
 }
 
@@ -440,7 +435,7 @@ func TestParseLoam(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIL129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Loam == 0 {
-		t.Errorf("Parse failed for loam airstrip")
+		t.Errorf("parse failed for loam airstrip")
 	}
 }
 
@@ -449,7 +444,7 @@ func TestParseSand(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIS129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Sand == 0 {
-		t.Errorf("Parse failed for sand airstrip")
+		t.Errorf("parse failed for sand airstrip")
 	}
 }
 
@@ -458,7 +453,7 @@ func TestParseClay(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIY129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Clay == 0 {
-		t.Errorf("Parse failed for asphalt airstrip")
+		t.Errorf("parse failed for asphalt airstrip")
 	}
 }
 
@@ -467,7 +462,7 @@ func TestParseGrass(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIG129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Grass == 0 {
-		t.Errorf("Parse failed for grass airstrip")
+		t.Errorf("parse failed for grass airstrip")
 	}
 }
 
@@ -476,7 +471,7 @@ func TestParseGravel(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIV129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Gravel == 0 {
-		t.Errorf("Parse failed for gravel airstrip")
+		t.Errorf("parse failed for gravel airstrip")
 	}
 }
 
@@ -485,7 +480,7 @@ func TestParseDirt(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLID129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags&airfield.Dirt == 0 {
-		t.Errorf("Parse failed for dirt airstrip")
+		t.Errorf("parse failed for dirt airstrip")
 	}
 }
 
@@ -494,7 +489,7 @@ func TestParseUnknownRunwayType(t *testing.T) {
 	r.Parse([]byte("ANNEM1 ANNEMASSE       #LFLIO129123012587 494N461131E0061606FRQ0"))
 	afield := r.Airfields[0]
 	if afield.Flags != 0 {
-		t.Errorf("Parse failed for invalid runway type")
+		t.Errorf("parse failed for invalid runway type")
 	}
 }
 
@@ -503,7 +498,7 @@ func TestParseCatalogNumber(t *testing.T) {
 	r.Parse([]byte("BONVI2 BONNEVILLE      *FL53S 400523      450N460441E0062310FRP0"))
 	afield := r.Airfields[0]
 	if afield.Catalog != 53 || afield.Flags&airfield.Outlanding == 0 {
-		t.Errorf("Parse failed for outlanding catalog number")
+		t.Errorf("parse failed for outlanding catalog number")
 	}
 }
 
@@ -516,7 +511,7 @@ func TestParseWaypoint(t *testing.T) {
 		Latitude: 46.57277777777778, Longitude: 8.415277777777778, Elevation: 2432, Region: "CH",
 	}
 	if wpoint != expected {
-		t.Errorf("Parse failed for waypoint: got %v instead of %v", wpoint, expected)
+		t.Errorf("parse failed for waypoint: got %v instead of %v", wpoint, expected)
 	}
 }
 

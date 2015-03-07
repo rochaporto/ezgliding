@@ -29,46 +29,45 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/flight"
 )
 
-func TestInit(t *testing.T) {
-	cfg := config.Config{}
-	cfg.Netcoupe.BaseURL = "random/base/url"
-	cfg.Netcoupe.FlightDetailURL = "random/flight/detail/url"
-	cfg.Netcoupe.MaxIDGap = 5
-	plugin := Netcoupe{}
-	err := plugin.Init(cfg)
+func TestNew(t *testing.T) {
+	cfg := Config{}
+	cfg.BaseURL = "random/base/url"
+	cfg.FlightDetailURL = "random/flight/detail/url"
+	cfg.MaxIDGap = 5
+	nc, err := New(cfg)
 	if err != nil {
-		t.Errorf("init failed :: %v", err)
+		t.Errorf("failed to get new nc :: %v", err)
+		return
 	}
-	if plugin.BaseURL != cfg.Netcoupe.BaseURL {
-		t.Errorf("expected baseurl %v but got %v", cfg.Netcoupe.BaseURL, plugin.BaseURL)
+	if nc.BaseURL != cfg.BaseURL {
+		t.Errorf("expected baseurl %v but got %v", cfg.BaseURL, nc.BaseURL)
 	}
-	if plugin.FlightDetailURL != cfg.Netcoupe.FlightDetailURL {
+	if nc.FlightDetailURL != cfg.FlightDetailURL {
 		t.Errorf("expected flightdetailurl %v but got %v",
-			cfg.Netcoupe.FlightDetailURL, plugin.FlightDetailURL)
+			cfg.FlightDetailURL, nc.FlightDetailURL)
 	}
-	if plugin.MaxIDGap != cfg.Netcoupe.MaxIDGap {
-		t.Errorf("expected maxidgap %v but got %v", cfg.Netcoupe.MaxIDGap, plugin.MaxIDGap)
+	if nc.MaxIDGap != cfg.MaxIDGap {
+		t.Errorf("expected maxidgap %v but got %v", cfg.MaxIDGap, nc.MaxIDGap)
 	}
 }
 
-func TestInitDefault(t *testing.T) {
-	plugin := Netcoupe{}
-	err := plugin.Init(config.Config{})
+func TestNewDefault(t *testing.T) {
+	nc, err := New(Config{})
 	if err != nil {
-		t.Errorf("init failed :: %v", err)
+		t.Errorf("failed to get new nc:: %v", err)
+		return
 	}
-	if plugin.BaseURL != baseURL {
-		t.Errorf("expected baseurl %v but got %v", baseURL, plugin.BaseURL)
+	if nc.BaseURL != baseURL {
+		t.Errorf("expected baseurl %v but got %v", baseURL, nc.BaseURL)
 	}
-	if plugin.FlightDetailURL != flightDetailURL {
-		t.Errorf("expected baseurl %v but got %v", flightDetailURL, plugin.FlightDetailURL)
+	if nc.FlightDetailURL != flightDetailURL {
+		t.Errorf("expected baseurl %v but got %v", flightDetailURL, nc.FlightDetailURL)
 	}
-	if plugin.MaxIDGap != maxIDGap {
-		t.Errorf("expected baseurl %v but got %v", maxIDGap, plugin.MaxIDGap)
+	if nc.MaxIDGap != maxIDGap {
+		t.Errorf("expected baseurl %v but got %v", maxIDGap, nc.MaxIDGap)
 	}
 }
 
@@ -91,12 +90,12 @@ var getFlightByIDTests = []GetFlightByIDTest{
 }
 
 func TestGetFlightByID(t *testing.T) {
-	cfg := config.Config{}
-	cfg.Netcoupe.BaseURL = "./t/"
-	cfg.Netcoupe.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
-	nc := Netcoupe{}
-	if err := nc.Init(cfg); err != nil {
-		t.Errorf("init failed :: %v", err)
+	cfg := Config{}
+	cfg.BaseURL = "./t/"
+	cfg.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
+	nc, err := New(cfg)
+	if err != nil {
+		t.Errorf("failed to get new nc :: %v", err)
 		return
 	}
 	for _, test := range getFlightByIDTests {
@@ -118,12 +117,12 @@ func TestGetFlightByID(t *testing.T) {
 }
 
 func TestGetFlightByIDBadRegexp(t *testing.T) {
-	cfg := config.Config{}
-	cfg.Netcoupe.BaseURL = "./t/"
-	cfg.Netcoupe.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
-	nc := Netcoupe{}
-	if err := nc.Init(cfg); err != nil {
-		t.Errorf("init failed :: %v", err)
+	cfg := Config{}
+	cfg.BaseURL = "./t/"
+	cfg.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
+	nc, err := New(cfg)
+	if err != nil {
+		t.Errorf("failed to get new nc :: %v", err)
 		return
 	}
 	flight, err := nc.GetFlightByID(304)
@@ -147,9 +146,9 @@ func TestGetFlightByIDHTTP(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	nc := Netcoupe{}
-	if err := nc.Init(config.Config{}); err != nil {
-		t.Errorf("init failed :: %v", err)
+	nc, err := New(Config{})
+	if err != nil {
+		t.Errorf("failed to get new nc :: %v", err)
 		return
 	}
 	content, err := nc.fetch(ts.URL)
@@ -190,12 +189,12 @@ var getFlightFromIDTests = []GetFlightFromIDTest{
 }
 
 func TestGetFlightFromID(t *testing.T) {
-	cfg := config.Config{}
-	cfg.Netcoupe.BaseURL = "./t/"
-	cfg.Netcoupe.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
-	nc := Netcoupe{}
-	if err := nc.Init(cfg); err != nil {
-		t.Errorf("init failed :: %v", err)
+	cfg := Config{}
+	cfg.BaseURL = "./t/"
+	cfg.FlightDetailURL = "Results/FlightDetail.aspx?FlightID="
+	nc, err := New(cfg)
+	if err != nil {
+		t.Errorf("failed to get new nc :: %v", err)
 		return
 	}
 	for _, test := range getFlightFromIDTests {
@@ -217,8 +216,8 @@ func TestGetFlightFromID(t *testing.T) {
 	}
 }
 func TestGetFlightNotImplemented(t *testing.T) {
-	nc := Netcoupe{}
-	if err := nc.Init(config.Config{}); err != nil {
+	nc, err := New(Config{})
+	if err != nil {
 		t.Errorf("init failed :: %v", err)
 		return
 	}
@@ -230,8 +229,8 @@ func TestGetFlightNotImplemented(t *testing.T) {
 }
 
 func TestPutFlightNotImplemented(t *testing.T) {
-	nc := Netcoupe{}
-	if err := nc.Init(config.Config{}); err != nil {
+	nc, err := New(Config{})
+	if err != nil {
 		t.Errorf("init failed :: %v", err)
 		return
 	}

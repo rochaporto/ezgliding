@@ -29,7 +29,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airspace"
-	"github.com/rochaporto/ezgliding/config"
 )
 
 type ParseTest struct {
@@ -103,13 +102,17 @@ var parseTests = []ParseTest{
 }
 
 func TestListLocal(t *testing.T) {
-	plugin := SoaringWeb{}
+	plugin, err := New(Config{})
+	if err != nil {
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
+	}
 	releases, err := plugin.list("./t", []string{"FR"})
 	if err != nil {
-		t.Errorf("Failed to list releases :: %v", err)
+		t.Errorf("failed to list releases :: %v", err)
 	}
 	if len(releases) < 1 {
-		t.Errorf("Got wrong number of releases :: %v", len(releases))
+		t.Errorf("got wrong number of releases :: %v", len(releases))
 	}
 }
 
@@ -120,29 +123,41 @@ func TestListHTTP(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	plugin := SoaringWeb{}
+	plugin, err := New(Config{})
+	if err != nil {
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
+	}
 	releases, err := plugin.list(ts.URL, []string{"FR"})
 	if err != nil {
-		t.Errorf("Failed to list releases :: %v", err)
+		t.Errorf("failed to list releases :: %v", err)
 	}
 	if len(releases) < 1 {
-		t.Errorf("Got wrong number of releases :: %v", len(releases))
+		t.Errorf("got wrong number of releases :: %v", len(releases))
 	}
 }
 
 func TestListEmpty(t *testing.T) {
-	plugin := SoaringWeb{}
-	_, err := plugin.list("", nil)
+	plugin, err := New(Config{})
+	if err != nil {
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
+	}
+	_, err = plugin.list("", nil)
 	if err == nil {
-		t.Errorf("List empty string should give error")
+		t.Errorf("list empty string should give error")
 	}
 }
 
 func TestListMissing(t *testing.T) {
-	plugin := SoaringWeb{}
-	_, err := plugin.list("./nonexisting.file", nil)
+	plugin, err := New(Config{})
+	if err != nil {
+		t.Errorf("failed to get new plugin :: %v", err)
+		return
+	}
+	_, err = plugin.list("./nonexisting.file", nil)
 	if err == nil {
-		t.Errorf("List non existing should give error")
+		t.Errorf("list non existing should give error")
 	}
 }
 
@@ -150,54 +165,58 @@ func TestParse(t *testing.T) {
 	for i := range parseTests {
 		test := parseTests[i]
 
-		plugin := SoaringWeb{}
+		plugin, err := New(Config{})
+		if err != nil {
+			t.Errorf("failed to get new plugin :: %v", err)
+			return
+		}
 		releases, err := plugin.parse("./", test.rg, []byte(test.c))
 		if err != nil {
-			t.Errorf("Failed to parse '%v' :: %v", test.t, err)
+			t.Errorf("failed to parse '%v' :: %v", test.t, err)
 		}
 		if len(releases) != len(test.r) {
-			t.Errorf("Wrong num of releases in '%v' :: %v but expected %v",
+			t.Errorf("wrong num of releases in '%v' :: %v but expected %v",
 				test.t, len(releases), len(test.r))
 		}
 		for r := range releases {
 			var release = releases[r]
 			var expected = test.r[r]
 			if release.Date != expected.Date {
-				t.Errorf("Wrong date in release :: got %v expected %v", release, expected)
+				t.Errorf("wrong date in release :: got %v expected %v", release, expected)
 			}
 			if release.Location != expected.Location {
-				t.Errorf("Wrong location in release :: got %v expected %v", release, expected)
+				t.Errorf("wrong location in release :: got %v expected %v", release, expected)
 			}
 			if release.Region != expected.Region {
-				t.Errorf("Wrong region in release :: got %v expected %v", release, expected)
+				t.Errorf("wrong region in release :: got %v expected %v", release, expected)
 			}
 		}
 	}
 }
 
-func TestInit(t *testing.T) {
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "some.random/location"
-	plugin := SoaringWeb{}
-	err := plugin.Init(cfg)
+func TestNew(t *testing.T) {
+	cfg := Config{}
+	cfg.BaseURL = "some.random/location"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
-	if plugin.BaseURL != cfg.SoaringWeb.Baseurl {
-		t.Errorf("Expected baseurl '%v' but got '%v'", cfg.SoaringWeb.Baseurl, plugin.BaseURL)
+	if plugin.BaseURL != cfg.BaseURL {
+		t.Errorf("expected baseurl '%v' but got '%v'", cfg.BaseURL, plugin.BaseURL)
 	}
 }
 
-func TestInitDefault(t *testing.T) {
-	plugin := SoaringWeb{}
-	err := plugin.Init(config.Config{})
+func TestNewDefault(t *testing.T) {
+	plugin, err := New(Config{})
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	if plugin.BaseURL != baseURL {
-		t.Errorf("Expected baseurl '%v' but got '%v'", baseURL, plugin.BaseURL)
+		t.Errorf("expected baseurl '%v' but got '%v'", baseURL, plugin.BaseURL)
 	}
 }
 
@@ -298,22 +317,22 @@ func TestGetAirspace(t *testing.T) {
 	for i := range getAirspaceTests {
 		test := getAirspaceTests[i]
 
-		plugin := SoaringWeb{}
-		cfg := config.Config{}
-		cfg.SoaringWeb.Baseurl = test.b
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.BaseURL = test.b
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("Failed to initialize plugin :: %v", err)
+			t.Errorf("failed to get plugin :: %v", err)
+			continue
 		}
 
 		var airspaces []airspace.Airspace
 		airspaces, err = plugin.GetAirspace([]string{test.rg}, test.d)
 		if err != nil {
-			t.Errorf("Failed to get airspace :: %v", err)
+			t.Errorf("failed to get airspace :: %v", err)
 		}
 
 		if len(airspaces) != len(test.r) {
-			t.Errorf("Got %v airspaces but expected %v in test '%v'", len(airspaces), len(test.r), test.t)
+			t.Errorf("got %v airspaces but expected %v in test '%v'", len(airspaces), len(test.r), test.t)
 		}
 
 		for i := range airspaces {
@@ -321,88 +340,87 @@ func TestGetAirspace(t *testing.T) {
 			var expected = test.r[i]
 			aspace.Pen = airspace.Pen{}
 			if !reflect.DeepEqual(aspace, expected) {
-				t.Errorf("Got wrong airspace. %v instead of %v", aspace, expected)
+				t.Errorf("got wrong airspace. %v instead of %v", aspace, expected)
 			}
 		}
 	}
 }
 
 func TestGetAirspaceEmptyRegion(t *testing.T) {
-	plugin := SoaringWeb{}
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "./t"
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "./t"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	var airspaces []airspace.Airspace
 	airspaces, err = plugin.GetAirspace([]string{}, time.Time{})
 	if err != nil {
-		t.Errorf("Got error when retrieving airspace with empty regions :: %v", err)
+		t.Errorf("got error when retrieving airspace with empty regions :: %v", err)
 	}
 
 	if len(airspaces) != 0 {
-		t.Errorf("Passing empty regions should return 0 airspaces, got %v", len(airspaces))
+		t.Errorf("passing empty regions should return 0 airspaces, got %v", len(airspaces))
 	}
 }
 
 func TestGetAirspaceMissingRegion(t *testing.T) {
-	plugin := SoaringWeb{}
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "./t"
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "./t"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	_, err = plugin.GetAirspace([]string{"II"}, time.Time{})
 	if err == nil {
-		t.Errorf("Get airspace with missing region did not return error")
+		t.Errorf("get airspace with missing region did not return error")
 	}
 }
 
 func TestGetAirspaceMissingLocation(t *testing.T) {
-	plugin := SoaringWeb{}
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "./t"
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "./t"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	_, err = plugin.GetAirspace([]string{"MS"}, time.Time{})
 	if err == nil {
-		t.Errorf("Get airspace with missing/bad location did not return error")
+		t.Errorf("get airspace with missing/bad location did not return error")
 	}
 }
 
 func TestGetAirspaceMissingLocationWithBaseURL(t *testing.T) {
-	plugin := SoaringWeb{}
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "./t/wb"
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "./t/wb"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
+		return
 	}
 
 	_, err = plugin.GetAirspace([]string{"MS"}, time.Time{})
 	if err == nil {
-		t.Errorf("Get airspace with missing/bad location and base url did not return error")
+		t.Errorf("get airspace with missing/bad location and base url did not return error")
 	}
 }
 
 func TestPutAirspace(t *testing.T) {
-	plugin := SoaringWeb{}
-	cfg := config.Config{}
-	cfg.SoaringWeb.Baseurl = "./t/wb"
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "./t/wb"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to initialize plugin :: %v", err)
 	}
 
 	err = plugin.PutAirspace(nil) // FIXME: implement
 	if err != nil {
-		t.Errorf("Failed to put airspace")
+		t.Errorf("failed to put airspace")
 	}
 }

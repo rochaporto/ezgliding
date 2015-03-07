@@ -26,7 +26,7 @@ import (
 )
 
 // GetAirfield is the mock implementation of airfield.Airfielder.GetAirfield.
-func (mk *Mock) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
+func (mk Mock) GetAirfield(regions []string, updatedSince time.Time) ([]airfield.Airfield, error) {
 	if mk.GetAirfieldF != nil {
 		return mk.GetAirfieldF(regions, updatedSince)
 	}
@@ -34,7 +34,7 @@ func (mk *Mock) GetAirfield(regions []string, updatedSince time.Time) ([]airfiel
 }
 
 // PutAirfield is the mock implementation of airfield.Airfielder.PutAirfield.
-func (mk *Mock) PutAirfield(airfield []airfield.Airfield) error {
+func (mk Mock) PutAirfield(airfield []airfield.Airfield) error {
 	if mk.PutAirfieldF != nil {
 		return mk.PutAirfieldF(airfield)
 	}

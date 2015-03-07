@@ -27,8 +27,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/waypoint"
 )
 
 // makeHandler is a common wrapper for all handlers.
@@ -74,8 +72,8 @@ func (srv *Server) airspaceHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	afield := srv.ctx.Airfield
-	airfields, err := afield.(airfield.Airfielder).GetAirfield(params["region"], updated)
+	afield := srv.Airfielder
+	airfields, err := afield.GetAirfield(params["region"], updated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -106,8 +104,8 @@ func (srv *Server) waypointHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	wpoint := srv.ctx.Waypoint
-	waypoints, err := wpoint.(waypoint.Waypointer).GetWaypoint(params["region"], updated)
+	wpoint := srv.Waypointer
+	waypoints, err := wpoint.GetWaypoint(params["region"], updated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

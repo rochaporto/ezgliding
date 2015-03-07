@@ -28,7 +28,7 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/util"
 	"github.com/rochaporto/ezgliding/waypoint"
@@ -48,8 +48,8 @@ Gets waypoint information according to the given parameters.
 // runWaypointGet invokes the configured plugin and outputs waypoint data.
 func runWaypointGet(cmd *commander.Command, args []string) {
 	var err error
-	ctx := context.Ctx
-	wpoint := ctx.Waypoint
+	cfg, _ := config.Get()
+	wpoint, _ := plugin.GetWaypointer("", cfg)
 
 	tafter := time.Time{}
 	if *after != "" {
@@ -87,19 +87,14 @@ func runWaypointPut(cmd *commander.Command, args []string) {
 		fmt.Fprintf(os.Stderr, "failed to put waypoint data :: no destination given\n")
 		return
 	}
+	cfg, _ := config.Get()
 	pluginID := args[0]
-	ctx := context.Ctx
-	destPlugin, err := plugin.NewPlugin(plugin.ID(pluginID))
+	destPlugin, err := plugin.GetWaypointer(pluginID, cfg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get plugin '%v' :: %v\n", pluginID, err)
 		return
 	}
-	err = destPlugin.Init(ctx.Config)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
-		return
-	}
-	wpoint := ctx.Waypoint
+	wpoint, _ := plugin.GetWaypointer("", cfg)
 	waypoints, err := wpoint.(waypoint.Waypointer).GetWaypoint(strings.Split(*region, ","), time.Time{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get waypoint :: %v\n", err)

@@ -29,7 +29,7 @@ import (
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/config"
 	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/util"
 )
@@ -48,9 +48,12 @@ Gets available airfield information according to the given parameters
 // runAirfieldGet invokes the configured plugin and outputs airfield data.
 func runAirfieldGet(cmd *commander.Command, args []string) {
 	var err error
-	ctx := context.Ctx
-	afield := ctx.Airfield
-
+	cfg, _ := config.Get()
+	afield, err := plugin.GetAirfielder("", cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to get airfield plugin :: %v\n", err)
+		return
+	}
 	tafter := time.Time{}
 	if *after != "" {
 		tafter, err = time.Parse("2006-01-02", *after)
@@ -61,7 +64,7 @@ func runAirfieldGet(cmd *commander.Command, args []string) {
 	}
 	airfields, err := afield.(airfield.Airfielder).GetAirfield(strings.Split(*region, ","), tafter)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get airfield :: %v\n", err)
+		fmt.Fprintf(os.Stderr, "failed to get airfield :: %v\n", err)
 		return
 		// FIXME: must return -1, but no way now to check this in test
 	}
@@ -88,19 +91,14 @@ func runAirfieldPut(cmd *commander.Command, args []string) {
 		fmt.Fprintf(os.Stderr, "failed to put airfield data :: no destination given\n")
 		return
 	}
+	cfg, _ := config.Get()
 	pluginID := args[0]
-	ctx := context.Ctx
-	destPlugin, err := plugin.NewPlugin(plugin.ID(pluginID))
+	destPlugin, err := plugin.GetAirfielder(pluginID, cfg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get plugin '%v' :: %v\n", pluginID, err)
 		return
 	}
-	err = destPlugin.Init(ctx.Config)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to init plugin '%v' :: %v\n", pluginID, err)
-		return
-	}
-	afield := ctx.Airfield
+	afield, _ := plugin.GetAirfielder("", cfg)
 	airfields, err := afield.(airfield.Airfielder).GetAirfield(strings.Split(*region, ","), time.Time{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get airfield :: %v\n", err)

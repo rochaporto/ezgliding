@@ -28,7 +28,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/airfield"
-	"github.com/rochaporto/ezgliding/config"
 )
 
 type GetAirfieldTest struct {
@@ -92,13 +91,13 @@ func TestGetAirfield(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		cfg := config.Config{}
-		cfg.FusionTables.BaseURL = ts.URL
-		cfg.FusionTables.AirfieldTableID = "testairfieldid"
-		plugin := FusionTables{}
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.BaseURL = ts.URL
+		cfg.AirfieldTableID = "testairfieldid"
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("Failed to initialize plugin :: %v", err)
+			t.Errorf("failed to get fusiontables :: %v", err)
+			continue
 		}
 		airfields, err := plugin.GetAirfield(at.rg, at.tm)
 		if err != nil && at.err {
@@ -120,13 +119,13 @@ func TestGetAirfield(t *testing.T) {
 }
 
 func TestGetAirfieldWithMissingLocation(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "http://doesnotexist"
-	cfg.FusionTables.AirfieldTableID = "testairfieldid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "http://doesnotexist"
+	cfg.AirfieldTableID = "testairfieldid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get fusiontables :: %v", err)
+		return
 	}
 	_, err = plugin.GetAirfield([]string{"FR"}, time.Time{})
 	if err == nil {
@@ -135,13 +134,13 @@ func TestGetAirfieldWithMissingLocation(t *testing.T) {
 }
 
 func TestGetAirfieldWithMalformedURL(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "wrong%url"
-	cfg.FusionTables.AirfieldTableID = "testairfieldid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "wrong%url"
+	cfg.AirfieldTableID = "testairfieldid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get fusiontables :: %v", err)
+		return
 	}
 	_, err = plugin.GetAirfield([]string{"FR"}, time.Time{})
 	if err == nil {
@@ -199,13 +198,13 @@ func TestPutAirfield(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		cfg := config.Config{}
-		cfg.FusionTables.UploadURL = ts.URL
-		cfg.FusionTables.AirfieldTableID = "testairfieldid"
-		plugin := FusionTables{}
-		err := plugin.Init(cfg)
+		cfg := Config{}
+		cfg.UploadURL = ts.URL
+		cfg.AirfieldTableID = "testairfieldid"
+		plugin, err := New(cfg)
 		if err != nil {
-			t.Errorf("%v failed to initialize plugin :: %v", test.t, err)
+			t.Errorf("failed to get fusiontables :: %v", err)
+			continue
 		}
 		err = plugin.PutAirfield(test.in)
 		if err != nil && test.err {
@@ -217,13 +216,13 @@ func TestPutAirfield(t *testing.T) {
 }
 
 func TestPutAirfieldWithMissingLocation(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "http://thisurlreallydoesnotexist.pt"
-	cfg.FusionTables.AirfieldTableID = "testairfieldid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "http://thisurlreallydoesnotexist.pt"
+	cfg.AirfieldTableID = "testairfieldid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get fusiontables :: %v", err)
+		return
 	}
 	err = plugin.PutAirfield([]airfield.Airfield{})
 	if err == nil {
@@ -232,13 +231,13 @@ func TestPutAirfieldWithMissingLocation(t *testing.T) {
 }
 
 func TestPutAirfieldWithMalformedURL(t *testing.T) {
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = "wrong%url"
-	cfg.FusionTables.AirfieldTableID = "testairfieldid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = "wrong%url"
+	cfg.AirfieldTableID = "testairfieldid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("Failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get fusiontables :: %v", err)
+		return
 	}
 	err = plugin.PutAirfield([]airfield.Airfield{})
 	if err == nil {
@@ -252,13 +251,13 @@ func TestPutAirfieldWithBadStatus(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	cfg := config.Config{}
-	cfg.FusionTables.BaseURL = ts.URL
-	cfg.FusionTables.AirfieldTableID = "testairfieldid"
-	plugin := FusionTables{}
-	err := plugin.Init(cfg)
+	cfg := Config{}
+	cfg.BaseURL = ts.URL
+	cfg.AirfieldTableID = "testairfieldid"
+	plugin, err := New(cfg)
 	if err != nil {
-		t.Errorf("failed to initialize plugin :: %v", err)
+		t.Errorf("failed to get fusiontables :: %v", err)
+		return
 	}
 	err = plugin.PutAirfield([]airfield.Airfield{
 		airfield.Airfield{ID: "aHABER", ShortName: "HABER", Name: "HABERE POC69",

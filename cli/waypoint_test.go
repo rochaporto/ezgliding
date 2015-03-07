@@ -26,7 +26,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/config"
-	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/plugin"
 	"github.com/rochaporto/ezgliding/waypoint"
@@ -36,46 +35,45 @@ import (
 // verify waypoint-get works. First, no region is passed. Second, a region but
 // no updatedAfter is passed. Finally, both region and updatedAfter are given.
 func ExampleWaypointGet() {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				waypoints := []waypoint.Waypoint{
-					waypoint.Waypoint{
-						ID: "MockID1", Name: "MockName",
-						Description: "MockDescription", Region: "FR", Flags: 0,
-						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
-						Update: time.Date(2014, 02, 01, 0, 0, 0, 0, time.UTC),
-					},
-					waypoint.Waypoint{
-						ID: "MockID2", Name: "MockName",
-						Description: "MockDescription", Region: "CH", Flags: 0,
-						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
-						Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC),
-					},
-					waypoint.Waypoint{
-						ID: "MockID3", Name: "MockName",
-						Description: "MockDescription", Region: "CH", Flags: 0,
-						Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
-						Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC),
-					},
-				}
-				result := []waypoint.Waypoint{}
-				for _, waypoint := range waypoints {
-					b := false
-					for _, r := range regions {
-						if waypoint.Region == r {
-							b = true
-						}
-					}
-					if waypoint.Update.After(updatedSince) && b {
-						result = append(result, waypoint)
+	plugin.Register("mockwaypointget", &mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			waypoints := []waypoint.Waypoint{
+				waypoint.Waypoint{
+					ID: "MockID1", Name: "MockName",
+					Description: "MockDescription", Region: "FR", Flags: 0,
+					Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+					Update: time.Date(2014, 02, 01, 0, 0, 0, 0, time.UTC),
+				},
+				waypoint.Waypoint{
+					ID: "MockID2", Name: "MockName",
+					Description: "MockDescription", Region: "CH", Flags: 0,
+					Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+					Update: time.Date(2014, 02, 02, 0, 0, 0, 0, time.UTC),
+				},
+				waypoint.Waypoint{
+					ID: "MockID3", Name: "MockName",
+					Description: "MockDescription", Region: "CH", Flags: 0,
+					Elevation: 2000, Latitude: 32.533, Longitude: 100.376,
+					Update: time.Date(2014, 02, 03, 0, 0, 0, 0, time.UTC),
+				},
+			}
+			result := []waypoint.Waypoint{}
+			for _, waypoint := range waypoints {
+				b := false
+				for _, r := range regions {
+					if waypoint.Region == r {
+						b = true
 					}
 				}
-				return result, nil
-			},
+				if waypoint.Update.After(updatedSince) && b {
+					result = append(result, waypoint)
+				}
+			}
+			return result, nil
 		},
-	}
-	setupContext(ctx)
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypointget"}})
 	flag.Set("region", "CH")
 	flag.Set("after", "2014-02-02")
 	runWaypointGet(CmdWaypointGet, []string{})
@@ -85,28 +83,26 @@ func ExampleWaypointGet() {
 }
 
 func TestWaypointGetFailed(t *testing.T) {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return nil, errors.New("mock testing get waypoint failed")
-			},
+	plugin.Register("mockwaypointgetfailed", &mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			return nil, errors.New("mock testing get waypoint failed")
 		},
-	}
-	setupContext(ctx)
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypointgetfailed"}})
 	flag.Set("region", "")
 	flag.Set("after", "")
 	runWaypointGet(CmdWaypointGet, []string{})
 }
 
 func TestWaypointGetBadAfter(t *testing.T) {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return nil, nil
-			},
+	plugin.Register("mockwaypointbadafter", &mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			return nil, nil
 		},
-	}
-	setupContext(ctx)
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypointbadafter"}})
 	flag.Set("after", "22-00-11")
 	flag.Set("region", "")
 	runWaypointGet(CmdWaypointGet, []string{})
@@ -115,88 +111,58 @@ func TestWaypointGetBadAfter(t *testing.T) {
 // ExampleWaypointPut uses the mock waypoint implementation to push data and
 // verify waypoint-put works.
 func ExampleWaypointPut() {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return []waypoint.Waypoint{
-					waypoint.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
-						Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.576},
-				}, nil
-			},
+	plugin.Register("mockwaypoint", &mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			return []waypoint.Waypoint{
+				waypoint.Waypoint{ID: "MockID", Name: "MockName", Description: "MockDescription",
+					Region: "FR", Flags: 0, Elevation: 2000, Latitude: 32.533, Longitude: 100.576},
+			}, nil
 		},
-	}
-	setupContext(ctx)
-	runWaypointPut(CmdWaypointPut, []string{"mock"})
+	},
+	)
+	plugin.Register("mockwaypointput", &mock.Mock{
+		PutWaypointF: func(waypoints []waypoint.Waypoint) error {
+			return nil
+		},
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypoint"}})
+	runWaypointPut(CmdWaypointPut, []string{"mockwaypointput"})
 	// Output:
-	// pushed 1 waypoints into mock
+	// pushed 1 waypoints into mockwaypointput
 }
 
 func TestWaypointPutFailed(t *testing.T) {
-	err := plugin.Register(plugin.ID("wpputfailed"), plugin.Pluginer(
-		&mock.Mock{
-			PutWaypointF: func(waypoints []waypoint.Waypoint) error {
-				return errors.New("mock testing put waypoint failed")
-			},
-		}))
-	if err != nil {
-		t.Errorf("failed to register plugin :: %v", err)
-	}
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return []waypoint.Waypoint{waypoint.Waypoint{}}, nil
-			},
+	plugin.Register("mockwaypointbadput", mock.Mock{
+		PutWaypointF: func(waypoints []waypoint.Waypoint) error {
+			return errors.New("mock testing put waypoint failed")
 		},
-	}
-	setupContext(ctx)
-	runWaypointPut(CmdWaypointPut, []string{"wpputfailed"})
+	})
+	plugin.Register("mockwaypoint", mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			return []waypoint.Waypoint{waypoint.Waypoint{}}, nil
+		},
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypoint"}})
+	runWaypointPut(CmdWaypointPut, []string{"mockwaypointbadput"})
 }
 
 func TestWaypointPutBadGet(t *testing.T) {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return nil, errors.New("mock testing get waypoint failed")
-			},
+	plugin.Register("mockwaypointbadget", mock.Mock{
+		GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
+			return nil, errors.New("mock testing get waypoint failed")
 		},
-	}
-	setupContext(ctx)
-	runWaypointPut(CmdWaypointPut, []string{"mock"})
+	},
+	)
+	config.Set(config.Config{Global: config.Global{Waypointer: "mockwaypointbadget"}})
+	runWaypointPut(CmdWaypointPut, []string{"mockwaypointbadget"})
 }
 
 func TestWaypointPutBadPluginID(t *testing.T) {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{},
-	}
-	setupContext(ctx)
 	runWaypointPut(CmdWaypointPut, []string{"wpnonexisting"})
 }
 
-func TestWaypointPutFailInit(t *testing.T) {
-	err := plugin.Register(plugin.ID("wpfailinit"), plugin.Pluginer(
-		&mock.Mock{
-			InitF: func(config.Config) error {
-				return errors.New("failed to init plugin")
-			},
-		}))
-	if err != nil {
-		t.Errorf("failed to register plugin :: %v", err)
-	}
-	ctx := context.Context{
-		Waypoint: &mock.Mock{
-			GetWaypointF: func(regions []string, updatedSince time.Time) ([]waypoint.Waypoint, error) {
-				return []waypoint.Waypoint{waypoint.Waypoint{}}, nil
-			},
-		},
-	}
-	setupContext(ctx)
-	runWaypointPut(CmdWaypointPut, []string{"wpfailinit"})
-}
-
 func TestWaypointPutBadArgNumber(t *testing.T) {
-	ctx := context.Context{
-		Waypoint: &mock.Mock{},
-	}
-	setupContext(ctx)
 	runWaypointPut(CmdWaypointPut, []string{})
 }

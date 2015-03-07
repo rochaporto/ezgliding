@@ -38,61 +38,110 @@
 package plugin
 
 import (
-	"errors"
+	"fmt"
 
+	"github.com/rochaporto/ezgliding/airfield"
+	"github.com/rochaporto/ezgliding/airspace"
 	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/fusiontables"
-	"github.com/rochaporto/ezgliding/mock"
 	"github.com/rochaporto/ezgliding/netcoupe"
 	"github.com/rochaporto/ezgliding/soaringweb"
+	"github.com/rochaporto/ezgliding/waypoint"
 	"github.com/rochaporto/ezgliding/welt2000"
 )
 
-// Pluginer is to be implemented by every plugin implementation
-type Pluginer interface {
-	Init(cfg config.Config) error
-}
-
-// pluginRegistry holds instances of available pluginRegistry mapped by IDs (for discovery).
-var pluginRegistry = map[ID]Pluginer{
-	ID(fusiontables.ID): Pluginer(&fusiontables.FusionTables{}),
-	ID(mock.ID):         Pluginer(&mock.Mock{}),
-	ID(netcoupe.ID):     Pluginer(&netcoupe.Netcoupe{}),
-	ID(soaringweb.ID):   Pluginer(&soaringweb.SoaringWeb{}),
-	ID(welt2000.ID):     Pluginer(&welt2000.Welt2000{}),
-}
-
-// ID is the specific id of a given plugin.
-type ID string
-
-// Register adds a new Pluginer implementation to the available list.
-// It fails if a plugin with the given ID already exists.
-func Register(id ID, plugin Pluginer) error {
-	_, present := pluginRegistry[id]
-	if present {
-		return errors.New("A plugin with ID " + string(id) + " already exists")
+// GetFlighter returns an instance of the request Flighter plugin.
+// Passing an empty string will try to load an instance of the plugin
+// currently set in the configuration (if any).
+func GetFlighter(id string, cfg config.Config) (flight.Flighter, error) {
+	fid := id
+	if fid == "" {
+		fid = cfg.Global.Flighter
 	}
-	pluginRegistry[id] = plugin
-	return nil
+	r, err := GetInstance(fid, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return r.(flight.Flighter), err
 }
 
-// Unregister removes the plugin with the given ID from the register.
-// It fails if a plugin with the given ID does not exist.
-func Unregister(id ID) error {
-	_, present := pluginRegistry[id]
-	if !present {
-		return errors.New("A plugin with ID " + string(id) + " does not exist")
+// GetAirfielder returns an instance of the request Airfielder plugin.
+// Passing an empty string will try to load an instance of the plugin
+// currently set in the configuration (if any).
+func GetAirfielder(id string, cfg config.Config) (airfield.Airfielder, error) {
+	fid := id
+	if fid == "" {
+		fid = cfg.Global.Airfielder
 	}
-	delete(pluginRegistry, id)
-	return nil
+	r, err := GetInstance(fid, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return r.(airfield.Airfielder), err
 }
 
-// NewPlugin returns a new Pluginer instance for the given plugin ID.
-func NewPlugin(id ID) (Pluginer, error) {
-	var result Pluginer
-	result, present := pluginRegistry[id]
-	if !present {
-		return result, errors.New("No plugin available with id " + string(id))
+// GetAirspacer returns an instance of the request Airspacer plugin.
+// Passing an empty string will try to load an instance of the plugin
+// currently set in the configuration (if any).
+func GetAirspacer(id string, cfg config.Config) (airspace.Airspacer, error) {
+	fid := id
+	if fid == "" {
+		fid = cfg.Global.Airspacer
 	}
-	return result, nil
+	r, err := GetInstance(fid, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return r.(airspace.Airspacer), err
+}
+
+// GetWaypointer returns an instance of the request Waypointer plugin.
+// Passing an empty string will try to load an instance of the plugin
+// currently set in the configuration (if any).
+func GetWaypointer(id string, cfg config.Config) (waypoint.Waypointer, error) {
+	fid := id
+	if fid == "" {
+		fid = cfg.Global.Waypointer
+	}
+	r, err := GetInstance(fid, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return r.(waypoint.Waypointer), err
+}
+
+// registry holds additional string/plugin mappings to the default ones.
+// The default ones are set in the GetInstance function.
+var registry = map[string]interface{}{}
+
+// Register adds a new plugin mapping to the available list.
+// This is useful to register mock plugins (probably based on the mock.Mock
+// struct) for testing.
+func Register(id string, plugin interface{}) {
+	registry[id] = plugin
+}
+
+// GetInstance returns a new instance of the requested plugin.
+func GetInstance(id string, cfg config.Config) (interface{}, error) {
+	switch id {
+	case "fusiontables":
+		ft, _ := fusiontables.New(cfg.FusionTables)
+		return ft, nil
+	case "netcoupe":
+		nc, _ := netcoupe.New(cfg.Netcoupe)
+		return nc, nil
+	case "soaringweb":
+		sw, _ := soaringweb.New(cfg.SoaringWeb)
+		return sw, nil
+	case "welt2000":
+		wt, _ := welt2000.New(cfg.Welt2000)
+		return wt, nil
+	default:
+		p, ok := registry[id]
+		if !ok {
+			return nil, fmt.Errorf("unknown plugin id :: %v", id)
+		}
+		return p, nil
+	}
 }

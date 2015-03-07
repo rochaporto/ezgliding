@@ -21,10 +21,7 @@ package cli
 
 import (
 	"flag"
-	"fmt"
-	"os"
 
-	"github.com/rochaporto/ezgliding/context"
 	"github.com/rochaporto/ezgliding/web"
 
 	commander "code.google.com/p/go-commander"
@@ -46,11 +43,6 @@ Example:
 
 // runWeb invokes the configured plugin and outputs airspace data.
 func runWeb(cmd *commander.Command, args []string) {
-	ctx := context.Ctx
-	srv := web.Server{}
-	err := srv.Init(ctx)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to initialize web server :: %v\n", err)
-	}
+	srv, _ := web.NewServer(web.Config{})
 	srv.Start()
 }

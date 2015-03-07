@@ -27,8 +27,8 @@ import (
 
 	commander "code.google.com/p/go-commander"
 	"github.com/golang/glog"
-	"github.com/rochaporto/ezgliding/airspace"
-	"github.com/rochaporto/ezgliding/context"
+	"github.com/rochaporto/ezgliding/config"
+	"github.com/rochaporto/ezgliding/plugin"
 )
 
 // CmdGetAirspace command gets airspace information.
@@ -48,11 +48,15 @@ Example:
 // runAirspaceGet invokes the configured plugin and outputs airspace data.
 func runAirspaceGet(cmd *commander.Command, args []string) {
 	var err error
-	ctx := context.Ctx
-	aspace := ctx.Airspace
-	airspaces, err := aspace.(airspace.Airspacer).GetAirspace(strings.Split(*region, ","), time.Time{})
+	cfg, _ := config.Get()
+	aspace, err := plugin.GetAirspacer("", cfg)
 	if err != nil {
-		glog.Errorf("Failed to get airspace :: %v", err)
+		glog.Errorf("failed to get airspacer plugin :: %v\n", err)
+		return
+	}
+	airspaces, err := aspace.GetAirspace(strings.Split(*region, ","), time.Time{})
+	if err != nil {
+		glog.Errorf("failed to get airspace :: %v", err)
 		// FIXME: must return -1, but no way now to check this in test
 	}
 	glog.V(5).Infof("airspace get with args '%v' got %d results", args, len(airspaces))
