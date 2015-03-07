@@ -17,7 +17,7 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package igc
+package flight
 
 import (
 	"fmt"
@@ -25,16 +25,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rochaporto/ezgliding/flight"
 	"github.com/rochaporto/ezgliding/spatial"
 )
 
-// Parse returns a flight.Flight object corresponding to the given content.
+const (
+	// TimeFormat is the golang time.Parse format for IGC time
+	TimeFormat = "150405"
+	// DateFormat is the golang time.Parse format for IGC time
+	DateFormat = "020106"
+)
+
+// ParseIGC returns a Flight object corresponding to the given content.
 // content should be a text string in the IGC format.
-func Parse(content string) (flight.Flight, error) {
-	f := flight.NewFlight()
+func ParseIGC(content string) (Flight, error) {
+	f := NewFlight()
 	var err error
-	p := Parser{}
+	p := IGCParser{}
 	lines := strings.Split(content, "\n")
 	for i := range lines {
 		line := strings.TrimSpace(lines[i])
@@ -86,15 +92,15 @@ type field struct {
 	tlc   string
 }
 
-// Parser gives functionality to parse IGC flight files.
-type Parser struct {
+// IGCParser gives functionality to parse IGC flight files.
+type IGCParser struct {
 	IFields  []field
 	JFields  []field
 	taskDone bool
 	numSat   int
 }
 
-func (p *Parser) parseA(line string, f *flight.Flight) error {
+func (p *IGCParser) parseA(line string, f *Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -104,11 +110,11 @@ func (p *Parser) parseA(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseB(line string, f *flight.Flight) error {
+func (p *IGCParser) parseB(line string, f *Flight) error {
 	if len(line) < 37 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	pt := flight.NewPoint()
+	pt := NewPoint()
 	var err error
 	pt.Time, err = time.Parse(TimeFormat, line[1:7])
 	if err != nil {
@@ -137,7 +143,7 @@ func (p *Parser) parseB(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseC(lines []string, f *flight.Flight) error {
+func (p *IGCParser) parseC(lines []string, f *Flight) error {
 	line := lines[0]
 	if len(line) < 25 {
 		return fmt.Errorf("wrong line size :: %v", line)
@@ -167,7 +173,7 @@ func (p *Parser) parseC(lines []string, f *flight.Flight) error {
 		return err
 	}
 	for i := 0; i < nTP; i++ {
-		var tp flight.Point
+		var tp Point
 		if tp, err = p.taskPoint(lines[3+i]); err != nil {
 			return err
 		}
@@ -183,18 +189,18 @@ func (p *Parser) parseC(lines []string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) taskPoint(line string) (flight.Point, error) {
+func (p *IGCParser) taskPoint(line string) (Point, error) {
 	if len(line) < 18 {
-		return flight.Point{}, fmt.Errorf("line too short :: %v", line)
+		return Point{}, fmt.Errorf("line too short :: %v", line)
 	}
-	return flight.Point{
+	return Point{
 		Latitude:    spatial.DMS2Decimal(line[1:9]),
 		Longitude:   spatial.DMS2Decimal(line[9:18]),
 		Description: line[18:],
 	}, nil
 }
 
-func (p *Parser) parseD(line string, f *flight.Flight) error {
+func (p *IGCParser) parseD(line string, f *Flight) error {
 	if len(line) < 6 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -204,7 +210,7 @@ func (p *Parser) parseD(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseE(line string, f *flight.Flight) error {
+func (p *IGCParser) parseE(line string, f *Flight) error {
 	if len(line) < 10 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -219,7 +225,7 @@ func (p *Parser) parseE(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseF(line string, f *flight.Flight) error {
+func (p *IGCParser) parseF(line string, f *Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -241,12 +247,12 @@ func (p *Parser) parseF(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseG(line string, f *flight.Flight) error {
+func (p *IGCParser) parseG(line string, f *Flight) error {
 	f.Signature = f.Signature + line[1:]
 	return nil
 }
 
-func (p *Parser) parseH(line string, f *flight.Flight) error {
+func (p *IGCParser) parseH(line string, f *Flight) error {
 	var err error
 	if len(line) < 5 {
 		return fmt.Errorf("line too short :: %v", line)
@@ -297,7 +303,7 @@ func (p *Parser) parseH(line string, f *flight.Flight) error {
 	return err
 }
 
-func (p *Parser) parseI(line string) error {
+func (p *IGCParser) parseI(line string) error {
 	if len(line) < 3 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -318,7 +324,7 @@ func (p *Parser) parseI(line string) error {
 	return nil
 }
 
-func (p *Parser) parseJ(line string) error {
+func (p *IGCParser) parseJ(line string) error {
 	if len(line) < 3 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -339,7 +345,7 @@ func (p *Parser) parseJ(line string) error {
 	return nil
 }
 
-func (p *Parser) parseK(line string, f *flight.Flight) error {
+func (p *IGCParser) parseK(line string, f *Flight) error {
 	if len(line) < 7 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
@@ -355,10 +361,10 @@ func (p *Parser) parseK(line string, f *flight.Flight) error {
 	return nil
 }
 
-func (p *Parser) parseL(line string, f *flight.Flight) error {
+func (p *IGCParser) parseL(line string, f *Flight) error {
 	if len(line) < 4 {
 		return fmt.Errorf("line too short :: %v", line)
 	}
-	f.Logbook = append(f.Logbook, flight.LogEntry{Type: line[1:4], Text: line[4:]})
+	f.Logbook = append(f.Logbook, LogEntry{Type: line[1:4], Text: line[4:]})
 	return nil
 }

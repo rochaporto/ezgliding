@@ -17,25 +17,23 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package igc
+package flight
 
 import (
 	"io/ioutil"
 	"reflect"
 	"testing"
 	"time"
-
-	"github.com/rochaporto/ezgliding/flight"
 )
 
-type ParseTest struct {
+type IGCParseTest struct {
 	t string
 	c string
-	r flight.Flight
+	r Flight
 	e bool
 }
 
-var parseTests = []ParseTest{
+var parseTests = []IGCParseTest{
 	{
 		"basic header test",
 		`
@@ -55,8 +53,8 @@ HFPRSEZ PRESSURE
 HFCIDEZ COMPID
 HFCCLEZ COMPCLASS
 `,
-		flight.Flight{
-			Header: flight.Header{
+		Flight{
+			Header: Header{
 				Manufacturer: "FLA", UniqueID: "001", AdditionalData: "Some Additional Data",
 				Date:        time.Date(2003, time.February, 01, 0, 0, 0, 0, time.UTC),
 				FixAccuracy: 500, Pilot: "EZ PILOT", Crew: "EZ CREW",
@@ -69,26 +67,26 @@ HFCCLEZ COMPCLASS
 			K:          map[time.Time]map[string]string{},
 			Events:     map[time.Time]map[string]string{},
 			Satellites: map[time.Time][]int{},
-			Sources:    make(map[string]flight.Source),
+			Sources:    make(map[string]Source),
 		},
 		false,
 	},
 	{"A record failure too short",
-		"AFLA0", flight.Flight{}, true},
+		"AFLA0", Flight{}, true},
 	{"H record failure too short",
-		"HFFX", flight.Flight{}, true},
+		"HFFX", Flight{}, true},
 	{"H record failure bad date",
-		"HFDTE330203", flight.Flight{}, true},
+		"HFDTE330203", Flight{}, true},
 	{"H record failure date too short",
-		"HFDTE33", flight.Flight{}, true},
+		"HFDTE33", Flight{}, true},
 	{"H record failure bad fix accuracy",
-		"HFFXAAAA", flight.Flight{}, true},
+		"HFFXAAAA", Flight{}, true},
 	{"H record failure fix accuracy too short",
-		"HFFXA20", flight.Flight{}, true},
+		"HFFXA20", Flight{}, true},
 	{"H record failure gps datum too short",
-		"HFDTM20", flight.Flight{}, true},
+		"HFDTM20", Flight{}, true},
 	{"H record failure unknown field",
-		"HFZZZaaa", flight.Flight{}, true},
+		"HFZZZaaa", Flight{}, true},
 	{
 		"basic flight test",
 		`
@@ -111,9 +109,9 @@ LPLTLOG TEXT
 GREJNGJERJKNJKRE31895478537H43982FJN9248F942389T433T
 GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 `,
-		flight.Flight{
-			Points: []flight.Point{
-				flight.Point{
+		Flight{
+			Points: []Point{
+				Point{
 					Time:     time.Date(0, 1, 1, 16, 2, 45, 0, time.UTC),
 					Latitude: 107.2, Longitude: 15.55, FixValidity: 'A',
 					PressureAltitude: 288, GNSSAltitude: 429,
@@ -122,7 +120,7 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 					},
 					NumSatellites: 6,
 				},
-				flight.Point{
+				Point{
 					Time:     time.Date(0, 1, 1, 16, 3, 10, 0, time.UTC),
 					Latitude: 107.35, Longitude: 15.516666666666666,
 					FixValidity: 'V', PressureAltitude: 293, GNSSAltitude: 435,
@@ -145,162 +143,162 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 			Satellites: map[time.Time][]int{
 				time.Date(0, 1, 1, 16, 02, 40, 0, time.UTC): []int{4, 6, 9, 12, 36, 24},
 			},
-			Logbook: []flight.LogEntry{
-				flight.LogEntry{Type: "PLT", Text: "LOG TEXT"},
+			Logbook: []LogEntry{
+				LogEntry{Type: "PLT", Text: "LOG TEXT"},
 			},
-			Task: flight.Task{
+			Task: Task{
 				DeclarationDate: time.Date(2001, time.July, 15, 21, 38, 41, 0, time.UTC),
 				FlightDate:      time.Date(2001, time.July, 16, 0, 0, 0, 0, time.UTC),
 				Number:          1,
-				Takeoff: flight.Point{
+				Takeoff: Point{
 					Latitude: 111.58333333333333, Longitude: 10.3,
 					Description: "EZ TAKEOFF"},
-				Start: flight.Point{
+				Start: Point{
 					Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 					Description: "EZ START"},
-				Turnpoints: []flight.Point{
-					flight.Point{
+				Turnpoints: []Point{
+					Point{
 						Latitude: 209.15, Longitude: 25.866666666666667,
 						Description: "EZ TP1"},
-					flight.Point{
+					Point{
 						Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
 						Description: "EZ TP2"},
 				},
-				Finish: flight.Point{
+				Finish: Point{
 					Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 					Description: "EZ FINISH"},
-				Landing: flight.Point{
+				Landing: Point{
 					Latitude: 111.58333333333333, Longitude: 10.3,
 					Description: "EZ LANDING"},
 				Description: "500KTri",
 			},
 			DGPSStationID: "0331",
 			Signature:     "REJNGJERJKNJKRE31895478537H43982FJN9248F942389T433TJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934",
-			Sources:       make(map[string]flight.Source),
+			Sources:       make(map[string]Source),
 		},
 		false,
 	},
 	{"point/fix wrong size",
-		"B110001", flight.Flight{}, true},
+		"B110001", Flight{}, true},
 	{"point/fix bad time",
-		"B3103105107212N00149174WV002930043519608024", flight.Flight{}, true},
+		"B3103105107212N00149174WV002930043519608024", Flight{}, true},
 	{"point/fix bad fix validity",
-		"B1603105107212N00149174WX002930043519608024", flight.Flight{}, true},
+		"B1603105107212N00149174WX002930043519608024", Flight{}, true},
 	{"point/fix bad pressure altitude",
-		"B1603105107212N00149174WV0029a0043519608024", flight.Flight{}, true},
+		"B1603105107212N00149174WV0029a0043519608024", Flight{}, true},
 	{"point/fix bad gnss altitude",
-		"B1603105107212N00149174WV002930043a19608024", flight.Flight{}, true},
+		"B1603105107212N00149174WV002930043a19608024", Flight{}, true},
 	{"irecord wrong size",
-		"I0", flight.Flight{}, true},
+		"I0", Flight{}, true},
 	{"irecord invalid value for field number",
-		"I0a", flight.Flight{}, true},
+		"I0a", Flight{}, true},
 	{"irecord wrong size with fields",
-		"I02AAA0102BBB030", flight.Flight{}, true},
+		"I02AAA0102BBB030", Flight{}, true},
 	{"jrecord wrong size",
-		"J0", flight.Flight{}, true},
+		"J0", Flight{}, true},
 	{"jrecord invalid value for field number",
-		"J0a", flight.Flight{}, true},
+		"J0a", Flight{}, true},
 	{"jrecord wrong size with fields",
-		"J02AAA0102BBB030", flight.Flight{}, true},
+		"J02AAA0102BBB030", Flight{}, true},
 	{"k wrong size",
-		"K16024", flight.Flight{}, true},
+		"K16024", Flight{}, true},
 	{"k invalid date",
-		"K160271", flight.Flight{}, true},
+		"K160271", Flight{}, true},
 	{"k wrong size",
-		"K16027000090", flight.Flight{}, true},
+		"K16027000090", Flight{}, true},
 	{"e wrong size",
-		"E16024", flight.Flight{}, true},
+		"E16024", Flight{}, true},
 	{"e invalid date",
-		"E160271ATS", flight.Flight{}, true},
+		"E160271ATS", Flight{}, true},
 	{"f wrong size",
-		"F16024", flight.Flight{}, true},
+		"F16024", Flight{}, true},
 	{"f invalid date",
-		"F1602710102", flight.Flight{}, true},
+		"F1602710102", Flight{}, true},
 	{"f invalid num satellites",
-		"F1602310a02", flight.Flight{}, true},
+		"F1602310a02", Flight{}, true},
 	{"l wrong size",
-		"LPL", flight.Flight{}, true},
+		"LPL", Flight{}, true},
 	{"c bad num lines",
-		"C150701213841160701000102500KTri", flight.Flight{}, true},
+		"C150701213841160701000102500KTri", Flight{}, true},
 	{"c wrong size first line",
-		"C15070121384116070100010", flight.Flight{}, true},
+		"C15070121384116070100010", Flight{}, true},
 	{"c invalid num of tps",
-		"C15070121384116070100010a", flight.Flight{}, true},
+		"C15070121384116070100010a", Flight{}, true},
 	{"c invalid declaration date",
-		"C350701213841160701000102500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5230147N00017612WEZ TP2\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", getFlight(flight.Task{
+		"C350701213841160701000102500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5230147N00017612WEZ TP2\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", getFlight(Task{
 			DeclarationDate: time.Time{},
 			FlightDate:      time.Date(2001, time.July, 16, 0, 0, 0, 0, time.UTC),
 			Number:          1,
-			Takeoff: flight.Point{
+			Takeoff: Point{
 				Latitude: 111.58333333333333, Longitude: 10.3,
 				Description: "EZ TAKEOFF"},
-			Start: flight.Point{
+			Start: Point{
 				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 				Description: "EZ START"},
-			Turnpoints: []flight.Point{
-				flight.Point{
+			Turnpoints: []Point{
+				Point{
 					Latitude: 209.15, Longitude: 25.866666666666667,
 					Description: "EZ TP1"},
-				flight.Point{
+				Point{
 					Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
 					Description: "EZ TP2"},
 			},
-			Finish: flight.Point{
+			Finish: Point{
 				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 				Description: "EZ FINISH"},
-			Landing: flight.Point{
+			Landing: Point{
 				Latitude: 111.58333333333333, Longitude: 10.3,
 				Description: "EZ LANDING"},
 			Description: "500KTri",
 		}), false},
 	{"c invalid flight date",
-		"C150701213841360701000102500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5230147N00017612WEZ TP2\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", getFlight(flight.Task{
+		"C150701213841360701000102500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5230147N00017612WEZ TP2\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", getFlight(Task{
 			DeclarationDate: time.Date(2001, time.July, 15, 21, 38, 41, 0, time.UTC),
 			FlightDate:      time.Time{},
 			Number:          1,
-			Takeoff: flight.Point{
+			Takeoff: Point{
 				Latitude: 111.58333333333333, Longitude: 10.3,
 				Description: "EZ TAKEOFF"},
-			Start: flight.Point{
+			Start: Point{
 				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 				Description: "EZ START"},
-			Turnpoints: []flight.Point{
-				flight.Point{
+			Turnpoints: []Point{
+				Point{
 					Latitude: 209.15, Longitude: 25.866666666666667,
 					Description: "EZ TP1"},
-				flight.Point{
+				Point{
 					Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
 					Description: "EZ TP2"},
 			},
-			Finish: flight.Point{
+			Finish: Point{
 				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
 				Description: "EZ FINISH"},
-			Landing: flight.Point{
+			Landing: Point{
 				Latitude: 111.58333333333333, Longitude: 10.3,
 				Description: "EZ LANDING"},
 			Description: "500KTri",
 		}), false},
 	{"c invalid task number",
-		"C150701213841160701000a01500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", flight.Flight{}, true},
+		"C150701213841160701000a01500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", Flight{}, true},
 	{"c invalid takeoff",
-		"C150701213841160701000101500KTri\nC5111359N00101899\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", flight.Flight{}, true},
+		"C150701213841160701000101500KTri\nC5111359N00101899\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", Flight{}, true},
 	{"c invalid start",
-		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", flight.Flight{}, true},
+		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", Flight{}, true},
 	{"c invalid tp",
-		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", flight.Flight{}, true},
+		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227\nC5110179N00102644WEZ FINISH\nC5111359N00101899WEZ LANDING", Flight{}, true},
 	{"c invalid finish",
-		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644\nC5111359N00101899WEZ LANDING", flight.Flight{}, true},
+		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644\nC5111359N00101899WEZ LANDING", Flight{}, true},
 	{"c invalid landing",
-		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899", flight.Flight{}, true},
+		"C150701213841160701000101500KTri\nC5111359N00101899WEZ TAKEOFF\nC5110179N00102644WEZ START\nC5209092N00255227WEZ TP1\nC5110179N00102644WEZ FINISH\nC5111359N00101899", Flight{}, true},
 	{"d wrong size",
-		"D2033", flight.Flight{}, true},
+		"D2033", Flight{}, true},
 	{"invalid record",
-		"RANDOM GARBAGE", flight.Flight{}, true},
+		"RANDOM GARBAGE", Flight{}, true},
 }
 
-func TestParse(t *testing.T) {
+func TestIGCParse(t *testing.T) {
 	for _, test := range parseTests {
-		result, err := Parse(test.c)
+		result, err := ParseIGC(test.c)
 		if err != nil && test.e {
 			continue
 		} else if err != nil {
@@ -314,20 +312,20 @@ func TestParse(t *testing.T) {
 	}
 }
 
-func BenchmarkParse(b *testing.B) {
-	c, err := ioutil.ReadFile("t/sample-flight.igc")
+func BenchmarkIGCParse(b *testing.B) {
+	c, err := ioutil.ReadFile("t/sample-igc")
 	if err != nil {
 		b.Errorf("failed to load sample flight :: %v", err)
 	}
 	content := string(c)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Parse(content)
+		ParseIGC(content)
 	}
 }
 
-func getFlight(task flight.Task) flight.Flight {
-	f := flight.NewFlight()
+func getFlight(task Task) Flight {
+	f := NewFlight()
 	f.Task = task
 	return f
 }

@@ -34,7 +34,6 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/flight"
-	"github.com/rochaporto/ezgliding/igc"
 )
 
 // ID for this plugin implementation.
@@ -118,7 +117,7 @@ func (nc *Netcoupe) GetFlightByID(id int) (flight.Flight, error) {
 	if err != nil {
 		return flight.Flight{}, err
 	}
-	f, err := igc.Parse(content)
+	f, err := flight.ParseIGC(content)
 	if err != nil {
 		return flight.Flight{}, err
 	}
