@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/spatial"
 )
 
 // toOutput returns a string representation (in the requested format) of the given content.
@@ -34,7 +34,7 @@ func (srv *Server) toOutput(format string, content []interface{}) (string, error
 	var output string
 	switch format {
 	case "application/json":
-		collection, err := util.Struct2GeoJSON(content)
+		collection, err := spatial.Struct2GeoJSON(content)
 		if err != nil {
 			return "", err
 		}

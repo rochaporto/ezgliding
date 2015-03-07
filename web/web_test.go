@@ -31,7 +31,7 @@ import (
 
 	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/mock"
-	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/spatial"
 	"github.com/rochaporto/ezgliding/waypoint"
 )
 
@@ -214,7 +214,7 @@ func TestServer(t *testing.T) {
 			t.Errorf("%v failed :: %v", test.t, resp)
 			continue
 		}
-		result, err := util.GeoJSON2Struct(string(r))
+		result, err := spatial.GeoJSON2Struct(string(r))
 		if err != nil {
 			t.Errorf("%v :: failed to convert response :: %v :: %v", test.t, err, result)
 			continue

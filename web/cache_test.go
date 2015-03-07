@@ -30,7 +30,7 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/rochaporto/ezgliding/airfield"
 	"github.com/rochaporto/ezgliding/mock"
-	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/spatial"
 )
 
 func TestMemcacheBadServer(t *testing.T) {
@@ -52,7 +52,7 @@ func TestMemcache(t *testing.T) {
 			Runway: "32R", Frequency: 123.45, Latitude: 32.533, Longitude: 100.376},
 	}
 	// get the expected geojson to compare at the end
-	geojson, _ := util.Struct2GeoJSON([]interface{}{
+	geojson, _ := spatial.Struct2GeoJSON([]interface{}{
 		airfields[0],
 	})
 	expected, _ := json.MarshalIndent(geojson, "", "\t")

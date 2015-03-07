@@ -26,7 +26,7 @@ import (
 	"time"
 
 	"github.com/rochaporto/ezgliding/flight"
-	"github.com/rochaporto/ezgliding/util"
+	"github.com/rochaporto/ezgliding/spatial"
 )
 
 // Parse returns a flight.Flight object corresponding to the given content.
@@ -114,8 +114,8 @@ func (p *Parser) parseB(line string, f *flight.Flight) error {
 	if err != nil {
 		return err
 	}
-	pt.Latitude = util.DMS2Decimal(line[7:15])
-	pt.Longitude = util.DMS2Decimal(line[15:24])
+	pt.Latitude = spatial.DMS2Decimal(line[7:15])
+	pt.Longitude = spatial.DMS2Decimal(line[15:24])
 	if line[24] == 'A' || line[24] == 'V' {
 		pt.FixValidity = line[24]
 	} else {
@@ -188,8 +188,8 @@ func (p *Parser) taskPoint(line string) (flight.Point, error) {
 		return flight.Point{}, fmt.Errorf("line too short :: %v", line)
 	}
 	return flight.Point{
-		Latitude:    util.DMS2Decimal(line[1:9]),
-		Longitude:   util.DMS2Decimal(line[9:18]),
+		Latitude:    spatial.DMS2Decimal(line[1:9]),
+		Longitude:   spatial.DMS2Decimal(line[9:18]),
 		Description: line[18:],
 	}, nil
 }

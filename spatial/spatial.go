@@ -17,7 +17,11 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package util
+// Package spatial provides functionality for handling spatial data.
+//
+// This includes conversion for lat/lon between different formats (dms,
+// decimal, ...) and other functions coming in the future.
+package spatial
 
 import (
 	"errors"

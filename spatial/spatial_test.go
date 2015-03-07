@@ -17,7 +17,7 @@
 //
 // Author: Ricardo Rocha <rocha.porto@gmail.com>
 
-package util
+package spatial
 
 import (
 	"reflect"
