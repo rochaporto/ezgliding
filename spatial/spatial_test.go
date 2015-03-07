@@ -66,6 +66,65 @@ func TestDMS2Decimal(t *testing.T) {
 	}
 }
 
+type DMD2DecimalTest struct {
+	t  string
+	in string
+	r  float64
+}
+
+var dmd2DecimalTests = []DMD2DecimalTest{
+	{
+		"latitude north conversion",
+		"N4616018",
+		46.26696666666667,
+	},
+	{
+		"latitude north conversion inverted",
+		"4616018N",
+		46.26696666666667,
+	},
+	{
+		"latitude south conversion",
+		"S4616018",
+		-46.26696666666667,
+	},
+	{
+		"latitude south conversion inverted",
+		"4616018S",
+		-46.26696666666667,
+	},
+	{
+		"longitude east conversion",
+		"E00627679",
+		6.461316666666667,
+	},
+	{
+		"longitude east conversion inverted",
+		"00627679E",
+		6.461316666666667,
+	},
+	{
+		"longitude west conversion",
+		"W00627679",
+		-6.461316666666667,
+	},
+	{
+		"longitude west conversion inverted",
+		"00627679W",
+		-6.461316666666667,
+	},
+}
+
+func TestDMD2Decimal(t *testing.T) {
+	for _, test := range dmd2DecimalTests {
+		result := DMD2Decimal(test.in)
+		if result != test.r {
+			t.Errorf("test %v failed, expected %v got %v", test.t, test.r, result)
+			continue
+		}
+	}
+}
+
 type Struct2GeoJSONTest struct {
 	t  string
 	in []interface{}

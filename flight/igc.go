@@ -120,8 +120,8 @@ func (p *IGCParser) parseB(line string, f *Flight) error {
 	if err != nil {
 		return err
 	}
-	pt.Latitude = spatial.DMS2Decimal(line[7:15])
-	pt.Longitude = spatial.DMS2Decimal(line[15:24])
+	pt.Latitude = spatial.DMD2Decimal(line[7:15])
+	pt.Longitude = spatial.DMD2Decimal(line[15:24])
 	if line[24] == 'A' || line[24] == 'V' {
 		pt.FixValidity = line[24]
 	} else {
@@ -194,8 +194,8 @@ func (p *IGCParser) taskPoint(line string) (Point, error) {
 		return Point{}, fmt.Errorf("line too short :: %v", line)
 	}
 	return Point{
-		Latitude:    spatial.DMS2Decimal(line[1:9]),
-		Longitude:   spatial.DMS2Decimal(line[9:18]),
+		Latitude:    spatial.DMD2Decimal(line[1:9]),
+		Longitude:   spatial.DMD2Decimal(line[9:18]),
 		Description: line[18:],
 	}, nil
 }

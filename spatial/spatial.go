@@ -52,6 +52,34 @@ func DMS2Decimal(dms string) float64 {
 	return r
 }
 
+// DMD2Decimal converts the given coordinates from DMD (deg,min,decimalmin) to decimal format.
+func DMD2Decimal(dmd string) float64 {
+	var degrees, minutes, dminutes float64
+	if dmd[0] == 'S' || dmd[0] == 'N' {
+		degrees, _ = strconv.ParseFloat(dmd[1:3], 64)
+		minutes, _ = strconv.ParseFloat(dmd[3:5], 64)
+		dminutes, _ = strconv.ParseFloat(dmd[5:], 64)
+	} else if dmd[len(dmd)-1] == 'S' || dmd[len(dmd)-1] == 'N' {
+		degrees, _ = strconv.ParseFloat(dmd[0:2], 64)
+		minutes, _ = strconv.ParseFloat(dmd[2:4], 64)
+		dminutes, _ = strconv.ParseFloat(dmd[4:7], 64)
+	} else if dmd[0] == 'W' || dmd[0] == 'E' {
+		degrees, _ = strconv.ParseFloat(dmd[1:4], 64)
+		minutes, _ = strconv.ParseFloat(dmd[4:6], 64)
+		dminutes, _ = strconv.ParseFloat(dmd[6:], 64)
+	} else if dmd[len(dmd)-1] == 'W' || dmd[len(dmd)-1] == 'E' {
+		degrees, _ = strconv.ParseFloat(dmd[0:3], 64)
+		minutes, _ = strconv.ParseFloat(dmd[3:5], 64)
+		dminutes, _ = strconv.ParseFloat(dmd[5:8], 64)
+	}
+	var r float64
+	r = degrees + ((minutes + (dminutes / 1000.0)) / 60.0)
+	if dmd[0] == 'S' || dmd[0] == 'W' || dmd[len(dmd)-1] == 'S' || dmd[len(dmd)-1] == 'W' {
+		r = r * -1
+	}
+	return r
+}
+
 // Struct2GeoJSON returns a collection of GeoJSON objects from the given structs.
 // The given array can have distinct types (Airfield, Waypoint, Airspace) and the
 // resulting GeoJSON will contain all fields as properties, and an additional one

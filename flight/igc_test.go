@@ -113,7 +113,7 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 			Points: []Point{
 				Point{
 					Time:     time.Date(0, 1, 1, 16, 2, 45, 0, time.UTC),
-					Latitude: 107.2, Longitude: 15.55, FixValidity: 'A',
+					Latitude: 51.118766666666666, Longitude: -1.8216666666666668, FixValidity: 'A',
 					PressureAltitude: 288, GNSSAltitude: 429,
 					IData: map[string]string{
 						"FXA": "195", "SIU": "09", "ENL": "020",
@@ -122,7 +122,7 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 				},
 				Point{
 					Time:     time.Date(0, 1, 1, 16, 3, 10, 0, time.UTC),
-					Latitude: 107.35, Longitude: 15.516666666666666,
+					Latitude: 51.1202, Longitude: -1.8195666666666668,
 					FixValidity: 'V', PressureAltitude: 293, GNSSAltitude: 435,
 					IData: map[string]string{
 						"FXA": "196", "SIU": "08", "ENL": "024",
@@ -151,24 +151,24 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 				FlightDate:      time.Date(2001, time.July, 16, 0, 0, 0, 0, time.UTC),
 				Number:          1,
 				Takeoff: Point{
-					Latitude: 111.58333333333333, Longitude: 10.3,
+					Latitude: 51.18931666666667, Longitude: -1.03165,
 					Description: "EZ TAKEOFF"},
 				Start: Point{
-					Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+					Latitude: 51.16965, Longitude: -1.0440666666666667,
 					Description: "EZ START"},
 				Turnpoints: []Point{
 					Point{
-						Latitude: 209.15, Longitude: 25.866666666666667,
+						Latitude: 52.15153333333333, Longitude: -2.9204499999999998,
 						Description: "EZ TP1"},
 					Point{
-						Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
+						Latitude: 52.50245, Longitude: -0.2935333333333333,
 						Description: "EZ TP2"},
 				},
 				Finish: Point{
-					Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+					Latitude: 51.16965, Longitude: -1.0440666666666667,
 					Description: "EZ FINISH"},
 				Landing: Point{
-					Latitude: 111.58333333333333, Longitude: 10.3,
+					Latitude: 51.18931666666667, Longitude: -1.03165,
 					Description: "EZ LANDING"},
 				Description: "500KTri",
 			},
@@ -230,24 +230,24 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 			FlightDate:      time.Date(2001, time.July, 16, 0, 0, 0, 0, time.UTC),
 			Number:          1,
 			Takeoff: Point{
-				Latitude: 111.58333333333333, Longitude: 10.3,
+				Latitude: 51.18931666666667, Longitude: -1.03165,
 				Description: "EZ TAKEOFF"},
 			Start: Point{
-				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+				Latitude: 51.16965, Longitude: -1.0440666666666667,
 				Description: "EZ START"},
 			Turnpoints: []Point{
 				Point{
-					Latitude: 209.15, Longitude: 25.866666666666667,
+					Latitude: 52.15153333333333, Longitude: -2.9204499999999998,
 					Description: "EZ TP1"},
 				Point{
-					Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
+					Latitude: 52.50245, Longitude: -0.2935333333333333,
 					Description: "EZ TP2"},
 			},
 			Finish: Point{
-				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+				Latitude: 51.16965, Longitude: -1.0440666666666667,
 				Description: "EZ FINISH"},
 			Landing: Point{
-				Latitude: 111.58333333333333, Longitude: 10.3,
+				Latitude: 51.18931666666667, Longitude: -1.03165,
 				Description: "EZ LANDING"},
 			Description: "500KTri",
 		}), false},
@@ -257,24 +257,24 @@ GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934
 			FlightDate:      time.Time{},
 			Number:          1,
 			Takeoff: Point{
-				Latitude: 111.58333333333333, Longitude: 10.3,
+				Latitude: 51.18931666666667, Longitude: -1.03165,
 				Description: "EZ TAKEOFF"},
 			Start: Point{
-				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+				Latitude: 51.16965, Longitude: -1.0440666666666667,
 				Description: "EZ START"},
 			Turnpoints: []Point{
 				Point{
-					Latitude: 209.15, Longitude: 25.866666666666667,
+					Latitude: 52.15153333333333, Longitude: -2.9204499999999998,
 					Description: "EZ TP1"},
 				Point{
-					Latitude: 230.23333333333332, Longitude: 2.2666666666666666,
+					Latitude: 52.50245, Longitude: -0.2935333333333333,
 					Description: "EZ TP2"},
 			},
 			Finish: Point{
-				Latitude: 110.28333333333333, Longitude: 10.433333333333334,
+				Latitude: 51.16965, Longitude: -1.0440666666666667,
 				Description: "EZ FINISH"},
 			Landing: Point{
-				Latitude: 111.58333333333333, Longitude: 10.3,
+				Latitude: 51.18931666666667, Longitude: -1.03165,
 				Description: "EZ LANDING"},
 			Description: "500KTri",
 		}), false},
