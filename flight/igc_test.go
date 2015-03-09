@@ -40,25 +40,25 @@ var parseTests = []IGCParseTest{
 AFLA001Some Additional Data
 HFDTE010203
 HFFXA500
-HFPLTEZ PILOT
-HFCM2EZ CREW
-HFGTYEZ TYPE
-HFGIDEZ ID
-HFDTM100
-HFRFWv 0.1
-HFRHWv 0.2
-HFFTYEZ RECORDER,001
+HFPLTPilotincharge:EZ PILOT
+HFCM2Crew2:EZ CREW
+HFGTYGliderType:EZ TYPE
+HFGIDGliderID:EZ ID
+HFDTM100GPSDatum:WGS84
+HFRFWFirmwareVersion:v 0.1
+HFRHWHardwareVersion:v 0.2
+HFFTYFRType:EZ RECORDER,001
 HFGPSEZ GPS,002,12,5000
-HFPRSEZ PRESSURE
-HFCIDEZ COMPID
-HFCCLEZ COMPCLASS
+HFPRSPressAltSensor:EZ PRESSURE
+HFCIDCompetitionID:EZ COMPID
+HFCCLCompetitionClass:EZ COMPCLASS
 `,
 		Flight{
 			Header: Header{
 				Manufacturer: "FLA", UniqueID: "001", AdditionalData: "Some Additional Data",
 				Date:        time.Date(2003, time.February, 01, 0, 0, 0, 0, time.UTC),
 				FixAccuracy: 500, Pilot: "EZ PILOT", Crew: "EZ CREW",
-				GliderType: "EZ TYPE", GliderID: "EZ ID", GPSDatum: "100",
+				GliderType: "EZ TYPE", GliderID: "EZ ID", GPSDatum: "WGS84",
 				FirmwareVersion: "v 0.1", HardwareVersion: "v 0.2",
 				FlightRecorder: "EZ RECORDER,001", GPS: "EZ GPS,002,12,5000",
 				PressureSensor: "EZ PRESSURE", CompetitionID: "EZ COMPID",
@@ -309,6 +309,14 @@ func TestIGCParse(t *testing.T) {
 			t.Errorf("%v failed :: expected\n%+v\ngot\n%+v", test.t, test.r, result)
 			continue
 		}
+	}
+}
+
+func TestStripUpToMissing(t *testing.T) {
+	s := "nocolonhere"
+	r := stripUpTo(s, ":")
+	if r != s {
+		t.Errorf("expected %v got %v", s, r)
 	}
 }
 

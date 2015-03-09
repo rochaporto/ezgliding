@@ -270,32 +270,32 @@ func (p *IGCParser) parseH(line string, f *Flight) error {
 		}
 		f.Header.FixAccuracy, err = strconv.ParseInt(line[5:8], 10, 64)
 	case "PLT":
-		f.Header.Pilot = line[5:]
+		f.Header.Pilot = stripUpTo(line[5:], ":")
 	case "CM2":
-		f.Header.Crew = line[5:]
+		f.Header.Crew = stripUpTo(line[5:], ":")
 	case "GTY":
-		f.Header.GliderType = line[5:]
+		f.Header.GliderType = stripUpTo(line[5:], ":")
 	case "GID":
-		f.Header.GliderID = line[5:]
+		f.Header.GliderID = stripUpTo(line[5:], ":")
 	case "DTM":
 		if len(line) < 8 {
 			return fmt.Errorf("line too short :: %v", line)
 		}
-		f.Header.GPSDatum = line[5:8]
+		f.Header.GPSDatum = stripUpTo(line[5:], ":")
 	case "RFW":
-		f.Header.FirmwareVersion = line[5:]
+		f.Header.FirmwareVersion = stripUpTo(line[5:], ":")
 	case "RHW":
-		f.Header.HardwareVersion = line[5:]
+		f.Header.HardwareVersion = stripUpTo(line[5:], ":")
 	case "FTY":
-		f.Header.FlightRecorder = line[5:]
+		f.Header.FlightRecorder = stripUpTo(line[5:], ":")
 	case "GPS":
 		f.Header.GPS = line[5:]
 	case "PRS":
-		f.Header.PressureSensor = line[5:]
+		f.Header.PressureSensor = stripUpTo(line[5:], ":")
 	case "CID":
-		f.Header.CompetitionID = line[5:]
+		f.Header.CompetitionID = stripUpTo(line[5:], ":")
 	case "CCL":
-		f.Header.CompetitionClass = line[5:]
+		f.Header.CompetitionClass = stripUpTo(line[5:], ":")
 	default:
 		err = fmt.Errorf("unknown error record :: %v", line)
 	}
@@ -367,4 +367,12 @@ func (p *IGCParser) parseL(line string, f *Flight) error {
 	}
 	f.Logbook = append(f.Logbook, LogEntry{Type: line[1:4], Text: line[4:]})
 	return nil
+}
+
+func stripUpTo(s string, sep string) string {
+	i := strings.Index(s, sep)
+	if i == -1 {
+		return s
+	}
+	return s[i+1:]
 }
