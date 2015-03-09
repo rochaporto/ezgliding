@@ -66,6 +66,7 @@ type Global struct {
 	Airfielder string
 	Flighter   string
 	Waypointer string
+	Scorer     string
 }
 
 // Config holds all the config information for ezgliding plugins and apps.

@@ -111,6 +111,21 @@ func GetWaypointer(id string, cfg config.Config) (waypoint.Waypointer, error) {
 	return r.(waypoint.Waypointer), err
 }
 
+// GetScorer returns an instance of the requested Scorer plugin.
+// Passing an empty string will try to load an instance of the plugin
+// currently set in the configuration (if any).
+func GetScorer(id string, cfg config.Config) (flight.Scorer, error) {
+	fid := id
+	if fid == "" {
+		fid = cfg.Global.Scorer
+	}
+	r, err := GetInstance(fid, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return r.(flight.Scorer), err
+}
+
 // registry holds additional string/plugin mappings to the default ones.
 // The default ones are set in the GetInstance function.
 var registry = map[string]interface{}{}
