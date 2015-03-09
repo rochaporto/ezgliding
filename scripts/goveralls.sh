@@ -16,6 +16,6 @@ for dir in $(find . -maxdepth 10 -not -path './.git*' -not -path '*/_*' -type d)
 		fi
 	fi
 done
-goveralls -coverprofile=profile.cov -service=travis-ci -repotoken $COVERALLS_TOKEN
+goveralls -coverprofile=profile.cov -service=travis-ci
 if [ $? -ne 0 ]; then rc=1; fi
 exit $rc
