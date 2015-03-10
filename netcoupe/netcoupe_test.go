@@ -87,6 +87,18 @@ var getFlightByIDTests = []GetFlightByIDTest{
 	GetFlightByIDTest{t: "bad speed get flight by id", id: 303, r: flight.Source{}, err: true},
 	GetFlightByIDTest{t: "malformed flight get flight by id", id: 305, r: flight.Source{}, err: true},
 	GetFlightByIDTest{t: "bad location get flight by id", id: 306, r: flight.Source{}, err: true},
+	GetFlightByIDTest{t: "get flight by id with accents", id: 500,
+		r: flight.Source{
+			Name: "Hélène PRAT", Category: "+ de 25 ans", Club: "A. vélivole Commingeoise",
+			Region: "Midi-Pyrénées", Country: "France",
+			Date:    time.Date(2015, time.Month(3), 9, 0, 0, 0, 0, time.UTC),
+			Takeoff: "Saint Gaudens", Distance: 471.67, Points: 328.12,
+			Type: "Arcus (< 750 kg)", CircuitType: "Libre",
+			Speed: 98.61, Start: "", Finish: "",
+			Turnpoints:  []flight.Point{{}, {}, {}},
+			Comment:     "Petite onde de Nord Est",
+			DownloadURL: "/Results/DownloadIGC.aspx?FileID=500",
+		}, err: false},
 }
 
 func TestGetFlightByID(t *testing.T) {

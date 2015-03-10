@@ -33,6 +33,7 @@ import (
 	"strings"
 	"time"
 
+	iconv "github.com/djimenez/iconv-go"
 	"github.com/rochaporto/ezgliding/flight"
 )
 
@@ -50,25 +51,28 @@ const (
 	maxIDGap int = 3
 )
 
-var reNom = regexp.MustCompile("(?s)DisplayContactDetail\\(.\\d*.,\\s.hasPrevious...>([\\w\\s]*)</a>")
-var reCategorie = regexp.MustCompile("(?s)Cat.gorie&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var reClub = regexp.MustCompile("(?s)DisplayClubDetail\\(.\\d*.,\\s.hasPrevious...>([\\w\\s]*)</a>")
+// iso2UTF is a ISO-8859-1 to UTF-8 converter used to convert netcoupe's flight details
+var iso2UTF, _ = iconv.NewConverter("ISO-8859-1", "UTF-8")
+
+var reNom = regexp.MustCompile("DisplayContactDetail\\(.\\d*.,\\s.hasPrevious...>([^<]*)</a>")
+var reCategorie = regexp.MustCompile("(?s)Cat.gorie&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var reClub = regexp.MustCompile("(?s)DisplayClubDetail\\(.\\d*.,\\s.hasPrevious...>([^<]*)</a>")
 var reDate = regexp.MustCompile("(?s)Date&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*(\\d+/\\d+/\\d+)\\s*</div>")
-var reDepart = regexp.MustCompile("(?s)A.rodrome de d.part&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var reRegion = regexp.MustCompile("(?s)R.gion&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var rePays = regexp.MustCompile("(?s)Pays&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
+var reDepart = regexp.MustCompile("(?s)A.rodrome de d.part&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var reRegion = regexp.MustCompile("(?s)R.gion&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var rePays = regexp.MustCompile("(?s)Pays&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
 var reDistance = regexp.MustCompile("(?s)Distance&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">(.*)\\s*&nbsp;kms\\s*</div>")
 var rePoints = regexp.MustCompile("(?s)Points&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*(\\S*)\\s*</div>")
-var rePlaneur = regexp.MustCompile("(?s)Planeur&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\\s*<tbody>\\s*<tr>\\s*<td valign=\"middle\">([\\w\\s]*)&nbsp;&nbsp;\\s*</td>")
-var reTypeCircuit = regexp.MustCompile("(?s)Type de circuit&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
+var rePlaneur = regexp.MustCompile("(?s)Planeur&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\\s*<tbody>\\s*<tr>\\s*<td valign=\"middle\">([^&]*)&nbsp;&nbsp;\\s*</td>")
+var reTypeCircuit = regexp.MustCompile("(?s)Type de circuit&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
 var reVitesse = regexp.MustCompile("(?s)Vitesse moyenne du circuit&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*(.*)&nbsp;km/h\\s*</div>")
-var rePointDepart = regexp.MustCompile("(?s)Point de d.part&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var rePointVirage1 = regexp.MustCompile("(?s)Point de virage n.1&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var rePointVirage2 = regexp.MustCompile("(?s)Point de virage n.2&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var rePointVirage3 = regexp.MustCompile("(?s)Point de virage n.3&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var rePointArrivee = regexp.MustCompile("(?s)Point d.arriv.e&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var reCommentaires = regexp.MustCompile("(?s)Commentaires&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([\\w\\s]*)</div>")
-var reFichierIGC = regexp.MustCompile("(?s)Fichier .IGC&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*<a href=\"([\\S]*)\">")
+var rePointDepart = regexp.MustCompile("(?s)Point de d.part&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var rePointVirage1 = regexp.MustCompile("(?s)Point de virage n.1&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var rePointVirage2 = regexp.MustCompile("(?s)Point de virage n.2&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var rePointVirage3 = regexp.MustCompile("(?s)Point de virage n.3&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var rePointArrivee = regexp.MustCompile("(?s)Point d.arriv.e&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var reCommentaires = regexp.MustCompile("(?s)Commentaires&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">([^<]*)</div>")
+var reFichierIGC = regexp.MustCompile("(?s)Fichier .IGC&nbsp;:</b>\\s*</div>\\s*</td>\\s*<td>\\s*<div align=\"left\">\\s*<a href=\"\\.*([\\S]*)\">")
 
 // Config holds the netcoupe configuration.
 type Config struct {
@@ -119,7 +123,7 @@ func (nc *Netcoupe) GetFlightByID(id int) (flight.Flight, error) {
 	}
 	f, err := flight.ParseIGC(content)
 	if err != nil {
-		return flight.Flight{}, err
+		return f, err
 	}
 	f.Sources[ID] = source
 	return f, nil
@@ -186,8 +190,8 @@ func (nc *Netcoupe) parseDetails(html string) (flight.Source, error) {
 // FIXME: should be a common function in another package
 func (nc *Netcoupe) fetch(location string) (string, error) {
 	var content []byte
-	// case http
 	resp, err := http.Get(location)
+	// case http
 	if err == nil {
 		defer resp.Body.Close()
 		content, err = ioutil.ReadAll(resp.Body)
@@ -198,7 +202,10 @@ func (nc *Netcoupe) fetch(location string) (string, error) {
 		}
 		content = resp
 	}
-	return string(content), nil
+
+	// netcoupe is publishing iso-8859-1, need to convert
+	output, _ := iso2UTF.ConvertString(string(content))
+	return output, nil
 }
 
 func (nc *Netcoupe) detailURL(id int) string {
