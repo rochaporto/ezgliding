@@ -296,8 +296,14 @@ func (p *IGCParser) parseH(line string, f *Flight) error {
 		f.Header.CompetitionID = stripUpTo(line[5:], ":")
 	case "CCL":
 		f.Header.CompetitionClass = stripUpTo(line[5:], ":")
+	case "TZN":
+		z, err := strconv.ParseFloat(stripUpTo(line[5:], ":"), 64)
+		if err != nil {
+			return err
+		}
+		f.Header.Timezone = *time.FixedZone("", int(z*3600))
 	default:
-		err = fmt.Errorf("unknown error record :: %v", line)
+		err = fmt.Errorf("unknown record :: %v", line)
 	}
 
 	return err

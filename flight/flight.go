@@ -87,6 +87,7 @@ type Header struct {
 	PressureSensor   string
 	CompetitionID    string
 	CompetitionClass string
+	Timezone         time.Location
 }
 
 // Point represents a gps read (single point in the flight track).

@@ -52,6 +52,7 @@ HFGPSEZ GPS,002,12,5000
 HFPRSPressAltSensor:EZ PRESSURE
 HFCIDCompetitionID:EZ COMPID
 HFCCLCompetitionClass:EZ COMPCLASS
+HFTZNTimezone:2.00
 `,
 		Flight{
 			Header: Header{
@@ -62,7 +63,7 @@ HFCCLCompetitionClass:EZ COMPCLASS
 				FirmwareVersion: "v 0.1", HardwareVersion: "v 0.2",
 				FlightRecorder: "EZ RECORDER,001", GPS: "EZ GPS,002,12,5000",
 				PressureSensor: "EZ PRESSURE", CompetitionID: "EZ COMPID",
-				CompetitionClass: "EZ COMPCLASS",
+				CompetitionClass: "EZ COMPCLASS", Timezone: *time.FixedZone("", 2*3600),
 			},
 			K:          map[time.Time]map[string]string{},
 			Events:     map[time.Time]map[string]string{},
@@ -87,6 +88,8 @@ HFCCLCompetitionClass:EZ COMPCLASS
 		"HFDTM20", Flight{}, true},
 	{"H record failure unknown field",
 		"HFZZZaaa", Flight{}, true},
+	{"H record failure bad timezone",
+		"HFTZNaa", Flight{}, true},
 	{
 		"basic flight test",
 		`
