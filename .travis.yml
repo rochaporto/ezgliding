@@ -8,7 +8,7 @@ env:
 services:
         - memcached
 before_install:
-        - go get -v github.com/golang/lint/golint
+        - go get -v golang.org/x/lint/golint
         - go get github.com/mattn/goveralls
         - go get github.com/axw/gocov/gocov
         - go get golang.org/x/tools/cmd/cover
